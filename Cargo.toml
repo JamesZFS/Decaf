@@ -1,10 +1,17 @@
-[package]
-name = "decaf"
-version = "0.1.0"
-authors = ["郑逢时 <962907278@qq.com>"]
-edition = "2018"
+cargo-features = ["profile-overrides"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
+members = [
+  "common",
+  "print",
+  "syntax",
+  "typeck",
+  "tac",
+  "tacgen",
+  "tacopt",
+  "codegen",
+  "driver",
+]
 
-[dependencies]
-
+[profile.dev.overrides."*"]
+opt-level = 3
