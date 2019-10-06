@@ -21,6 +21,7 @@ pub struct Program<'a> {
 }
 
 pub struct ClassDef<'a> {
+  pub abstr_: bool,  // whether it's an abstract class
   pub loc: Loc,
   pub name: &'a str,
   pub parent: Option<&'a str>,
@@ -66,6 +67,7 @@ impl FieldDef<'_> {
 }
 
 pub struct FuncDef<'a> {
+  pub abstr_: bool,   // whether it's an abstract method
   pub loc: Loc,
   pub name: &'a str,
   pub ret: SynTy<'a>,
