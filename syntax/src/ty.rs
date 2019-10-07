@@ -10,6 +10,9 @@ pub enum SynTyKind<'a> {
   Void,
   Var,    // local variable ty deduction
   Named(&'a str),
+//  FunType((Vec<&'a SynTy<'a>>, SynTy<'a>)),  // FunType([t1, t2, ...], ret_type)
+//  FunType([SynTy<'a>]),  // FunType [0] = ret, [1..] = param
+  FunType,  // FunType [0] = ret, [1..] = param
 }
 
 #[derive(Eq, PartialEq)]

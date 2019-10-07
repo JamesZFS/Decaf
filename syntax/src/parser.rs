@@ -287,7 +287,7 @@ impl<'p> Parser<'p> {
         mk_stmt(loc, (&*self.alloc.var.alloc(VarDef {
             loc,
             name: name.str(),
-            syn_ty: SynTy{
+            syn_ty: SynTy {
                 loc: Default::default(),
                 arr: 0,
                 kind: SynTyKind::Var
@@ -420,6 +420,26 @@ impl<'p> Parser<'p> {
     fn type_string(s: Token) -> SynTy<'p> { SynTy { loc: s.loc(), arr: 0, kind: SynTyKind::String } }
     #[rule(Type -> Class Id)]
     fn type_class(c: Token, name: Token) -> SynTy<'p> { SynTy { loc: c.loc(), arr: 0, kind: SynTyKind::Named(name.str()) } }
-    #[rule(Type -> Type LBrk RBrk)]
+    #[rule(Type -> Type LBrk RBrk)] // eg: int[][] => arr = 2,  char[] => arr = 1
     fn type_array(mut ty: SynTy<'p>, _l: Token, _r: Token) -> SynTy<'p> { (ty.arr += 1, ty).1 }
+
+    // function type
+    #[rule(Type -> Type LPar TypeListOrEmpty RPar)]     // eg: int(int, float)
+    fn type_fun(ret: SynTy<'p>, _l: Token, params: Vec<SynTy<'p>>, _r: Token) -> SynTy<'p> {
+        SynTy {
+            loc: ret.loc,
+            arr: 0,
+            kind: SynTyKind::FunType
+        }
+    }
+    #[rule(TypeListOrEmpty ->)]
+    fn type_list_or_empty0() -> Vec<SynTy<'p>> { vec![] }
+    #[rule(TypeListOrEmpty -> TypeList)]
+    fn type_list_or_empty1(tl: Vec<SynTy<'p>>) -> Vec<SynTy<'p>> { tl }
+
+    #[rule(TypeList -> Type)]
+    fn type_list0(t: SynTy<'p>) -> Vec<SynTy<'p>> { vec![t] }
+    #[rule(TypeList -> TypeList Comma Type)]
+    fn type_list1(mut tl: Vec<SynTy<'p>>, _c: Token, t: SynTy<'p>) -> Vec<SynTy<'p>> { tl.pushed(t) }
+
 }

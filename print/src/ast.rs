@@ -56,6 +56,7 @@ impl Printable for SynTy<'_> {
         write!(p, "TClass @ {:?}", self.loc).ignore();
         p.indent(|p| c.print(p));
       }
+      _ => unimplemented!() // todo
     }
     for _ in 0..self.arr { p.dec(); }
   }
