@@ -86,9 +86,22 @@ macro_rules! print_enum {
   };
 }
 
+// Print method for ClassDef is specifically defined
+impl Printable for ClassDef<'_> {
+  fn print(&self, p: &mut IndentPrinter) {
+    write!(p, "ClassDef @ {:?}", self.loc).ignore();
+    p.indent(|p| {
+      if self.abstr_ { "ABSTRACT".print(p); }
+      (self.name).print(p);
+      (self.parent).print(p);
+      (self.field).print(p);
+    });
+  }
+}
+
 // self.class[0] must be valid, because parser requires their are at least one class
 print_struct!(Program<'_>, self, self.class[0].loc, TopLevel, self.class);
-print_struct!(ClassDef<'_>, self, self.loc, ClassDef, self.name self.parent self.field);
+//print_struct!(ClassDef<'_>, self, self.loc, ClassDef, self.abstr_ self.name self.parent self.field);
 print_struct!(VarDef<'_>, self, self.loc, LocalVarDef, self.syn_ty self.name self.init());
 print_struct!(Block<'_>, self, self.loc, Block, self.stmt);
 
@@ -106,6 +119,7 @@ impl Printable for FieldDef<'_> {
       FieldDef::FuncDef(f) => {
         write!(p, "MethodDef @ {:?}", f.loc).ignore();
         p.indent(|p| {
+          if f.body.is_none() { "ABSTRACT".print(p); }
           if f.static_ { "STATIC".print(p); }
           f.name.print(p);
           f.ret.print(p);
