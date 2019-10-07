@@ -8,6 +8,7 @@ pub enum SynTyKind<'a> {
   Bool,
   String,
   Void,
+  Var,    // local variable ty deduction
   Named(&'a str),
 }
 

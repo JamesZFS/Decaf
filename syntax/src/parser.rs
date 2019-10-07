@@ -59,6 +59,7 @@ priority = [
 ]
 
 [lexical]
+'var' = 'Var'
 'void' = 'Void'
 'int' = 'Int'
 'bool' = 'Bool'
@@ -262,10 +263,13 @@ impl<'p> Parser<'p> {
 
     #[rule(Simple -> LValue Assign Expr)]
     fn simple_assign(dst: Expr<'p>, a: Token, src: Expr<'p>) -> Stmt<'p> { mk_stmt(a.loc(), Assign { dst, src }.into()) }
-    #[rule(Simple -> VarDef)] // the VarDef without init
+
+    // the VarDef without init
+    #[rule(Simple -> VarDef)]
     fn simple_var_def(v: &'p VarDef<'p>) -> Stmt<'p> { mk_stmt(v.loc, v.into()) }
-    #[rule(Simple -> Type Id Assign Expr)] // the VarDef with init
-    fn simple_var_def_init(&self, syn_ty: SynTy<'p>, name: Token, a: Token, init: Expr<'p>) -> Stmt<'p> {
+    // the VarDef with init
+    #[rule(Simple -> Type Id Assign Expr)]
+    fn simple_var_def_init0(&self, syn_ty: SynTy<'p>, name: Token, a: Token, init: Expr<'p>) -> Stmt<'p> {
         let loc = name.loc();
         mk_stmt(loc, (&*self.alloc.var.alloc(VarDef {
             loc,
@@ -276,6 +280,24 @@ impl<'p> Parser<'p> {
             owner: dft(),
         })).into())
     }
+    // local variable type deduction *with* init
+    #[rule(Simple -> Var Id Assign Expr)]
+    fn simple_var_def_init1(&self, _v: Token, name: Token, a: Token, init: Expr<'p>) -> Stmt<'p> {
+        let loc = name.loc();
+        mk_stmt(loc, (&*self.alloc.var.alloc(VarDef {
+            loc,
+            name: name.str(),
+            syn_ty: SynTy{
+                loc: Default::default(),
+                arr: 0,
+                kind: SynTyKind::Var
+            },
+            init: Some((a.loc(), init)),
+            ty: dft(),
+            owner: dft(),
+        })).into())
+    }
+
     #[rule(Simple -> Expr)]
     fn simple_mk_expr(e: Expr<'p>) -> Stmt<'p> { mk_stmt(e.loc, e.into()) }
     #[rule(Simple ->)]
