@@ -158,31 +158,46 @@ impl<'p> Parser<'p> {
     #[rule(FieldList ->)]
     fn field_list0() -> Vec<FieldDef<'p>> { vec![] }
 
-    #[rule(FuncDef -> Static Type Id LPar VarDefListOrEmpty RPar Block)]
-    fn func_def1(&self, _s: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, body: Block<'p>) -> &'p FuncDef<'p> {
+    // abstract method
+    #[rule(FuncDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi)]
+    fn func_def2(&self, _a: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, _s: Token) -> &'p FuncDef<'p> {
         self.alloc.func.alloc(FuncDef {
-            abstr_: false,
-            loc: name.loc(),
-            name: name.str(),
-            ret,
-            param,
-            static_: true,
-            body,
-            ret_param_ty: dft(),
-            class: dft(),
-            scope: dft(),
-        })
-    }
-    #[rule(FuncDef -> Type Id LPar VarDefListOrEmpty RPar Block)]
-    fn func_def0(&self, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, body: Block<'p>) -> &'p FuncDef<'p> {
-        self.alloc.func.alloc(FuncDef {
-            abstr_: false,
             loc: name.loc(),
             name: name.str(),
             ret,
             param,
             static_: false,
-            body,
+            body: None,
+            ret_param_ty: dft(),
+            class: dft(),
+            scope: dft(),
+        })
+    }
+    // static method
+    #[rule(FuncDef -> Static Type Id LPar VarDefListOrEmpty RPar Block)]
+    fn func_def1(&self, _s: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, body: Block<'p>) -> &'p FuncDef<'p> {
+        self.alloc.func.alloc(FuncDef {
+            loc: name.loc(),
+            name: name.str(),
+            ret,
+            param,
+            static_: true,
+            body: Some(body),
+            ret_param_ty: dft(),
+            class: dft(),
+            scope: dft(),
+        })
+    }
+    // normal method
+    #[rule(FuncDef -> Type Id LPar VarDefListOrEmpty RPar Block)]
+    fn func_def0(&self, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, body: Block<'p>) -> &'p FuncDef<'p> {
+        self.alloc.func.alloc(FuncDef {
+            loc: name.loc(),
+            name: name.str(),
+            ret,
+            param,
+            static_: false,
+            body: Some(body),
             ret_param_ty: dft(),
             class: dft(),
             scope: dft(),
