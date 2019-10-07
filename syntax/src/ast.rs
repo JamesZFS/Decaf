@@ -179,6 +179,17 @@ pub enum ExprKind<'a> {
     NewArray(NewArray<'a>),
     ClassTest(ClassTest<'a>),
     ClassCast(ClassCast<'a>),
+    Lambda(Lambda<'a>),
+}
+
+pub struct Lambda<'a> {
+    pub params: Vec<&'a VarDef<'a>>,
+    pub body: LambdaKind<'a>,
+}
+
+pub enum LambdaKind<'a> {
+    Block(Box<Block<'a>>),
+    Expr(Box<Expr<'a>>),
 }
 
 pub struct VarSel<'a> {

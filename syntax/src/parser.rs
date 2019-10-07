@@ -46,6 +46,7 @@ fn mk_bin<'p>(l: Expr<'p>, r: Expr<'p>, loc: Loc, op: BinOp) -> Expr<'p> {
 #[lalr1(Program)]
 #[lex(r##"
 priority = [
+  { assoc = 'no_assoc', terms = ['Arrow'] },
   { assoc = 'left', terms = ['Or'] },
   { assoc = 'left', terms = ['And'] },
   { assoc = 'no_assoc', terms = ['Eq', 'Ne'] },
@@ -83,6 +84,8 @@ priority = [
 'static' = 'Static'
 'abstract' = 'Abstract'             # new feature: abstract
 'instanceof' = 'InstanceOf'
+'fun' = 'Fun'
+'=>' = 'Arrow'
 '<=' = 'Le'
 '>=' = 'Ge'
 '==' = 'Eq'
@@ -381,6 +384,17 @@ impl<'p> Parser<'p> {
     #[rule(Expr -> Not Expr)]
     fn expr_not(n: Token, r: Expr<'p>) -> Expr<'p> {
         mk_expr(n.loc(), Unary { op: UnOp::Not, r: Box::new(r) }.into())
+    }
+
+    // lambda expr
+    #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Arrow Expr)]
+    fn expr_lambda0(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, _a: Token, e: Expr<'p>) -> Expr<'p> {
+        mk_expr(f.loc(), Lambda { params, body: LambdaKind::Expr(Box::new(e)) }.into())
+    }
+
+    #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Block)]
+    fn expr_lambda1(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, b: Block<'p>) -> Expr<'p> {
+        mk_expr(f.loc(), Lambda { params, body: LambdaKind::Block(Box::new(b)) }.into())
     }
 
     #[rule(ExprList -> ExprList Comma Expr)]

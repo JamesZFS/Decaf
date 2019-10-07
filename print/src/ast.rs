@@ -152,7 +152,16 @@ impl Printable for Expr<'_> {
       VarSel => x.owner x.name, IndexSel => x.arr x.idx, IntLit => x, BoolLit => x, StringLit => "\"".to_owned() + x + "\"",
       NullLit => , Call => x.func x.arg, Unary => x.op.to_word_str() x.r, Binary => x.op.to_word_str() x.l x.r,
       This => , ReadInt => , ReadLine => , NewClass => x.name, NewArray => x.elem x.len, ClassTest => x.expr x.name,
-      ClassCast => x.expr x.name
+      ClassCast => x.expr x.name, Lambda => x.params x.body
     );
+  }
+}
+
+impl Printable for LambdaKind<'_> {
+  fn print(&self, p: &mut IndentPrinter) {
+    match self {
+      LambdaKind::Block(b) => { b.print(p) },
+      LambdaKind::Expr(e) => { e.print(p) },
+    }
   }
 }
