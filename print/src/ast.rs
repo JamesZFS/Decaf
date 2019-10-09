@@ -56,7 +56,11 @@ impl Printable for SynTy<'_> {
         write!(p, "TClass @ {:?}", self.loc).ignore();
         p.indent(|p| c.print(p));
       }
-      _ => unimplemented!() // todo
+      SynTyKind::FunType((ret, params)) => {
+        write!(p, "TLambda @ {:?}", self.loc).ignore();
+        p.indent(|p| ret.print(p));
+        p.indent(|p| params.print(p));
+      }
     }
     for _ in 0..self.arr { p.dec(); }
   }

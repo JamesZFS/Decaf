@@ -1,6 +1,7 @@
 use crate::{ast::*, ty::*, VecExt, dft, check_str, mk_stmt, mk_expr, mk_int_lit, mk_block};
 use parser_macros::lalr1;
 use common::{ErrorKind, Loc, BinOp, UnOp, Errors, NO_LOC};
+use std::ops::Deref;
 
 pub fn work<'p>(code: &'p str, alloc: &'p ASTAlloc<'p>) -> Result<&'p Program<'p>, Errors<'p, Ty<'p>>> {
     let mut parser = Parser { alloc, error: Errors::default() };
@@ -440,10 +441,15 @@ impl<'p> Parser<'p> {
     // function type
     #[rule(Type -> Type LPar TypeListOrEmpty RPar)]     // eg: int(int, float)
     fn type_fun(ret: SynTy<'p>, _l: Token, params: Vec<SynTy<'p>>, _r: Token) -> SynTy<'p> {
+        let mut res = vec![];
+        for p in params {
+            res.push(Box::new(p));
+        }
         SynTy {
             loc: ret.loc,
             arr: 0,
-            kind: SynTyKind::FunType
+            kind: SynTyKind::FunType((Box::new(ret), res))
+//            kind: SynTyKind::FunType(params.iter().map(|s| Box::new(*s).collect()))
         }
     }
     #[rule(TypeListOrEmpty ->)]
