@@ -309,10 +309,20 @@ impl<'p> Parser<'p> {
 
     #[rule(Expr -> LValue)]
     fn expr_lvalue(l: Expr<'p>) -> Expr<'p> { l }
-    #[rule(Expr -> VarSel LPar ExprListOrEmpty RPar)]
-    fn expr_call(func: Expr<'p>, l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Expr<'p> {
+
+    #[rule(Expr -> Call)]
+    fn expr_call(func: Expr<'p>) -> Expr<'p> { func }
+
+    #[rule(Call -> VarSel LPar ExprListOrEmpty RPar)]
+    fn expr_call0(func: Expr<'p>, l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Expr<'p> {
         mk_expr(l.loc(), Call { func: Box::new(func), arg, func_ref: dft() }.into())
     }
+    // lambda call
+    #[rule(Call -> Expr LPar ExprListOrEmpty RPar)]
+    fn expr_call1(func: Expr<'p>, l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Expr<'p> {
+        mk_expr(l.loc(), Call { func: Box::new(func), arg, func_ref: dft() }.into())
+    }
+
     #[rule(Expr -> IntLit)]
     fn expr_int(&mut self, i: Token) -> Expr<'p> { mk_int_lit(i.loc(), i.str(), &mut self.error) }
     #[rule(Expr -> True)]
@@ -449,7 +459,6 @@ impl<'p> Parser<'p> {
             loc: ret.loc,
             arr: 0,
             kind: SynTyKind::FunType((Box::new(ret), res))
-//            kind: SynTyKind::FunType(params.iter().map(|s| Box::new(*s).collect()))
         }
     }
     #[rule(TypeListOrEmpty ->)]
