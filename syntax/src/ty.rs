@@ -11,8 +11,7 @@ pub enum SynTyKind<'a> {
     Var,
     // local variable ty deduction
     Named(&'a str),
-    FunType((Box<SynTy<'a>>, Vec<Box<SynTy<'a>>>)),  // ret, params todo
-//  FunType,  // FunType [0] = ret, [1..] = param
+    FunType((Box<SynTy<'a>>, Vec<Box<SynTy<'a>>>)),  // ret, params
 }
 
 #[derive(Eq, PartialEq)]
