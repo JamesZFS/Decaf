@@ -1,0 +1,878 @@
+Productions:
+  0: Program -> ClassList
+  1: ClassList -> ClassDef ClassList
+  2: ClassList ->
+  3: ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc
+  4: MaybeAbstract -> Abstract
+  5: MaybeAbstract ->
+  6: MaybeExtends -> Extends Id
+  7: MaybeExtends ->
+  8: FieldList -> FieldDef FieldList
+  9: FieldList ->
+  10: FieldDef -> Static Type Id LPar VarDefListOrEmpty RPar Block
+  11: FieldDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi
+  12: FieldDef -> Type Id FuncOrVar
+  13: FuncOrVar -> LPar VarDefListOrEmpty RPar Block
+  14: FuncOrVar -> Semi
+  15: VarDefListOrEmpty -> VarDefList
+  16: VarDefListOrEmpty ->
+  17: VarDefList -> VarDef VarDefListRem
+  18: VarDefListRem -> Comma VarDef VarDefListRem
+  19: VarDefListRem ->
+  20: ExprListOrEmpty -> ExprList
+  21: ExprListOrEmpty ->
+  22: ExprList -> Expr ExprListRem
+  23: ExprListRem -> Comma Expr ExprListRem
+  24: ExprListRem ->
+  25: VarDef -> Type Id
+  26: Block -> LBrc StmtList RBrc
+  27: StmtList -> Stmt StmtList
+  28: StmtList ->
+  29: Stmt -> Simple Semi
+  30: Stmt -> If LPar Expr RPar Stmt MaybeElse
+  31: Stmt -> While LPar Expr RPar Stmt
+  32: Stmt -> For LPar Simple Semi Expr Semi Simple RPar Stmt
+  33: Stmt -> Return MaybeExpr Semi
+  34: Stmt -> Print LPar ExprList RPar Semi
+  35: Stmt -> Break Semi
+  36: Stmt -> Block
+  37: Simple -> Expr MaybeAssign
+  38: Simple -> Type Id MaybeAssign
+  39: Simple ->
+  40: MaybeAssign -> Assign Expr
+  41: MaybeAssign ->
+  42: Blocked -> Stmt
+  43: MaybeElse -> Else Blocked
+  44: MaybeElse ->
+  45: MaybeExpr -> Expr
+  46: MaybeExpr ->
+  47: Op1 -> Or
+  48: Op2 -> And
+  49: Op3 -> Eq
+  50: Op3 -> Ne
+  51: Op4 -> Lt
+  52: Op4 -> Le
+  53: Op4 -> Ge
+  54: Op4 -> Gt
+  55: Op5 -> Add
+  56: Op5 -> Sub
+  57: Op6 -> Mul
+  58: Op6 -> Div
+  59: Op6 -> Mod
+  60: Op7 -> Sub
+  61: Op7 -> Not
+  62: Expr -> Expr1
+  63: Expr1 -> Expr2 Term1
+  64: Term1 -> Op1 Expr2 Term1
+  65: Term1 ->
+  66: Expr2 -> Expr3 Term2
+  67: Term2 -> Op2 Expr3 Term2
+  68: Term2 ->
+  69: Expr3 -> Expr4 Term3
+  70: Term3 -> Op3 Expr4 Term3
+  71: Term3 ->
+  72: Expr4 -> Expr5 Term4
+  73: Term4 -> Op4 Expr5 Term4
+  74: Term4 ->
+  75: Expr5 -> Expr6 Term5
+  76: Term5 -> Op5 Expr6 Term5
+  77: Term5 ->
+  78: Expr6 -> Expr7 Term6
+  79: Term6 -> Op6 Expr7 Term6
+  80: Term6 ->
+  81: Expr7 -> Op7 Expr7
+  82: Expr7 -> LPar ParenOrCast
+  83: Expr7 -> Expr8
+  84: ParenOrCast -> Expr RPar Term8
+  85: ParenOrCast -> Class Id RPar Expr7
+  86: Expr8 -> Expr9 Term8
+  87: Term8 -> LBrk Expr RBrk Term8
+  88: Term8 -> Dot Id IdOrCall Term8
+  89: Term8 ->
+  90: IdOrCall -> LPar ExprListOrEmpty RPar
+  91: IdOrCall ->
+  92: Expr9 -> IntLit
+  93: Expr9 -> True
+  94: Expr9 -> False
+  95: Expr9 -> StringLit
+  96: Expr9 -> Null
+  97: Expr9 -> ReadInteger LPar RPar
+  98: Expr9 -> ReadLine LPar RPar
+  99: Expr9 -> This
+  100: Expr9 -> InstanceOf LPar Expr Comma Id RPar
+  101: Expr9 -> Id IdOrCall
+  102: Expr9 -> New NewClassOrArray
+  103: NewClassOrArray -> Id LPar RPar
+  104: NewClassOrArray -> SimpleType LBrk NewArrayRem
+  105: NewArrayRem -> RBrk LBrk NewArrayRem
+  106: NewArrayRem -> Expr RBrk
+  107: SimpleType -> Int
+  108: SimpleType -> Bool
+  109: SimpleType -> Void
+  110: SimpleType -> String
+  111: SimpleType -> Class Id
+  112: Type -> SimpleType ArrayDim
+  113: ArrayDim -> LBrk RBrk ArrayDim
+  114: ArrayDim ->
+  115: _Program -> Program
+
+Tokens:
+  0: Program
+  1: ClassList
+  2: ClassDef
+  3: MaybeAbstract
+  4: MaybeExtends
+  5: FieldList
+  6: FieldDef
+  7: FuncOrVar
+  8: VarDefListOrEmpty
+  9: VarDefList
+  10: VarDefListRem
+  11: ExprListOrEmpty
+  12: ExprList
+  13: ExprListRem
+  14: VarDef
+  15: Block
+  16: StmtList
+  17: Stmt
+  18: Simple
+  19: MaybeAssign
+  20: Blocked
+  21: MaybeElse
+  22: MaybeExpr
+  23: Op1
+  24: Op2
+  25: Op3
+  26: Op4
+  27: Op5
+  28: Op6
+  29: Op7
+  30: Expr
+  31: Expr1
+  32: Term1
+  33: Expr2
+  34: Term2
+  35: Expr3
+  36: Term3
+  37: Expr4
+  38: Term4
+  39: Expr5
+  40: Term5
+  41: Expr6
+  42: Term6
+  43: Expr7
+  44: ParenOrCast
+  45: Expr8
+  46: Term8
+  47: IdOrCall
+  48: Expr9
+  49: NewClassOrArray
+  50: NewArrayRem
+  51: SimpleType
+  52: Type
+  53: ArrayDim
+  54: _Program
+  55: _Eps
+  56: _Eof
+  57: _Err
+  58: Abstract
+  59: Void
+  60: Int
+  61: Bool
+  62: String
+  63: New
+  64: Null
+  65: True
+  66: False
+  67: Class
+  68: Extends
+  69: This
+  70: While
+  71: For
+  72: If
+  73: Else
+  74: Return
+  75: Break
+  76: Print
+  77: ReadInteger
+  78: ReadLine
+  79: Static
+  80: InstanceOf
+  81: Le
+  82: Ge
+  83: Eq
+  84: Ne
+  85: And
+  86: Or
+  87: Add
+  88: Sub
+  89: Mul
+  90: Div
+  91: Mod
+  92: Assign
+  93: Lt
+  94: Gt
+  95: Dot
+  96: Comma
+  97: Semi
+  98: Not
+  99: LPar
+  100: RPar
+  101: LBrk
+  102: RBrk
+  103: LBrc
+  104: RBrc
+  105: Colon
+  106: StringLit
+  107: UntermString
+  108: IntLit
+  109: Id
+
+Program:
+  _Eof => Program -> ClassList
+  Abstract => Program -> ClassList
+  Class => Program -> ClassList
+
+ClassList:
+  _Eof => ClassList ->
+  Abstract => ClassList -> ClassDef ClassList
+  Class => ClassList -> ClassDef ClassList
+
+ClassDef:
+  Abstract => ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc
+  Class => ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc
+
+MaybeAbstract:
+  Abstract => MaybeAbstract -> Abstract
+  Class => MaybeAbstract ->
+
+MaybeExtends:
+  Extends => MaybeExtends -> Extends Id
+  LBrc => MaybeExtends ->
+
+FieldList:
+  Abstract => FieldList -> FieldDef FieldList
+  Void => FieldList -> FieldDef FieldList
+  Int => FieldList -> FieldDef FieldList
+  Bool => FieldList -> FieldDef FieldList
+  String => FieldList -> FieldDef FieldList
+  Class => FieldList -> FieldDef FieldList
+  Static => FieldList -> FieldDef FieldList
+  RBrc => FieldList ->
+
+FieldDef:
+  Abstract => FieldDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi
+  Void => FieldDef -> Type Id FuncOrVar
+  Int => FieldDef -> Type Id FuncOrVar
+  Bool => FieldDef -> Type Id FuncOrVar
+  String => FieldDef -> Type Id FuncOrVar
+  Class => FieldDef -> Type Id FuncOrVar
+  Static => FieldDef -> Static Type Id LPar VarDefListOrEmpty RPar Block
+
+FuncOrVar:
+  Semi => FuncOrVar -> Semi
+  LPar => FuncOrVar -> LPar VarDefListOrEmpty RPar Block
+
+VarDefListOrEmpty:
+  Void => VarDefListOrEmpty -> VarDefList
+  Int => VarDefListOrEmpty -> VarDefList
+  Bool => VarDefListOrEmpty -> VarDefList
+  String => VarDefListOrEmpty -> VarDefList
+  Class => VarDefListOrEmpty -> VarDefList
+  RPar => VarDefListOrEmpty ->
+
+VarDefList:
+  Void => VarDefList -> VarDef VarDefListRem
+  Int => VarDefList -> VarDef VarDefListRem
+  Bool => VarDefList -> VarDef VarDefListRem
+  String => VarDefList -> VarDef VarDefListRem
+  Class => VarDefList -> VarDef VarDefListRem
+
+VarDefListRem:
+  Comma => VarDefListRem -> Comma VarDef VarDefListRem
+  RPar => VarDefListRem ->
+
+ExprListOrEmpty:
+  New => ExprListOrEmpty -> ExprList
+  Null => ExprListOrEmpty -> ExprList
+  True => ExprListOrEmpty -> ExprList
+  False => ExprListOrEmpty -> ExprList
+  This => ExprListOrEmpty -> ExprList
+  ReadInteger => ExprListOrEmpty -> ExprList
+  ReadLine => ExprListOrEmpty -> ExprList
+  InstanceOf => ExprListOrEmpty -> ExprList
+  Sub => ExprListOrEmpty -> ExprList
+  Not => ExprListOrEmpty -> ExprList
+  LPar => ExprListOrEmpty -> ExprList
+  RPar => ExprListOrEmpty ->
+  StringLit => ExprListOrEmpty -> ExprList
+  IntLit => ExprListOrEmpty -> ExprList
+  Id => ExprListOrEmpty -> ExprList
+
+ExprList:
+  New => ExprList -> Expr ExprListRem
+  Null => ExprList -> Expr ExprListRem
+  True => ExprList -> Expr ExprListRem
+  False => ExprList -> Expr ExprListRem
+  This => ExprList -> Expr ExprListRem
+  ReadInteger => ExprList -> Expr ExprListRem
+  ReadLine => ExprList -> Expr ExprListRem
+  InstanceOf => ExprList -> Expr ExprListRem
+  Sub => ExprList -> Expr ExprListRem
+  Not => ExprList -> Expr ExprListRem
+  LPar => ExprList -> Expr ExprListRem
+  StringLit => ExprList -> Expr ExprListRem
+  IntLit => ExprList -> Expr ExprListRem
+  Id => ExprList -> Expr ExprListRem
+
+ExprListRem:
+  Comma => ExprListRem -> Comma Expr ExprListRem
+  RPar => ExprListRem ->
+
+VarDef:
+  Void => VarDef -> Type Id
+  Int => VarDef -> Type Id
+  Bool => VarDef -> Type Id
+  String => VarDef -> Type Id
+  Class => VarDef -> Type Id
+
+Block:
+  LBrc => Block -> LBrc StmtList RBrc
+
+StmtList:
+  Void => StmtList -> Stmt StmtList
+  Int => StmtList -> Stmt StmtList
+  Bool => StmtList -> Stmt StmtList
+  String => StmtList -> Stmt StmtList
+  New => StmtList -> Stmt StmtList
+  Null => StmtList -> Stmt StmtList
+  True => StmtList -> Stmt StmtList
+  False => StmtList -> Stmt StmtList
+  Class => StmtList -> Stmt StmtList
+  This => StmtList -> Stmt StmtList
+  While => StmtList -> Stmt StmtList
+  For => StmtList -> Stmt StmtList
+  If => StmtList -> Stmt StmtList
+  Return => StmtList -> Stmt StmtList
+  Break => StmtList -> Stmt StmtList
+  Print => StmtList -> Stmt StmtList
+  ReadInteger => StmtList -> Stmt StmtList
+  ReadLine => StmtList -> Stmt StmtList
+  InstanceOf => StmtList -> Stmt StmtList
+  Sub => StmtList -> Stmt StmtList
+  Semi => StmtList -> Stmt StmtList
+  Not => StmtList -> Stmt StmtList
+  LPar => StmtList -> Stmt StmtList
+  LBrc => StmtList -> Stmt StmtList
+  RBrc => StmtList ->
+  StringLit => StmtList -> Stmt StmtList
+  IntLit => StmtList -> Stmt StmtList
+  Id => StmtList -> Stmt StmtList
+
+Stmt:
+  Void => Stmt -> Simple Semi
+  Int => Stmt -> Simple Semi
+  Bool => Stmt -> Simple Semi
+  String => Stmt -> Simple Semi
+  New => Stmt -> Simple Semi
+  Null => Stmt -> Simple Semi
+  True => Stmt -> Simple Semi
+  False => Stmt -> Simple Semi
+  Class => Stmt -> Simple Semi
+  This => Stmt -> Simple Semi
+  While => Stmt -> While LPar Expr RPar Stmt
+  For => Stmt -> For LPar Simple Semi Expr Semi Simple RPar Stmt
+  If => Stmt -> If LPar Expr RPar Stmt MaybeElse
+  Return => Stmt -> Return MaybeExpr Semi
+  Break => Stmt -> Break Semi
+  Print => Stmt -> Print LPar ExprList RPar Semi
+  ReadInteger => Stmt -> Simple Semi
+  ReadLine => Stmt -> Simple Semi
+  InstanceOf => Stmt -> Simple Semi
+  Sub => Stmt -> Simple Semi
+  Semi => Stmt -> Simple Semi
+  Not => Stmt -> Simple Semi
+  LPar => Stmt -> Simple Semi
+  LBrc => Stmt -> Block
+  StringLit => Stmt -> Simple Semi
+  IntLit => Stmt -> Simple Semi
+  Id => Stmt -> Simple Semi
+
+Simple:
+  Void => Simple -> Type Id MaybeAssign
+  Int => Simple -> Type Id MaybeAssign
+  Bool => Simple -> Type Id MaybeAssign
+  String => Simple -> Type Id MaybeAssign
+  New => Simple -> Expr MaybeAssign
+  Null => Simple -> Expr MaybeAssign
+  True => Simple -> Expr MaybeAssign
+  False => Simple -> Expr MaybeAssign
+  Class => Simple -> Type Id MaybeAssign
+  This => Simple -> Expr MaybeAssign
+  ReadInteger => Simple -> Expr MaybeAssign
+  ReadLine => Simple -> Expr MaybeAssign
+  InstanceOf => Simple -> Expr MaybeAssign
+  Sub => Simple -> Expr MaybeAssign
+  Semi => Simple ->
+  Not => Simple -> Expr MaybeAssign
+  LPar => Simple -> Expr MaybeAssign
+  RPar => Simple ->
+  StringLit => Simple -> Expr MaybeAssign
+  IntLit => Simple -> Expr MaybeAssign
+  Id => Simple -> Expr MaybeAssign
+
+MaybeAssign:
+  Assign => MaybeAssign -> Assign Expr
+  Semi => MaybeAssign ->
+  RPar => MaybeAssign ->
+
+Blocked:
+  Void => Blocked -> Stmt
+  Int => Blocked -> Stmt
+  Bool => Blocked -> Stmt
+  String => Blocked -> Stmt
+  New => Blocked -> Stmt
+  Null => Blocked -> Stmt
+  True => Blocked -> Stmt
+  False => Blocked -> Stmt
+  Class => Blocked -> Stmt
+  This => Blocked -> Stmt
+  While => Blocked -> Stmt
+  For => Blocked -> Stmt
+  If => Blocked -> Stmt
+  Return => Blocked -> Stmt
+  Break => Blocked -> Stmt
+  Print => Blocked -> Stmt
+  ReadInteger => Blocked -> Stmt
+  ReadLine => Blocked -> Stmt
+  InstanceOf => Blocked -> Stmt
+  Sub => Blocked -> Stmt
+  Semi => Blocked -> Stmt
+  Not => Blocked -> Stmt
+  LPar => Blocked -> Stmt
+  LBrc => Blocked -> Stmt
+  StringLit => Blocked -> Stmt
+  IntLit => Blocked -> Stmt
+  Id => Blocked -> Stmt
+
+MaybeElse:
+  Void => MaybeElse ->
+  Int => MaybeElse ->
+  Bool => MaybeElse ->
+  String => MaybeElse ->
+  New => MaybeElse ->
+  Null => MaybeElse ->
+  True => MaybeElse ->
+  False => MaybeElse ->
+  Class => MaybeElse ->
+  This => MaybeElse ->
+  While => MaybeElse ->
+  For => MaybeElse ->
+  If => MaybeElse ->
+  Else => MaybeElse -> Else Blocked; MaybeElse ->(✗)
+  Return => MaybeElse ->
+  Break => MaybeElse ->
+  Print => MaybeElse ->
+  ReadInteger => MaybeElse ->
+  ReadLine => MaybeElse ->
+  InstanceOf => MaybeElse ->
+  Sub => MaybeElse ->
+  Semi => MaybeElse ->
+  Not => MaybeElse ->
+  LPar => MaybeElse ->
+  LBrc => MaybeElse ->
+  RBrc => MaybeElse ->
+  StringLit => MaybeElse ->
+  IntLit => MaybeElse ->
+  Id => MaybeElse ->
+
+MaybeExpr:
+  New => MaybeExpr -> Expr
+  Null => MaybeExpr -> Expr
+  True => MaybeExpr -> Expr
+  False => MaybeExpr -> Expr
+  This => MaybeExpr -> Expr
+  ReadInteger => MaybeExpr -> Expr
+  ReadLine => MaybeExpr -> Expr
+  InstanceOf => MaybeExpr -> Expr
+  Sub => MaybeExpr -> Expr
+  Semi => MaybeExpr ->
+  Not => MaybeExpr -> Expr
+  LPar => MaybeExpr -> Expr
+  StringLit => MaybeExpr -> Expr
+  IntLit => MaybeExpr -> Expr
+  Id => MaybeExpr -> Expr
+
+Op1:
+  Or => Op1 -> Or
+
+Op2:
+  And => Op2 -> And
+
+Op3:
+  Eq => Op3 -> Eq
+  Ne => Op3 -> Ne
+
+Op4:
+  Le => Op4 -> Le
+  Ge => Op4 -> Ge
+  Lt => Op4 -> Lt
+  Gt => Op4 -> Gt
+
+Op5:
+  Add => Op5 -> Add
+  Sub => Op5 -> Sub
+
+Op6:
+  Mul => Op6 -> Mul
+  Div => Op6 -> Div
+  Mod => Op6 -> Mod
+
+Op7:
+  Sub => Op7 -> Sub
+  Not => Op7 -> Not
+
+Expr:
+  New => Expr -> Expr1
+  Null => Expr -> Expr1
+  True => Expr -> Expr1
+  False => Expr -> Expr1
+  This => Expr -> Expr1
+  ReadInteger => Expr -> Expr1
+  ReadLine => Expr -> Expr1
+  InstanceOf => Expr -> Expr1
+  Sub => Expr -> Expr1
+  Not => Expr -> Expr1
+  LPar => Expr -> Expr1
+  StringLit => Expr -> Expr1
+  IntLit => Expr -> Expr1
+  Id => Expr -> Expr1
+
+Expr1:
+  New => Expr1 -> Expr2 Term1
+  Null => Expr1 -> Expr2 Term1
+  True => Expr1 -> Expr2 Term1
+  False => Expr1 -> Expr2 Term1
+  This => Expr1 -> Expr2 Term1
+  ReadInteger => Expr1 -> Expr2 Term1
+  ReadLine => Expr1 -> Expr2 Term1
+  InstanceOf => Expr1 -> Expr2 Term1
+  Sub => Expr1 -> Expr2 Term1
+  Not => Expr1 -> Expr2 Term1
+  LPar => Expr1 -> Expr2 Term1
+  StringLit => Expr1 -> Expr2 Term1
+  IntLit => Expr1 -> Expr2 Term1
+  Id => Expr1 -> Expr2 Term1
+
+Term1:
+  Or => Term1 -> Op1 Expr2 Term1
+  Assign => Term1 ->
+  Comma => Term1 ->
+  Semi => Term1 ->
+  RPar => Term1 ->
+  RBrk => Term1 ->
+
+Expr2:
+  New => Expr2 -> Expr3 Term2
+  Null => Expr2 -> Expr3 Term2
+  True => Expr2 -> Expr3 Term2
+  False => Expr2 -> Expr3 Term2
+  This => Expr2 -> Expr3 Term2
+  ReadInteger => Expr2 -> Expr3 Term2
+  ReadLine => Expr2 -> Expr3 Term2
+  InstanceOf => Expr2 -> Expr3 Term2
+  Sub => Expr2 -> Expr3 Term2
+  Not => Expr2 -> Expr3 Term2
+  LPar => Expr2 -> Expr3 Term2
+  StringLit => Expr2 -> Expr3 Term2
+  IntLit => Expr2 -> Expr3 Term2
+  Id => Expr2 -> Expr3 Term2
+
+Term2:
+  And => Term2 -> Op2 Expr3 Term2
+  Or => Term2 ->
+  Assign => Term2 ->
+  Comma => Term2 ->
+  Semi => Term2 ->
+  RPar => Term2 ->
+  RBrk => Term2 ->
+
+Expr3:
+  New => Expr3 -> Expr4 Term3
+  Null => Expr3 -> Expr4 Term3
+  True => Expr3 -> Expr4 Term3
+  False => Expr3 -> Expr4 Term3
+  This => Expr3 -> Expr4 Term3
+  ReadInteger => Expr3 -> Expr4 Term3
+  ReadLine => Expr3 -> Expr4 Term3
+  InstanceOf => Expr3 -> Expr4 Term3
+  Sub => Expr3 -> Expr4 Term3
+  Not => Expr3 -> Expr4 Term3
+  LPar => Expr3 -> Expr4 Term3
+  StringLit => Expr3 -> Expr4 Term3
+  IntLit => Expr3 -> Expr4 Term3
+  Id => Expr3 -> Expr4 Term3
+
+Term3:
+  Eq => Term3 -> Op3 Expr4 Term3
+  Ne => Term3 -> Op3 Expr4 Term3
+  And => Term3 ->
+  Or => Term3 ->
+  Assign => Term3 ->
+  Comma => Term3 ->
+  Semi => Term3 ->
+  RPar => Term3 ->
+  RBrk => Term3 ->
+
+Expr4:
+  New => Expr4 -> Expr5 Term4
+  Null => Expr4 -> Expr5 Term4
+  True => Expr4 -> Expr5 Term4
+  False => Expr4 -> Expr5 Term4
+  This => Expr4 -> Expr5 Term4
+  ReadInteger => Expr4 -> Expr5 Term4
+  ReadLine => Expr4 -> Expr5 Term4
+  InstanceOf => Expr4 -> Expr5 Term4
+  Sub => Expr4 -> Expr5 Term4
+  Not => Expr4 -> Expr5 Term4
+  LPar => Expr4 -> Expr5 Term4
+  StringLit => Expr4 -> Expr5 Term4
+  IntLit => Expr4 -> Expr5 Term4
+  Id => Expr4 -> Expr5 Term4
+
+Term4:
+  Le => Term4 -> Op4 Expr5 Term4
+  Ge => Term4 -> Op4 Expr5 Term4
+  Eq => Term4 ->
+  Ne => Term4 ->
+  And => Term4 ->
+  Or => Term4 ->
+  Assign => Term4 ->
+  Lt => Term4 -> Op4 Expr5 Term4
+  Gt => Term4 -> Op4 Expr5 Term4
+  Comma => Term4 ->
+  Semi => Term4 ->
+  RPar => Term4 ->
+  RBrk => Term4 ->
+
+Expr5:
+  New => Expr5 -> Expr6 Term5
+  Null => Expr5 -> Expr6 Term5
+  True => Expr5 -> Expr6 Term5
+  False => Expr5 -> Expr6 Term5
+  This => Expr5 -> Expr6 Term5
+  ReadInteger => Expr5 -> Expr6 Term5
+  ReadLine => Expr5 -> Expr6 Term5
+  InstanceOf => Expr5 -> Expr6 Term5
+  Sub => Expr5 -> Expr6 Term5
+  Not => Expr5 -> Expr6 Term5
+  LPar => Expr5 -> Expr6 Term5
+  StringLit => Expr5 -> Expr6 Term5
+  IntLit => Expr5 -> Expr6 Term5
+  Id => Expr5 -> Expr6 Term5
+
+Term5:
+  Le => Term5 ->
+  Ge => Term5 ->
+  Eq => Term5 ->
+  Ne => Term5 ->
+  And => Term5 ->
+  Or => Term5 ->
+  Add => Term5 -> Op5 Expr6 Term5
+  Sub => Term5 -> Op5 Expr6 Term5
+  Assign => Term5 ->
+  Lt => Term5 ->
+  Gt => Term5 ->
+  Comma => Term5 ->
+  Semi => Term5 ->
+  RPar => Term5 ->
+  RBrk => Term5 ->
+
+Expr6:
+  New => Expr6 -> Expr7 Term6
+  Null => Expr6 -> Expr7 Term6
+  True => Expr6 -> Expr7 Term6
+  False => Expr6 -> Expr7 Term6
+  This => Expr6 -> Expr7 Term6
+  ReadInteger => Expr6 -> Expr7 Term6
+  ReadLine => Expr6 -> Expr7 Term6
+  InstanceOf => Expr6 -> Expr7 Term6
+  Sub => Expr6 -> Expr7 Term6
+  Not => Expr6 -> Expr7 Term6
+  LPar => Expr6 -> Expr7 Term6
+  StringLit => Expr6 -> Expr7 Term6
+  IntLit => Expr6 -> Expr7 Term6
+  Id => Expr6 -> Expr7 Term6
+
+Term6:
+  Le => Term6 ->
+  Ge => Term6 ->
+  Eq => Term6 ->
+  Ne => Term6 ->
+  And => Term6 ->
+  Or => Term6 ->
+  Add => Term6 ->
+  Sub => Term6 ->
+  Mul => Term6 -> Op6 Expr7 Term6
+  Div => Term6 -> Op6 Expr7 Term6
+  Mod => Term6 -> Op6 Expr7 Term6
+  Assign => Term6 ->
+  Lt => Term6 ->
+  Gt => Term6 ->
+  Comma => Term6 ->
+  Semi => Term6 ->
+  RPar => Term6 ->
+  RBrk => Term6 ->
+
+Expr7:
+  New => Expr7 -> Expr8
+  Null => Expr7 -> Expr8
+  True => Expr7 -> Expr8
+  False => Expr7 -> Expr8
+  This => Expr7 -> Expr8
+  ReadInteger => Expr7 -> Expr8
+  ReadLine => Expr7 -> Expr8
+  InstanceOf => Expr7 -> Expr8
+  Sub => Expr7 -> Op7 Expr7
+  Not => Expr7 -> Op7 Expr7
+  LPar => Expr7 -> LPar ParenOrCast
+  StringLit => Expr7 -> Expr8
+  IntLit => Expr7 -> Expr8
+  Id => Expr7 -> Expr8
+
+ParenOrCast:
+  New => ParenOrCast -> Expr RPar Term8
+  Null => ParenOrCast -> Expr RPar Term8
+  True => ParenOrCast -> Expr RPar Term8
+  False => ParenOrCast -> Expr RPar Term8
+  Class => ParenOrCast -> Class Id RPar Expr7
+  This => ParenOrCast -> Expr RPar Term8
+  ReadInteger => ParenOrCast -> Expr RPar Term8
+  ReadLine => ParenOrCast -> Expr RPar Term8
+  InstanceOf => ParenOrCast -> Expr RPar Term8
+  Sub => ParenOrCast -> Expr RPar Term8
+  Not => ParenOrCast -> Expr RPar Term8
+  LPar => ParenOrCast -> Expr RPar Term8
+  StringLit => ParenOrCast -> Expr RPar Term8
+  IntLit => ParenOrCast -> Expr RPar Term8
+  Id => ParenOrCast -> Expr RPar Term8
+
+Expr8:
+  New => Expr8 -> Expr9 Term8
+  Null => Expr8 -> Expr9 Term8
+  True => Expr8 -> Expr9 Term8
+  False => Expr8 -> Expr9 Term8
+  This => Expr8 -> Expr9 Term8
+  ReadInteger => Expr8 -> Expr9 Term8
+  ReadLine => Expr8 -> Expr9 Term8
+  InstanceOf => Expr8 -> Expr9 Term8
+  StringLit => Expr8 -> Expr9 Term8
+  IntLit => Expr8 -> Expr9 Term8
+  Id => Expr8 -> Expr9 Term8
+
+Term8:
+  Le => Term8 ->
+  Ge => Term8 ->
+  Eq => Term8 ->
+  Ne => Term8 ->
+  And => Term8 ->
+  Or => Term8 ->
+  Add => Term8 ->
+  Sub => Term8 ->
+  Mul => Term8 ->
+  Div => Term8 ->
+  Mod => Term8 ->
+  Assign => Term8 ->
+  Lt => Term8 ->
+  Gt => Term8 ->
+  Dot => Term8 -> Dot Id IdOrCall Term8
+  Comma => Term8 ->
+  Semi => Term8 ->
+  RPar => Term8 ->
+  LBrk => Term8 -> LBrk Expr RBrk Term8
+  RBrk => Term8 ->
+
+IdOrCall:
+  Le => IdOrCall ->
+  Ge => IdOrCall ->
+  Eq => IdOrCall ->
+  Ne => IdOrCall ->
+  And => IdOrCall ->
+  Or => IdOrCall ->
+  Add => IdOrCall ->
+  Sub => IdOrCall ->
+  Mul => IdOrCall ->
+  Div => IdOrCall ->
+  Mod => IdOrCall ->
+  Assign => IdOrCall ->
+  Lt => IdOrCall ->
+  Gt => IdOrCall ->
+  Dot => IdOrCall ->
+  Comma => IdOrCall ->
+  Semi => IdOrCall ->
+  LPar => IdOrCall -> LPar ExprListOrEmpty RPar
+  RPar => IdOrCall ->
+  LBrk => IdOrCall ->
+  RBrk => IdOrCall ->
+
+Expr9:
+  New => Expr9 -> New NewClassOrArray
+  Null => Expr9 -> Null
+  True => Expr9 -> True
+  False => Expr9 -> False
+  This => Expr9 -> This
+  ReadInteger => Expr9 -> ReadInteger LPar RPar
+  ReadLine => Expr9 -> ReadLine LPar RPar
+  InstanceOf => Expr9 -> InstanceOf LPar Expr Comma Id RPar
+  StringLit => Expr9 -> StringLit
+  IntLit => Expr9 -> IntLit
+  Id => Expr9 -> Id IdOrCall
+
+NewClassOrArray:
+  Void => NewClassOrArray -> SimpleType LBrk NewArrayRem
+  Int => NewClassOrArray -> SimpleType LBrk NewArrayRem
+  Bool => NewClassOrArray -> SimpleType LBrk NewArrayRem
+  String => NewClassOrArray -> SimpleType LBrk NewArrayRem
+  Class => NewClassOrArray -> SimpleType LBrk NewArrayRem
+  Id => NewClassOrArray -> Id LPar RPar
+
+NewArrayRem:
+  New => NewArrayRem -> Expr RBrk
+  Null => NewArrayRem -> Expr RBrk
+  True => NewArrayRem -> Expr RBrk
+  False => NewArrayRem -> Expr RBrk
+  This => NewArrayRem -> Expr RBrk
+  ReadInteger => NewArrayRem -> Expr RBrk
+  ReadLine => NewArrayRem -> Expr RBrk
+  InstanceOf => NewArrayRem -> Expr RBrk
+  Sub => NewArrayRem -> Expr RBrk
+  Not => NewArrayRem -> Expr RBrk
+  LPar => NewArrayRem -> Expr RBrk
+  RBrk => NewArrayRem -> RBrk LBrk NewArrayRem
+  StringLit => NewArrayRem -> Expr RBrk
+  IntLit => NewArrayRem -> Expr RBrk
+  Id => NewArrayRem -> Expr RBrk
+
+SimpleType:
+  Void => SimpleType -> Void
+  Int => SimpleType -> Int
+  Bool => SimpleType -> Bool
+  String => SimpleType -> String
+  Class => SimpleType -> Class Id
+
+Type:
+  Void => Type -> SimpleType ArrayDim
+  Int => Type -> SimpleType ArrayDim
+  Bool => Type -> SimpleType ArrayDim
+  String => Type -> SimpleType ArrayDim
+  Class => Type -> SimpleType ArrayDim
+
+ArrayDim:
+  LBrk => ArrayDim -> LBrk RBrk ArrayDim
+  Id => ArrayDim ->
+
+_Program:
+  _Eof => _Program -> Program
+  Abstract => _Program -> Program
+  Class => _Program -> Program
+

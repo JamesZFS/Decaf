@@ -39,29 +39,34 @@ impl<'p> Parser<'p> {
         let target = target as usize;
         // these are some global variables which may be invisible to IDE, so fetch them here for convenience
         let follow: &[HashSet<u32>] = &*FOLLOW;
-        let table: &[HashMap<u32, (u32, Vec<u32>)>] = &*TABLE;
-        let is_nt = |x: u32| x < NT_NUM;
+        let table: &[HashMap<u32, (u32, Vec<u32>)>] = &*TABLE;  // 2D table[nt][t] -> prod rhs comb (u32, Vec<u32>)
+        let is_nt = |x: u32| x < NT_NUM;    // if x is a non-term
 
         let mut end = f.clone();
         end.extend(follow[target].iter());
         let table = &table[target];
-        let (prod, rhs) = if let Some(x) = table.get(&(lookahead.ty as u32)) { x } else {
-            self.error(lookahead, lexer.loc());
-            unimplemented!()
-        };
+        // look for incoming term in the prod table
+        let (prod, rhs) =
+            if let Some(x) = table.get(&(lookahead.ty as u32)) {
+                x
+            } else {
+                // *** handle error and recover ***
+                self.error(lookahead, lexer.loc());
+                unimplemented!()    // todo
+            };
         let value_stk = rhs.iter().map(|&x| {
             if is_nt(x) {
                 self._parse(x, lookahead, lexer, &end)
-            } else if lookahead.ty as u32 == x {
+            } else if lookahead.ty as u32 == x {    // matched term
                 let token = *lookahead;
-                *lookahead = lexer.next();
+                *lookahead = lexer.next();  // look at next lex
                 StackItem::_Token(token)
-            } else {
+            } else {        // unmatched term
                 self.error(lookahead, lexer.loc());
                 StackItem::_Fail
             }
         }).collect::<Vec<_>>();
-        self.act(*prod, value_stk)
+        self.act(*prod, value_stk)  // call action
     }
 }
 
@@ -112,10 +117,13 @@ pub enum NewClassOrArray<'p> {
 }
 
 #[ll1(Program)]
+//#[expand]
+#[verbose("verbose.txt")]
 #[lex(r##"
 priority = []
 
 [lexical]
+'abstract' = 'Abstract'     # new
 'void' = 'Void'
 'int' = 'Int'
 'bool' = 'Bool'
@@ -172,7 +180,6 @@ priority = []
 '[A-Za-z]\w*' = 'Id'
 '.' = '_Err'
 "##)]
-
 impl<'p> Parser<'p> {
     #[rule(Program -> ClassList)]
     fn program(&self, class: Vec<&'p ClassDef<'p>>) -> &'p Program<'p> {
@@ -187,10 +194,16 @@ impl<'p> Parser<'p> {
     #[rule(ClassList ->)]
     fn class_list1() -> Vec<&'p ClassDef<'p>> { vec![] }
 
-    #[rule(ClassDef -> Class Id MaybeExtends LBrc FieldList RBrc)]
-    fn class_def(&self, c: Token, name: Token, parent: Option<&'p str>, _l: Token, field: Vec<FieldDef<'p>>, _r: Token) -> &'p ClassDef<'p> {
-        self.alloc.class.alloc(ClassDef { abstr_: false, loc: c.loc(), name: name.str(), parent, field: field.reversed(), parent_ref: dft(), scope: dft() })
+    #[rule(ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc)]
+    fn class_def(&self, abstr_: bool, c: Token, name: Token, parent: Option<&'p str>, _l: Token, field: Vec<FieldDef<'p>>, _r: Token) -> &'p ClassDef<'p> {
+        self.alloc.class.alloc(ClassDef { abstr_, loc: c.loc(), name: name.str(), parent, field: field.reversed(), parent_ref: dft(), scope: dft() })
     }
+
+    #[rule(MaybeAbstract -> Abstract)]
+    fn maybe_abstract1(_a: Token) -> bool { true }
+
+    #[rule(MaybeAbstract ->)]
+    fn maybe_abstract0() -> bool { false }
 
     #[rule(MaybeExtends -> Extends Id)]
     fn maybe_extends1(_e: Token, name: Token) -> Option<&'p str> { Some(name.str()) }
@@ -202,16 +215,47 @@ impl<'p> Parser<'p> {
     #[rule(FieldList ->)]
     fn field_list0() -> Vec<FieldDef<'p>> { vec![] }
 
+    // static function
     #[rule(FieldDef -> Static Type Id LPar VarDefListOrEmpty RPar Block)]
     fn filed_def_f1(&self, _s: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, body: Block<'p>) -> FieldDef<'p> {
         let (loc, name) = (name.loc(), name.str());
-        FieldDef::FuncDef(self.alloc.func.alloc(FuncDef { loc, name, ret, param: param.reversed(), static_: true, body: Some(body), ret_param_ty: dft(), class: dft(), scope: dft() }))
+        FieldDef::FuncDef(self.alloc.func.alloc(FuncDef {
+            loc,
+            name,
+            ret,
+            param: param.reversed(),
+            static_: true,
+            body: Some(body),
+            ret_param_ty: dft(),
+            class: dft(),
+            scope: dft(),
+        }))
     }
+
+    // abstract function
+    #[rule(FieldDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi)]
+    fn filed_def_f2(&self, _a: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, _s: Token) -> FieldDef<'p> {
+        let (loc, name) = (name.loc(), name.str());
+        FieldDef::FuncDef(self.alloc.func.alloc(FuncDef {
+            loc,
+            name,
+            ret,
+            param: param.reversed(),
+            static_: false,
+            body: None,     // abstract flag
+            ret_param_ty: dft(),
+            class: dft(),
+            scope: dft(),
+        }))
+    }
+
+    // normal function or var def
     #[rule(FieldDef -> Type Id FuncOrVar)]
     fn filed_def_fv(&self, syn_ty: SynTy<'p>, name: Token, fov: Option<(Vec<&'p VarDef<'p>>, Block<'p>)>) -> FieldDef<'p> {
         let (loc, name) = (name.loc(), name.str());
         if let Some((param, body)) = fov {
-            FieldDef::FuncDef(self.alloc.func.alloc(FuncDef { loc, name, ret: syn_ty, param: param.reversed(), static_: false, body: Some(body), ret_param_ty: dft(), class: dft(), scope: dft() }))
+            FieldDef::FuncDef(self.alloc.func.alloc(FuncDef {
+                loc, name, ret: syn_ty, param: param.reversed(), static_: false, body: Some(body), ret_param_ty: dft(), class: dft(), scope: dft() }))
         } else {
             FieldDef::VarDef(self.alloc.var.alloc(VarDef { loc, name, syn_ty, init: None, ty: dft(), owner: dft() }))
         }
