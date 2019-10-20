@@ -125,6 +125,7 @@ priority = []
 [lexical]
 'abstract' = 'Abstract'     # new
 'var' = 'Var'               # new
+'fun' = 'Fun'               # new
 'void' = 'Void'
 'int' = 'Int'
 'bool' = 'Bool'
@@ -147,6 +148,7 @@ priority = []
 'ReadLine' = 'ReadLine'
 'static' = 'Static'
 'instanceof' = 'InstanceOf'
+'=>' = 'Arrow'              # new
 '<=' = 'Le'
 '>=' = 'Ge'
 '==' = 'Eq'
@@ -440,7 +442,24 @@ impl<'p> Parser<'p> {
     #[rule(Op7 -> Not)]
     fn op7_not(n: Token) -> (Loc, UnOp) { (n.loc(), UnOp::Not) }
 
-    #[rule(Expr -> Expr1)]
+    // lambda expr: lowest priority
+    // 'fun(...)' ???
+    #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody)]
+    fn expr_lambda(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, body: LambdaKind<'p>) -> Expr<'p> {
+        mk_expr(f.loc(), Lambda { params: params.reversed(), body }.into())
+    }
+    // ??? is '=> expr'
+    #[rule(LambdaBody -> Arrow Expr)]
+    fn lambda_kind_expr(_a: Token, e: Expr<'p>) -> LambdaKind<'p> {
+        LambdaKind::Expr(Box::new(e))
+    }
+    // ??? is '{...}'
+    #[rule(LambdaBody -> Block)]
+    fn lambda_kind_block(b: Block<'p>) -> LambdaKind<'p> {
+        LambdaKind::Block(Box::new(b))
+    }
+
+    #[rule(Expr -> Expr1)]  // original prod: Expr -> Expr Op Expr
     fn expr(e: Expr<'p>) -> Expr<'p> { e }
 
     #[rule(Expr1 -> Expr2 Term1)]

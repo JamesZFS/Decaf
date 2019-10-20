@@ -62,60 +62,63 @@ Productions:
   60: Op6 -> Mod
   61: Op7 -> Sub
   62: Op7 -> Not
-  63: Expr -> Expr1
-  64: Expr1 -> Expr2 Term1
-  65: Term1 -> Op1 Expr2 Term1
-  66: Term1 ->
-  67: Expr2 -> Expr3 Term2
-  68: Term2 -> Op2 Expr3 Term2
-  69: Term2 ->
-  70: Expr3 -> Expr4 Term3
-  71: Term3 -> Op3 Expr4 Term3
-  72: Term3 ->
-  73: Expr4 -> Expr5 Term4
-  74: Term4 -> Op4 Expr5 Term4
-  75: Term4 ->
-  76: Expr5 -> Expr6 Term5
-  77: Term5 -> Op5 Expr6 Term5
-  78: Term5 ->
-  79: Expr6 -> Expr7 Term6
-  80: Term6 -> Op6 Expr7 Term6
-  81: Term6 ->
-  82: Expr7 -> Op7 Expr7
-  83: Expr7 -> LPar ParenOrCast
-  84: Expr7 -> Expr8
-  85: ParenOrCast -> Expr RPar Term8
-  86: ParenOrCast -> Class Id RPar Expr7
-  87: Expr8 -> Expr9 Term8
-  88: Term8 -> LBrk Expr RBrk Term8
-  89: Term8 -> Dot Id IdOrCall Term8
-  90: Term8 ->
-  91: IdOrCall -> LPar ExprListOrEmpty RPar
-  92: IdOrCall ->
-  93: Expr9 -> IntLit
-  94: Expr9 -> True
-  95: Expr9 -> False
-  96: Expr9 -> StringLit
-  97: Expr9 -> Null
-  98: Expr9 -> ReadInteger LPar RPar
-  99: Expr9 -> ReadLine LPar RPar
-  100: Expr9 -> This
-  101: Expr9 -> InstanceOf LPar Expr Comma Id RPar
-  102: Expr9 -> Id IdOrCall
-  103: Expr9 -> New NewClassOrArray
-  104: NewClassOrArray -> Id LPar RPar
-  105: NewClassOrArray -> SimpleType LBrk NewArrayRem
-  106: NewArrayRem -> RBrk LBrk NewArrayRem
-  107: NewArrayRem -> Expr RBrk
-  108: SimpleType -> Int
-  109: SimpleType -> Bool
-  110: SimpleType -> Void
-  111: SimpleType -> String
-  112: SimpleType -> Class Id
-  113: Type -> SimpleType ArrayDim
-  114: ArrayDim -> LBrk RBrk ArrayDim
-  115: ArrayDim ->
-  116: _Program -> Program
+  63: Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody
+  64: LambdaBody -> Arrow Expr
+  65: LambdaBody -> Block
+  66: Expr -> Expr1
+  67: Expr1 -> Expr2 Term1
+  68: Term1 -> Op1 Expr2 Term1
+  69: Term1 ->
+  70: Expr2 -> Expr3 Term2
+  71: Term2 -> Op2 Expr3 Term2
+  72: Term2 ->
+  73: Expr3 -> Expr4 Term3
+  74: Term3 -> Op3 Expr4 Term3
+  75: Term3 ->
+  76: Expr4 -> Expr5 Term4
+  77: Term4 -> Op4 Expr5 Term4
+  78: Term4 ->
+  79: Expr5 -> Expr6 Term5
+  80: Term5 -> Op5 Expr6 Term5
+  81: Term5 ->
+  82: Expr6 -> Expr7 Term6
+  83: Term6 -> Op6 Expr7 Term6
+  84: Term6 ->
+  85: Expr7 -> Op7 Expr7
+  86: Expr7 -> LPar ParenOrCast
+  87: Expr7 -> Expr8
+  88: ParenOrCast -> Expr RPar Term8
+  89: ParenOrCast -> Class Id RPar Expr7
+  90: Expr8 -> Expr9 Term8
+  91: Term8 -> LBrk Expr RBrk Term8
+  92: Term8 -> Dot Id IdOrCall Term8
+  93: Term8 ->
+  94: IdOrCall -> LPar ExprListOrEmpty RPar
+  95: IdOrCall ->
+  96: Expr9 -> IntLit
+  97: Expr9 -> True
+  98: Expr9 -> False
+  99: Expr9 -> StringLit
+  100: Expr9 -> Null
+  101: Expr9 -> ReadInteger LPar RPar
+  102: Expr9 -> ReadLine LPar RPar
+  103: Expr9 -> This
+  104: Expr9 -> InstanceOf LPar Expr Comma Id RPar
+  105: Expr9 -> Id IdOrCall
+  106: Expr9 -> New NewClassOrArray
+  107: NewClassOrArray -> Id LPar RPar
+  108: NewClassOrArray -> SimpleType LBrk NewArrayRem
+  109: NewArrayRem -> RBrk LBrk NewArrayRem
+  110: NewArrayRem -> Expr RBrk
+  111: SimpleType -> Int
+  112: SimpleType -> Bool
+  113: SimpleType -> Void
+  114: SimpleType -> String
+  115: SimpleType -> Class Id
+  116: Type -> SimpleType ArrayDim
+  117: ArrayDim -> LBrk RBrk ArrayDim
+  118: ArrayDim ->
+  119: _Program -> Program
 
 Tokens:
   0: Program
@@ -149,86 +152,89 @@ Tokens:
   28: Op6
   29: Op7
   30: Expr
-  31: Expr1
-  32: Term1
-  33: Expr2
-  34: Term2
-  35: Expr3
-  36: Term3
-  37: Expr4
-  38: Term4
-  39: Expr5
-  40: Term5
-  41: Expr6
-  42: Term6
-  43: Expr7
-  44: ParenOrCast
-  45: Expr8
-  46: Term8
-  47: IdOrCall
-  48: Expr9
-  49: NewClassOrArray
-  50: NewArrayRem
-  51: SimpleType
-  52: Type
-  53: ArrayDim
-  54: _Program
-  55: _Eps
-  56: _Eof
-  57: _Err
-  58: Abstract
-  59: Var
-  60: Void
-  61: Int
-  62: Bool
-  63: String
-  64: New
-  65: Null
-  66: True
-  67: False
-  68: Class
-  69: Extends
-  70: This
-  71: While
-  72: For
-  73: If
-  74: Else
-  75: Return
-  76: Break
-  77: Print
-  78: ReadInteger
-  79: ReadLine
-  80: Static
-  81: InstanceOf
-  82: Le
-  83: Ge
-  84: Eq
-  85: Ne
-  86: And
-  87: Or
-  88: Add
-  89: Sub
-  90: Mul
-  91: Div
-  92: Mod
-  93: Assign
-  94: Lt
-  95: Gt
-  96: Dot
-  97: Comma
-  98: Semi
-  99: Not
-  100: LPar
-  101: RPar
-  102: LBrk
-  103: RBrk
-  104: LBrc
-  105: RBrc
-  106: Colon
-  107: StringLit
-  108: UntermString
-  109: IntLit
-  110: Id
+  31: LambdaBody
+  32: Expr1
+  33: Term1
+  34: Expr2
+  35: Term2
+  36: Expr3
+  37: Term3
+  38: Expr4
+  39: Term4
+  40: Expr5
+  41: Term5
+  42: Expr6
+  43: Term6
+  44: Expr7
+  45: ParenOrCast
+  46: Expr8
+  47: Term8
+  48: IdOrCall
+  49: Expr9
+  50: NewClassOrArray
+  51: NewArrayRem
+  52: SimpleType
+  53: Type
+  54: ArrayDim
+  55: _Program
+  56: _Eps
+  57: _Eof
+  58: _Err
+  59: Abstract
+  60: Var
+  61: Fun
+  62: Void
+  63: Int
+  64: Bool
+  65: String
+  66: New
+  67: Null
+  68: True
+  69: False
+  70: Class
+  71: Extends
+  72: This
+  73: While
+  74: For
+  75: If
+  76: Else
+  77: Return
+  78: Break
+  79: Print
+  80: ReadInteger
+  81: ReadLine
+  82: Static
+  83: InstanceOf
+  84: Arrow
+  85: Le
+  86: Ge
+  87: Eq
+  88: Ne
+  89: And
+  90: Or
+  91: Add
+  92: Sub
+  93: Mul
+  94: Div
+  95: Mod
+  96: Assign
+  97: Lt
+  98: Gt
+  99: Dot
+  100: Comma
+  101: Semi
+  102: Not
+  103: LPar
+  104: RPar
+  105: LBrk
+  106: RBrk
+  107: LBrc
+  108: RBrc
+  109: Colon
+  110: StringLit
+  111: UntermString
+  112: IntLit
+  113: Id
 
 Program:
   _Eof => Program -> ClassList
@@ -295,6 +301,7 @@ VarDefListRem:
   RPar => VarDefListRem ->
 
 ExprListOrEmpty:
+  Fun => ExprListOrEmpty -> ExprList
   New => ExprListOrEmpty -> ExprList
   Null => ExprListOrEmpty -> ExprList
   True => ExprListOrEmpty -> ExprList
@@ -312,6 +319,7 @@ ExprListOrEmpty:
   Id => ExprListOrEmpty -> ExprList
 
 ExprList:
+  Fun => ExprList -> Expr ExprListRem
   New => ExprList -> Expr ExprListRem
   Null => ExprList -> Expr ExprListRem
   True => ExprList -> Expr ExprListRem
@@ -343,6 +351,7 @@ Block:
 
 StmtList:
   Var => StmtList -> Stmt StmtList
+  Fun => StmtList -> Stmt StmtList
   Void => StmtList -> Stmt StmtList
   Int => StmtList -> Stmt StmtList
   Bool => StmtList -> Stmt StmtList
@@ -374,6 +383,7 @@ StmtList:
 
 Stmt:
   Var => Stmt -> Simple Semi
+  Fun => Stmt -> Simple Semi
   Void => Stmt -> Simple Semi
   Int => Stmt -> Simple Semi
   Bool => Stmt -> Simple Semi
@@ -404,6 +414,7 @@ Stmt:
 
 Simple:
   Var => Simple -> Var Id Assign Expr
+  Fun => Simple -> Expr MaybeAssign
   Void => Simple -> Type Id MaybeAssign
   Int => Simple -> Type Id MaybeAssign
   Bool => Simple -> Type Id MaybeAssign
@@ -433,6 +444,7 @@ MaybeAssign:
 
 Blocked:
   Var => Blocked -> Stmt
+  Fun => Blocked -> Stmt
   Void => Blocked -> Stmt
   Int => Blocked -> Stmt
   Bool => Blocked -> Stmt
@@ -463,6 +475,7 @@ Blocked:
 
 MaybeElse:
   Var => MaybeElse ->
+  Fun => MaybeElse ->
   Void => MaybeElse ->
   Int => MaybeElse ->
   Bool => MaybeElse ->
@@ -494,6 +507,7 @@ MaybeElse:
   Id => MaybeElse ->
 
 MaybeExpr:
+  Fun => MaybeExpr -> Expr
   New => MaybeExpr -> Expr
   Null => MaybeExpr -> Expr
   True => MaybeExpr -> Expr
@@ -540,6 +554,7 @@ Op7:
   Not => Op7 -> Not
 
 Expr:
+  Fun => Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody
   New => Expr -> Expr1
   Null => Expr -> Expr1
   True => Expr -> Expr1
@@ -554,6 +569,10 @@ Expr:
   StringLit => Expr -> Expr1
   IntLit => Expr -> Expr1
   Id => Expr -> Expr1
+
+LambdaBody:
+  Arrow => LambdaBody -> Arrow Expr
+  LBrc => LambdaBody -> Block
 
 Expr1:
   New => Expr1 -> Expr2 Term1
@@ -748,6 +767,7 @@ Expr7:
   Id => Expr7 -> Expr8
 
 ParenOrCast:
+  Fun => ParenOrCast -> Expr RPar Term8
   New => ParenOrCast -> Expr RPar Term8
   Null => ParenOrCast -> Expr RPar Term8
   True => ParenOrCast -> Expr RPar Term8
@@ -844,6 +864,7 @@ NewClassOrArray:
   Id => NewClassOrArray -> Id LPar RPar
 
 NewArrayRem:
+  Fun => NewArrayRem -> Expr RBrk
   New => NewArrayRem -> Expr RBrk
   Null => NewArrayRem -> Expr RBrk
   True => NewArrayRem -> Expr RBrk
