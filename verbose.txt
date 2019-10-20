@@ -38,83 +38,84 @@ Productions:
   36: Stmt -> Block
   37: Simple -> Expr MaybeAssign
   38: Simple -> Type Id MaybeAssign
-  39: Simple ->
-  40: MaybeAssign -> Assign Expr
-  41: MaybeAssign ->
-  42: Blocked -> Stmt
-  43: MaybeElse -> Else Blocked
-  44: MaybeElse ->
-  45: MaybeExpr -> Expr
-  46: MaybeExpr ->
-  47: Op1 -> Or
-  48: Op2 -> And
-  49: Op3 -> Eq
-  50: Op3 -> Ne
-  51: Op4 -> Lt
-  52: Op4 -> Le
-  53: Op4 -> Ge
-  54: Op4 -> Gt
-  55: Op5 -> Add
-  56: Op5 -> Sub
-  57: Op6 -> Mul
-  58: Op6 -> Div
-  59: Op6 -> Mod
-  60: Op7 -> Sub
-  61: Op7 -> Not
-  62: Expr -> Expr1
-  63: Expr1 -> Expr2 Term1
-  64: Term1 -> Op1 Expr2 Term1
-  65: Term1 ->
-  66: Expr2 -> Expr3 Term2
-  67: Term2 -> Op2 Expr3 Term2
-  68: Term2 ->
-  69: Expr3 -> Expr4 Term3
-  70: Term3 -> Op3 Expr4 Term3
-  71: Term3 ->
-  72: Expr4 -> Expr5 Term4
-  73: Term4 -> Op4 Expr5 Term4
-  74: Term4 ->
-  75: Expr5 -> Expr6 Term5
-  76: Term5 -> Op5 Expr6 Term5
-  77: Term5 ->
-  78: Expr6 -> Expr7 Term6
-  79: Term6 -> Op6 Expr7 Term6
-  80: Term6 ->
-  81: Expr7 -> Op7 Expr7
-  82: Expr7 -> LPar ParenOrCast
-  83: Expr7 -> Expr8
-  84: ParenOrCast -> Expr RPar Term8
-  85: ParenOrCast -> Class Id RPar Expr7
-  86: Expr8 -> Expr9 Term8
-  87: Term8 -> LBrk Expr RBrk Term8
-  88: Term8 -> Dot Id IdOrCall Term8
-  89: Term8 ->
-  90: IdOrCall -> LPar ExprListOrEmpty RPar
-  91: IdOrCall ->
-  92: Expr9 -> IntLit
-  93: Expr9 -> True
-  94: Expr9 -> False
-  95: Expr9 -> StringLit
-  96: Expr9 -> Null
-  97: Expr9 -> ReadInteger LPar RPar
-  98: Expr9 -> ReadLine LPar RPar
-  99: Expr9 -> This
-  100: Expr9 -> InstanceOf LPar Expr Comma Id RPar
-  101: Expr9 -> Id IdOrCall
-  102: Expr9 -> New NewClassOrArray
-  103: NewClassOrArray -> Id LPar RPar
-  104: NewClassOrArray -> SimpleType LBrk NewArrayRem
-  105: NewArrayRem -> RBrk LBrk NewArrayRem
-  106: NewArrayRem -> Expr RBrk
-  107: SimpleType -> Int
-  108: SimpleType -> Bool
-  109: SimpleType -> Void
-  110: SimpleType -> String
-  111: SimpleType -> Class Id
-  112: Type -> SimpleType ArrayDim
-  113: ArrayDim -> LBrk RBrk ArrayDim
-  114: ArrayDim ->
-  115: _Program -> Program
+  39: Simple -> Var Id Assign Expr
+  40: Simple ->
+  41: MaybeAssign -> Assign Expr
+  42: MaybeAssign ->
+  43: Blocked -> Stmt
+  44: MaybeElse -> Else Blocked
+  45: MaybeElse ->
+  46: MaybeExpr -> Expr
+  47: MaybeExpr ->
+  48: Op1 -> Or
+  49: Op2 -> And
+  50: Op3 -> Eq
+  51: Op3 -> Ne
+  52: Op4 -> Lt
+  53: Op4 -> Le
+  54: Op4 -> Ge
+  55: Op4 -> Gt
+  56: Op5 -> Add
+  57: Op5 -> Sub
+  58: Op6 -> Mul
+  59: Op6 -> Div
+  60: Op6 -> Mod
+  61: Op7 -> Sub
+  62: Op7 -> Not
+  63: Expr -> Expr1
+  64: Expr1 -> Expr2 Term1
+  65: Term1 -> Op1 Expr2 Term1
+  66: Term1 ->
+  67: Expr2 -> Expr3 Term2
+  68: Term2 -> Op2 Expr3 Term2
+  69: Term2 ->
+  70: Expr3 -> Expr4 Term3
+  71: Term3 -> Op3 Expr4 Term3
+  72: Term3 ->
+  73: Expr4 -> Expr5 Term4
+  74: Term4 -> Op4 Expr5 Term4
+  75: Term4 ->
+  76: Expr5 -> Expr6 Term5
+  77: Term5 -> Op5 Expr6 Term5
+  78: Term5 ->
+  79: Expr6 -> Expr7 Term6
+  80: Term6 -> Op6 Expr7 Term6
+  81: Term6 ->
+  82: Expr7 -> Op7 Expr7
+  83: Expr7 -> LPar ParenOrCast
+  84: Expr7 -> Expr8
+  85: ParenOrCast -> Expr RPar Term8
+  86: ParenOrCast -> Class Id RPar Expr7
+  87: Expr8 -> Expr9 Term8
+  88: Term8 -> LBrk Expr RBrk Term8
+  89: Term8 -> Dot Id IdOrCall Term8
+  90: Term8 ->
+  91: IdOrCall -> LPar ExprListOrEmpty RPar
+  92: IdOrCall ->
+  93: Expr9 -> IntLit
+  94: Expr9 -> True
+  95: Expr9 -> False
+  96: Expr9 -> StringLit
+  97: Expr9 -> Null
+  98: Expr9 -> ReadInteger LPar RPar
+  99: Expr9 -> ReadLine LPar RPar
+  100: Expr9 -> This
+  101: Expr9 -> InstanceOf LPar Expr Comma Id RPar
+  102: Expr9 -> Id IdOrCall
+  103: Expr9 -> New NewClassOrArray
+  104: NewClassOrArray -> Id LPar RPar
+  105: NewClassOrArray -> SimpleType LBrk NewArrayRem
+  106: NewArrayRem -> RBrk LBrk NewArrayRem
+  107: NewArrayRem -> Expr RBrk
+  108: SimpleType -> Int
+  109: SimpleType -> Bool
+  110: SimpleType -> Void
+  111: SimpleType -> String
+  112: SimpleType -> Class Id
+  113: Type -> SimpleType ArrayDim
+  114: ArrayDim -> LBrk RBrk ArrayDim
+  115: ArrayDim ->
+  116: _Program -> Program
 
 Tokens:
   0: Program
@@ -176,57 +177,58 @@ Tokens:
   56: _Eof
   57: _Err
   58: Abstract
-  59: Void
-  60: Int
-  61: Bool
-  62: String
-  63: New
-  64: Null
-  65: True
-  66: False
-  67: Class
-  68: Extends
-  69: This
-  70: While
-  71: For
-  72: If
-  73: Else
-  74: Return
-  75: Break
-  76: Print
-  77: ReadInteger
-  78: ReadLine
-  79: Static
-  80: InstanceOf
-  81: Le
-  82: Ge
-  83: Eq
-  84: Ne
-  85: And
-  86: Or
-  87: Add
-  88: Sub
-  89: Mul
-  90: Div
-  91: Mod
-  92: Assign
-  93: Lt
-  94: Gt
-  95: Dot
-  96: Comma
-  97: Semi
-  98: Not
-  99: LPar
-  100: RPar
-  101: LBrk
-  102: RBrk
-  103: LBrc
-  104: RBrc
-  105: Colon
-  106: StringLit
-  107: UntermString
-  108: IntLit
-  109: Id
+  59: Var
+  60: Void
+  61: Int
+  62: Bool
+  63: String
+  64: New
+  65: Null
+  66: True
+  67: False
+  68: Class
+  69: Extends
+  70: This
+  71: While
+  72: For
+  73: If
+  74: Else
+  75: Return
+  76: Break
+  77: Print
+  78: ReadInteger
+  79: ReadLine
+  80: Static
+  81: InstanceOf
+  82: Le
+  83: Ge
+  84: Eq
+  85: Ne
+  86: And
+  87: Or
+  88: Add
+  89: Sub
+  90: Mul
+  91: Div
+  92: Mod
+  93: Assign
+  94: Lt
+  95: Gt
+  96: Dot
+  97: Comma
+  98: Semi
+  99: Not
+  100: LPar
+  101: RPar
+  102: LBrk
+  103: RBrk
+  104: LBrc
+  105: RBrc
+  106: Colon
+  107: StringLit
+  108: UntermString
+  109: IntLit
+  110: Id
 
 Program:
   _Eof => Program -> ClassList
@@ -340,6 +342,7 @@ Block:
   LBrc => Block -> LBrc StmtList RBrc
 
 StmtList:
+  Var => StmtList -> Stmt StmtList
   Void => StmtList -> Stmt StmtList
   Int => StmtList -> Stmt StmtList
   Bool => StmtList -> Stmt StmtList
@@ -370,6 +373,7 @@ StmtList:
   Id => StmtList -> Stmt StmtList
 
 Stmt:
+  Var => Stmt -> Simple Semi
   Void => Stmt -> Simple Semi
   Int => Stmt -> Simple Semi
   Bool => Stmt -> Simple Semi
@@ -399,6 +403,7 @@ Stmt:
   Id => Stmt -> Simple Semi
 
 Simple:
+  Var => Simple -> Var Id Assign Expr
   Void => Simple -> Type Id MaybeAssign
   Int => Simple -> Type Id MaybeAssign
   Bool => Simple -> Type Id MaybeAssign
@@ -427,6 +432,7 @@ MaybeAssign:
   RPar => MaybeAssign ->
 
 Blocked:
+  Var => Blocked -> Stmt
   Void => Blocked -> Stmt
   Int => Blocked -> Stmt
   Bool => Blocked -> Stmt
@@ -456,6 +462,7 @@ Blocked:
   Id => Blocked -> Stmt
 
 MaybeElse:
+  Var => MaybeElse ->
   Void => MaybeElse ->
   Int => MaybeElse ->
   Bool => MaybeElse ->

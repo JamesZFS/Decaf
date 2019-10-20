@@ -124,6 +124,7 @@ priority = []
 
 [lexical]
 'abstract' = 'Abstract'     # new
+'var' = 'Var'               # new
 'void' = 'Void'
 'int' = 'Int'
 'bool' = 'Bool'
@@ -255,7 +256,16 @@ impl<'p> Parser<'p> {
         let (loc, name) = (name.loc(), name.str());
         if let Some((param, body)) = fov {
             FieldDef::FuncDef(self.alloc.func.alloc(FuncDef {
-                loc, name, ret: syn_ty, param: param.reversed(), static_: false, body: Some(body), ret_param_ty: dft(), class: dft(), scope: dft() }))
+                loc,
+                name,
+                ret: syn_ty,
+                param: param.reversed(),
+                static_: false,
+                body: Some(body),
+                ret_param_ty: dft(),
+                class: dft(),
+                scope: dft(),
+            }))
         } else {
             FieldDef::VarDef(self.alloc.var.alloc(VarDef { loc, name, syn_ty, init: None, ty: dft(), owner: dft() }))
         }
@@ -335,11 +345,39 @@ impl<'p> Parser<'p> {
             mk_stmt(e.loc, e.into())
         }
     }
+
+    // var def with/without init
     #[rule(Simple -> Type Id MaybeAssign)]
     fn simple_var_def(&self, syn_ty: SynTy<'p>, name: Token, init: Option<(Loc, Expr<'p>)>) -> Stmt<'p> {
         let loc = name.loc();
-        mk_stmt(loc, (&*self.alloc.var.alloc(VarDef { loc, name: name.str(), syn_ty, init, ty: dft(), owner: dft() })).into())
+        mk_stmt(loc, (&*self.alloc.var.alloc(VarDef {
+            loc,
+            name: name.str(),
+            syn_ty,
+            init,
+            ty: dft(),
+            owner: dft(),
+        })).into())
     }
+
+    // var def with auto type and init
+    #[rule(Simple -> Var Id Assign Expr)]
+    fn simple_var_def_auto(&self, _v: Token, name: Token, a: Token, init: Expr<'p>) -> Stmt<'p> {
+        let loc = name.loc();
+        mk_stmt(loc, (&*self.alloc.var.alloc(VarDef {
+            loc,
+            name: name.str(),
+            syn_ty: SynTy {
+                loc: dft(),
+                arr: dft(),
+                kind: SynTyKind::Var
+            },
+            init: Some((a.loc(), init)),
+            ty: dft(),
+            owner: dft(),
+        })).into())
+    }
+
     #[rule(Simple ->)]
     fn simple_skip() -> Stmt<'p> { mk_stmt(NO_LOC, Skip.into()) }
 
