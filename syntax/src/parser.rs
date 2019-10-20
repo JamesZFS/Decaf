@@ -47,17 +47,17 @@ fn mk_bin<'p>(l: Expr<'p>, r: Expr<'p>, loc: Loc, op: BinOp) -> Expr<'p> {
 #[lalr1(Program)]
 #[lex(r##"
 priority = [
-  { assoc = 'no_assoc', terms = ['Arrow'] },
+  { assoc = 'no_assoc', terms = ['Arrow'] },    # new feature
   { assoc = 'left', terms = ['Or'] },
   { assoc = 'left', terms = ['And'] },
-  { assoc = 'no_assoc', terms = ['Eq', 'Ne'] },
+  { assoc = 'left', terms = ['Eq', 'Ne'] },
   { assoc = 'no_assoc', terms = ['Le', 'Ge', 'Lt', 'Gt'] },
   { assoc = 'left', terms = ['Add', 'Sub'] },
   { assoc = 'left', terms = ['Mul', 'Div', 'Mod'] },
-  { assoc = 'no_assoc', terms = ['UMinus', 'Not'] },
-  { assoc = 'no_assoc', terms = ['LBrk', 'Dot'] },
-  { assoc = 'no_assoc', terms = ['LPar', 'RPar', 'Empty'] },
-  { assoc = 'no_assoc', terms = ['Else'] },
+  { assoc = 'left', terms = ['UMinus', 'Not', 'RPar'] },
+  { assoc = 'left', terms = ['LBrk', 'Dot', 'LPar'] },
+  { assoc = 'left', terms = ['Empty'] },
+  { assoc = 'left', terms = ['Else'] },
 ]
 
 [lexical]
@@ -121,6 +121,7 @@ priority = [
 '[A-Za-z]\w*' = 'Id'
 '.' = '_Err'
 "##)]
+
 impl<'p> Parser<'p> {
     #[rule(Program -> ClassList)]
     fn program(&self, class: Vec<&'p ClassDef<'p>>) -> &'p Program<'p> {
