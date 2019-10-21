@@ -447,14 +447,10 @@ impl<'p> Parser<'p> {
     // function type
     #[rule(Type -> Type LPar TypeListOrEmpty RPar)]     // eg: int(int, float)
     fn type_fun(ret: SynTy<'p>, _l: Token, params: Vec<SynTy<'p>>, _r: Token) -> SynTy<'p> {
-        let mut res = vec![];
-        for p in params {
-            res.push(Box::new(p));
-        }
         SynTy {
             loc: ret.loc,
             arr: 0,
-            kind: SynTyKind::FunType((Box::new(ret), res))
+            kind: SynTyKind::FunType((Box::new(ret), params))
         }
     }
     #[rule(TypeListOrEmpty ->)]

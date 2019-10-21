@@ -372,7 +372,7 @@ impl<'p> Parser<'p> {
             syn_ty: SynTy {
                 loc: dft(),
                 arr: dft(),
-                kind: SynTyKind::Var
+                kind: SynTyKind::Var,
             },
             init: Some((a.loc(), init)),
             ty: dft(),
@@ -533,6 +533,7 @@ impl<'p> Parser<'p> {
     #[rule(Term8 ->)]
     fn term8_0() -> Vec<IndexOrIdOrCall<'p>> { vec![] }
 
+    // todo eliminate this and make Expr -> Expr ExprOrCall
     #[rule(IdOrCall -> LPar ExprListOrEmpty RPar)]
     fn id_or_call_c(l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Option<(Loc, Vec<Expr<'p>>)> { Some((l.loc(), arg.reversed())) }
     #[rule(IdOrCall ->)]
@@ -585,7 +586,7 @@ impl<'p> Parser<'p> {
     fn new_class_or_array_c(name: Token, _l: Token, _r: Token) -> NewClassOrArray<'p> {
         NewClassOrArray::NewClass(name.str())
     }
-    #[rule(NewClassOrArray -> SimpleType LBrk NewArrayRem)]
+    #[rule(NewClassOrArray -> BasicType LBrk NewArrayRem)]
     fn new_class_or_array_a(mut ty: SynTy<'p>, _l: Token, dim_len: (u32, Expr<'p>)) -> NewClassOrArray<'p> {
         ty.arr = dim_len.0;
         NewClassOrArray::NewArray(ty, dim_len.1)
@@ -596,21 +597,66 @@ impl<'p> Parser<'p> {
     #[rule(NewArrayRem -> Expr RBrk)]
     fn new_array_rem0(len: Expr<'p>, _r: Token) -> (u32, Expr<'p>) { (0, len) }
 
-    #[rule(SimpleType -> Int)]
-    fn type_int(i: Token) -> SynTy<'p> { SynTy { loc: i.loc(), arr: 0, kind: SynTyKind::Int } }
-    #[rule(SimpleType -> Bool)]
-    fn type_bool(b: Token) -> SynTy<'p> { SynTy { loc: b.loc(), arr: 0, kind: SynTyKind::Bool } }
-    #[rule(SimpleType -> Void)]
-    fn type_void(v: Token) -> SynTy<'p> { SynTy { loc: v.loc(), arr: 0, kind: SynTyKind::Void } }
-    #[rule(SimpleType -> String)]
-    fn type_string(s: Token) -> SynTy<'p> { SynTy { loc: s.loc(), arr: 0, kind: SynTyKind::String } }
-    #[rule(SimpleType -> Class Id)]
-    fn type_class(c: Token, name: Token) -> SynTy<'p> { SynTy { loc: c.loc(), arr: 0, kind: SynTyKind::Named(name.str()) } }
-    #[rule(Type -> SimpleType ArrayDim)]
-    fn type_array(mut ty: SynTy<'p>, dim: u32) -> SynTy<'p> { (ty.arr = dim, ty).1 }
+    // The below rules applied the general approach to eliminate left recursions:
+    // Type -> BasicType | Type [ ] | Type ( TypeListOrEmpty )
 
-    #[rule(ArrayDim -> LBrk RBrk ArrayDim)]
-    fn array_type(l: Token, _r: Token, dim: u32) -> u32 { dim + 1 }
-    #[rule(ArrayDim ->)]
-    fn array_type0() -> u32 { 0 }
+    #[rule(BasicType -> Int)]
+    fn basic_type_int(i: Token) -> SynTy<'p> { SynTy { loc: i.loc(), arr: 0, kind: SynTyKind::Int } }
+    #[rule(BasicType -> Bool)]
+    fn basic_type_bool(b: Token) -> SynTy<'p> { SynTy { loc: b.loc(), arr: 0, kind: SynTyKind::Bool } }
+    #[rule(BasicType -> Void)]
+    fn basic_type_void(v: Token) -> SynTy<'p> { SynTy { loc: v.loc(), arr: 0, kind: SynTyKind::Void } }
+    #[rule(BasicType -> String)]
+    fn basic_type_string(s: Token) -> SynTy<'p> { SynTy { loc: s.loc(), arr: 0, kind: SynTyKind::String } }
+    #[rule(BasicType -> Class Id)]
+    fn basic_type_class(c: Token, name: Token) -> SynTy<'p> { SynTy { loc: c.loc(), arr: 0, kind: SynTyKind::Named(name.str()) } }
+
+    // Type -> BasicType Q
+    #[rule(Type -> BasicType ArrayDimOrTypeList)]
+    fn T_BQ(B: SynTy<'p>, mut Q: SynTy<'p>) -> SynTy<'p> {
+        // fill B in the innermost return type of Q (or Q itself)
+        Q.filled_innermost_ret_type(B)
+    }
+
+    // Q -> ( TypeListOrEmpty ) Q
+    #[rule(ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList)]
+    fn Q_LQ(_l: Token, mut types: Vec<SynTy<'p>>, _r: Token, Q: SynTy<'p>) -> SynTy<'p> {
+        // here, we wrap Q into a new Function Kind, whose return type inherits from Q's old value
+        SynTy {
+            loc: dft(),
+            arr: 0,
+            kind: SynTyKind::FunType((Box::new(Q), types.reversed())),
+        }
+    }
+
+    // Q -> [ ] Q
+    #[rule(ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList)]
+    fn Q_AQ(_l: Token, _r: Token, mut Q: SynTy<'p>) -> SynTy<'p> {
+        Q.arr += 1;
+        Q
+    }
+
+    // Q -> eps
+    #[rule(ArrayDimOrTypeList ->)]
+    fn Q_eps() -> SynTy<'p> {
+        SynTy {
+            loc: dft(), // to be filled
+            arr: 0,
+            kind: SynTyKind::Var,   // to be filled
+        }
+    }
+
+    #[rule(TypeListOrEmpty -> Type TypeListRem)]
+    fn L_TM(ty: SynTy<'p>, mut types: Vec<SynTy<'p>>) -> Vec<SynTy<'p>> {
+        types.pushed(ty)
+    }
+
+    #[rule(TypeListOrEmpty ->)]
+    fn L_eps() -> Vec<SynTy<'p>> { vec![] }
+
+    #[rule(TypeListRem -> Comma Type TypeListRem)]
+    fn M_CTM(_c: Token, ty: SynTy<'p>, mut types: Vec<SynTy<'p>>) -> Vec<SynTy<'p>> { types.pushed(ty) }
+
+    #[rule(TypeListRem ->)]
+    fn M_eps() -> Vec<SynTy<'p>> { vec![] }
 }

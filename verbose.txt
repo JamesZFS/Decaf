@@ -107,18 +107,23 @@ Productions:
   105: Expr9 -> Id IdOrCall
   106: Expr9 -> New NewClassOrArray
   107: NewClassOrArray -> Id LPar RPar
-  108: NewClassOrArray -> SimpleType LBrk NewArrayRem
+  108: NewClassOrArray -> BasicType LBrk NewArrayRem
   109: NewArrayRem -> RBrk LBrk NewArrayRem
   110: NewArrayRem -> Expr RBrk
-  111: SimpleType -> Int
-  112: SimpleType -> Bool
-  113: SimpleType -> Void
-  114: SimpleType -> String
-  115: SimpleType -> Class Id
-  116: Type -> SimpleType ArrayDim
-  117: ArrayDim -> LBrk RBrk ArrayDim
-  118: ArrayDim ->
-  119: _Program -> Program
+  111: BasicType -> Int
+  112: BasicType -> Bool
+  113: BasicType -> Void
+  114: BasicType -> String
+  115: BasicType -> Class Id
+  116: Type -> BasicType ArrayDimOrTypeList
+  117: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
+  118: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
+  119: ArrayDimOrTypeList ->
+  120: TypeListOrEmpty -> Type TypeListRem
+  121: TypeListOrEmpty ->
+  122: TypeListRem -> Comma Type TypeListRem
+  123: TypeListRem ->
+  124: _Program -> Program
 
 Tokens:
   0: Program
@@ -173,68 +178,70 @@ Tokens:
   49: Expr9
   50: NewClassOrArray
   51: NewArrayRem
-  52: SimpleType
+  52: BasicType
   53: Type
-  54: ArrayDim
-  55: _Program
-  56: _Eps
-  57: _Eof
-  58: _Err
-  59: Abstract
-  60: Var
-  61: Fun
-  62: Void
-  63: Int
-  64: Bool
-  65: String
-  66: New
-  67: Null
-  68: True
-  69: False
-  70: Class
-  71: Extends
-  72: This
-  73: While
-  74: For
-  75: If
-  76: Else
-  77: Return
-  78: Break
-  79: Print
-  80: ReadInteger
-  81: ReadLine
-  82: Static
-  83: InstanceOf
-  84: Arrow
-  85: Le
-  86: Ge
-  87: Eq
-  88: Ne
-  89: And
-  90: Or
-  91: Add
-  92: Sub
-  93: Mul
-  94: Div
-  95: Mod
-  96: Assign
-  97: Lt
-  98: Gt
-  99: Dot
-  100: Comma
-  101: Semi
-  102: Not
-  103: LPar
-  104: RPar
-  105: LBrk
-  106: RBrk
-  107: LBrc
-  108: RBrc
-  109: Colon
-  110: StringLit
-  111: UntermString
-  112: IntLit
-  113: Id
+  54: ArrayDimOrTypeList
+  55: TypeListOrEmpty
+  56: TypeListRem
+  57: _Program
+  58: _Eps
+  59: _Eof
+  60: _Err
+  61: Abstract
+  62: Var
+  63: Fun
+  64: Void
+  65: Int
+  66: Bool
+  67: String
+  68: New
+  69: Null
+  70: True
+  71: False
+  72: Class
+  73: Extends
+  74: This
+  75: While
+  76: For
+  77: If
+  78: Else
+  79: Return
+  80: Break
+  81: Print
+  82: ReadInteger
+  83: ReadLine
+  84: Static
+  85: InstanceOf
+  86: Arrow
+  87: Le
+  88: Ge
+  89: Eq
+  90: Ne
+  91: And
+  92: Or
+  93: Add
+  94: Sub
+  95: Mul
+  96: Div
+  97: Mod
+  98: Assign
+  99: Lt
+  100: Gt
+  101: Dot
+  102: Comma
+  103: Semi
+  104: Not
+  105: LPar
+  106: RPar
+  107: LBrk
+  108: RBrk
+  109: LBrc
+  110: RBrc
+  111: Colon
+  112: StringLit
+  113: UntermString
+  114: IntLit
+  115: Id
 
 Program:
   _Eof => Program -> ClassList
@@ -856,11 +863,11 @@ Expr9:
   Id => Expr9 -> Id IdOrCall
 
 NewClassOrArray:
-  Void => NewClassOrArray -> SimpleType LBrk NewArrayRem
-  Int => NewClassOrArray -> SimpleType LBrk NewArrayRem
-  Bool => NewClassOrArray -> SimpleType LBrk NewArrayRem
-  String => NewClassOrArray -> SimpleType LBrk NewArrayRem
-  Class => NewClassOrArray -> SimpleType LBrk NewArrayRem
+  Void => NewClassOrArray -> BasicType LBrk NewArrayRem
+  Int => NewClassOrArray -> BasicType LBrk NewArrayRem
+  Bool => NewClassOrArray -> BasicType LBrk NewArrayRem
+  String => NewClassOrArray -> BasicType LBrk NewArrayRem
+  Class => NewClassOrArray -> BasicType LBrk NewArrayRem
   Id => NewClassOrArray -> Id LPar RPar
 
 NewArrayRem:
@@ -881,23 +888,38 @@ NewArrayRem:
   IntLit => NewArrayRem -> Expr RBrk
   Id => NewArrayRem -> Expr RBrk
 
-SimpleType:
-  Void => SimpleType -> Void
-  Int => SimpleType -> Int
-  Bool => SimpleType -> Bool
-  String => SimpleType -> String
-  Class => SimpleType -> Class Id
+BasicType:
+  Void => BasicType -> Void
+  Int => BasicType -> Int
+  Bool => BasicType -> Bool
+  String => BasicType -> String
+  Class => BasicType -> Class Id
 
 Type:
-  Void => Type -> SimpleType ArrayDim
-  Int => Type -> SimpleType ArrayDim
-  Bool => Type -> SimpleType ArrayDim
-  String => Type -> SimpleType ArrayDim
-  Class => Type -> SimpleType ArrayDim
+  Void => Type -> BasicType ArrayDimOrTypeList
+  Int => Type -> BasicType ArrayDimOrTypeList
+  Bool => Type -> BasicType ArrayDimOrTypeList
+  String => Type -> BasicType ArrayDimOrTypeList
+  Class => Type -> BasicType ArrayDimOrTypeList
 
-ArrayDim:
-  LBrk => ArrayDim -> LBrk RBrk ArrayDim
-  Id => ArrayDim ->
+ArrayDimOrTypeList:
+  Comma => ArrayDimOrTypeList ->
+  LPar => ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
+  RPar => ArrayDimOrTypeList ->
+  LBrk => ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
+  Id => ArrayDimOrTypeList ->
+
+TypeListOrEmpty:
+  Void => TypeListOrEmpty -> Type TypeListRem
+  Int => TypeListOrEmpty -> Type TypeListRem
+  Bool => TypeListOrEmpty -> Type TypeListRem
+  String => TypeListOrEmpty -> Type TypeListRem
+  Class => TypeListOrEmpty -> Type TypeListRem
+  RPar => TypeListOrEmpty ->
+
+TypeListRem:
+  Comma => TypeListRem -> Comma Type TypeListRem
+  RPar => TypeListRem ->
 
 _Program:
   _Eof => _Program -> Program

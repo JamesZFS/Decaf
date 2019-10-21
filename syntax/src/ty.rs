@@ -11,7 +11,7 @@ pub enum SynTyKind<'a> {
     Var,
     // local variable ty deduction
     Named(&'a str),
-    FunType((Box<SynTy<'a>>, Vec<Box<SynTy<'a>>>)),  // ret, params
+    FunType((Box<SynTy<'a>>, Vec<SynTy<'a>>)),  // ret, params
 }
 
 #[derive(Eq, PartialEq)]
@@ -19,6 +19,28 @@ pub struct SynTy<'a> {
     pub loc: Loc,
     pub arr: u32,
     pub kind: SynTyKind<'a>,
+}
+
+impl<'a> SynTy<'a> {
+    pub fn is_func_type(&self) -> bool {
+        match self.kind {
+            SynTyKind::FunType(_) => true,
+            _ => false
+        }
+    }
+    pub fn filled_innermost_ret_type(mut self, basic: SynTy<'a>) -> Self {
+        let mut ptr = &mut self;
+        loop {
+            ptr.loc = basic.loc;
+            if let SynTyKind::FunType(ref mut ft) = ptr.kind {
+                ptr = &mut ft.0; // goto ret
+            } else {
+                break;
+            }
+        }   // until ptr is not a funtype
+        ptr.kind = basic.kind;
+        self
+    }
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]
