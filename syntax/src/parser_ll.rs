@@ -620,19 +620,20 @@ impl<'p> Parser<'p> {
 
     // Q -> ( TypeListOrEmpty ) Q
     #[rule(ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList)]
-    fn Q_LQ(_l: Token, mut types: Vec<SynTy<'p>>, _r: Token, Q: SynTy<'p>) -> SynTy<'p> {
-        // here, we wrap Q into a new Function Kind, whose return type inherits from Q's old value
-        SynTy {
+    fn Q_LQ(_l: Token, mut types: Vec<SynTy<'p>>, _r: Token, mut Q: SynTy<'p>) -> SynTy<'p> {
+        // insert types as a ret type of Q
+        Q.get_innermost_ret_type().kind = SynTyKind::FunType((Box::new(SynTy {
             loc: dft(),
             arr: 0,
-            kind: SynTyKind::FunType((Box::new(Q), types.reversed())),
-        }
+            kind: SynTyKind::Var,
+        }), types.reversed()));
+        Q
     }
 
     // Q -> [ ] Q
     #[rule(ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList)]
     fn Q_AQ(_l: Token, _r: Token, mut Q: SynTy<'p>) -> SynTy<'p> {
-        Q.arr += 1;
+        Q.get_innermost_ret_type().arr += 1;
         Q
     }
 

@@ -28,18 +28,25 @@ impl<'a> SynTy<'a> {
             _ => false
         }
     }
-    pub fn filled_innermost_ret_type(mut self, basic: SynTy<'a>) -> Self {
+    pub fn filled_innermost_ret_type(mut self, ty: SynTy<'a>) -> Self {
         let mut ptr = &mut self;
         loop {
-            ptr.loc = basic.loc;
+            ptr.loc = ty.loc;
             if let SynTyKind::FunType(ref mut ft) = ptr.kind {
                 ptr = &mut ft.0; // goto ret
             } else {
                 break;
             }
         }   // until ptr is not a funtype
-        ptr.kind = basic.kind;
+        ptr.kind = ty.kind;
         self
+    }
+    pub fn get_innermost_ret_type(&mut self) -> &mut SynTy<'a> {
+        let mut ptr = self;
+        while let SynTyKind::FunType(ref mut ft) = ptr.kind {
+            ptr = &mut ft.0;
+        }
+        ptr
     }
 }
 
