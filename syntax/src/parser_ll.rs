@@ -582,20 +582,51 @@ impl<'p> Parser<'p> {
         }
     }
 
+    // new class  Id()
     #[rule(NewClassOrArray -> Id LPar RPar)]
     fn new_class_or_array_c(name: Token, _l: Token, _r: Token) -> NewClassOrArray<'p> {
         NewClassOrArray::NewClass(name.str())
     }
-    #[rule(NewClassOrArray -> BasicType LBrk NewArrayRem)]
-    fn new_class_or_array_a(mut ty: SynTy<'p>, _l: Token, dim_len: (u32, Expr<'p>)) -> NewClassOrArray<'p> {
-        ty.arr = dim_len.0;
-        NewClassOrArray::NewArray(ty, dim_len.1)
+    // new array  B (Tlist)* [ R
+    #[rule(NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem)]
+    fn new_class_or_array_a(mut b: SynTy<'p>, mut pl: SynTy<'p>, _l: Token, mut ty_size: (SynTy<'p>, Expr<'p>)) -> NewClassOrArray<'p> {
+        pl.fill_innermost_ret_type(b);
+        ty_size.0.fill_innermost_ret_type(pl);
+        NewClassOrArray::NewArray(ty_size.0, ty_size.1)
+    }
+    // ] (Tlist)* [ R
+    #[rule(NewArrayRem -> RBrk ParamLists LBrk NewArrayRem)]
+    fn new_array_rem(_r: Token, mut pl: SynTy<'p>, _l: Token, mut ty_size: (SynTy<'p>, Expr<'p>)) -> (SynTy<'p>, Expr<'p>) {
+        ty_size.0.fill_innermost_ret_type(pl);
+        ty_size.0.get_innermost_ret_type().arr += 1;
+        ty_size
+    }
+    // expr ]
+    #[rule(NewArrayRem -> Expr RBrk)]
+    fn new_array_rem0(size: Expr<'p>, _r: Token) -> (SynTy<'p>, Expr<'p>) { (SynTy{
+        loc: dft(),
+        arr: 0,
+        kind: SynTyKind::Var
+    }, size) }
+
+    #[rule(ParamLists -> LPar TypeListOrEmpty RPar ParamLists)]
+    fn param_list1(_l: Token, mut types: Vec<SynTy<'p>>, _r: Token, mut pl: SynTy<'p>) -> SynTy<'p> {
+        pl.get_innermost_ret_type().kind = SynTyKind::FunType((Box::new(SynTy {
+            loc: dft(),
+            arr: 0,
+            kind: SynTyKind::Var,
+        }), types.reversed()));
+        pl
     }
 
-    #[rule(NewArrayRem -> RBrk LBrk NewArrayRem)]
-    fn new_array_rem(_r: Token, l: Token, mut dim_len: (u32, Expr<'p>)) -> (u32, Expr<'p>) { (dim_len.0 += 1, dim_len).1 }
-    #[rule(NewArrayRem -> Expr RBrk)]
-    fn new_array_rem0(len: Expr<'p>, _r: Token) -> (u32, Expr<'p>) { (0, len) }
+    #[rule(ParamLists ->)]
+    fn param_lists0() -> SynTy<'p> {
+        SynTy {
+            loc: dft(),
+            arr: 0,
+            kind: SynTyKind::Var,
+        }
+    }
 
     // The below rules applied the general approach to eliminate left recursions:
     // Type -> BasicType | Type [ ] | Type ( TypeListOrEmpty )
@@ -615,7 +646,8 @@ impl<'p> Parser<'p> {
     #[rule(Type -> BasicType ArrayDimOrTypeList)]
     fn T_BQ(B: SynTy<'p>, mut Q: SynTy<'p>) -> SynTy<'p> {
         // fill B in the innermost return type of Q (or Q itself)
-        Q.filled_innermost_ret_type(B)
+        Q.fill_innermost_ret_type(B);
+        Q
     }
 
     // Q -> ( TypeListOrEmpty ) Q
@@ -651,13 +683,11 @@ impl<'p> Parser<'p> {
     fn L_TM(ty: SynTy<'p>, mut types: Vec<SynTy<'p>>) -> Vec<SynTy<'p>> {
         types.pushed(ty)
     }
-
     #[rule(TypeListOrEmpty ->)]
     fn L_eps() -> Vec<SynTy<'p>> { vec![] }
 
     #[rule(TypeListRem -> Comma Type TypeListRem)]
     fn M_CTM(_c: Token, ty: SynTy<'p>, mut types: Vec<SynTy<'p>>) -> Vec<SynTy<'p>> { types.pushed(ty) }
-
     #[rule(TypeListRem ->)]
     fn M_eps() -> Vec<SynTy<'p>> { vec![] }
 }

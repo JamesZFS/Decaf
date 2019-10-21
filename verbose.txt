@@ -107,23 +107,25 @@ Productions:
   105: Expr9 -> Id IdOrCall
   106: Expr9 -> New NewClassOrArray
   107: NewClassOrArray -> Id LPar RPar
-  108: NewClassOrArray -> BasicType LBrk NewArrayRem
-  109: NewArrayRem -> RBrk LBrk NewArrayRem
+  108: NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  109: NewArrayRem -> RBrk ParamLists LBrk NewArrayRem
   110: NewArrayRem -> Expr RBrk
-  111: BasicType -> Int
-  112: BasicType -> Bool
-  113: BasicType -> Void
-  114: BasicType -> String
-  115: BasicType -> Class Id
-  116: Type -> BasicType ArrayDimOrTypeList
-  117: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
-  118: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
-  119: ArrayDimOrTypeList ->
-  120: TypeListOrEmpty -> Type TypeListRem
-  121: TypeListOrEmpty ->
-  122: TypeListRem -> Comma Type TypeListRem
-  123: TypeListRem ->
-  124: _Program -> Program
+  111: ParamLists -> LPar TypeListOrEmpty RPar ParamLists
+  112: ParamLists ->
+  113: BasicType -> Int
+  114: BasicType -> Bool
+  115: BasicType -> Void
+  116: BasicType -> String
+  117: BasicType -> Class Id
+  118: Type -> BasicType ArrayDimOrTypeList
+  119: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
+  120: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
+  121: ArrayDimOrTypeList ->
+  122: TypeListOrEmpty -> Type TypeListRem
+  123: TypeListOrEmpty ->
+  124: TypeListRem -> Comma Type TypeListRem
+  125: TypeListRem ->
+  126: _Program -> Program
 
 Tokens:
   0: Program
@@ -178,70 +180,71 @@ Tokens:
   49: Expr9
   50: NewClassOrArray
   51: NewArrayRem
-  52: BasicType
-  53: Type
-  54: ArrayDimOrTypeList
-  55: TypeListOrEmpty
-  56: TypeListRem
-  57: _Program
-  58: _Eps
-  59: _Eof
-  60: _Err
-  61: Abstract
-  62: Var
-  63: Fun
-  64: Void
-  65: Int
-  66: Bool
-  67: String
-  68: New
-  69: Null
-  70: True
-  71: False
-  72: Class
-  73: Extends
-  74: This
-  75: While
-  76: For
-  77: If
-  78: Else
-  79: Return
-  80: Break
-  81: Print
-  82: ReadInteger
-  83: ReadLine
-  84: Static
-  85: InstanceOf
-  86: Arrow
-  87: Le
-  88: Ge
-  89: Eq
-  90: Ne
-  91: And
-  92: Or
-  93: Add
-  94: Sub
-  95: Mul
-  96: Div
-  97: Mod
-  98: Assign
-  99: Lt
-  100: Gt
-  101: Dot
-  102: Comma
-  103: Semi
-  104: Not
-  105: LPar
-  106: RPar
-  107: LBrk
-  108: RBrk
-  109: LBrc
-  110: RBrc
-  111: Colon
-  112: StringLit
-  113: UntermString
-  114: IntLit
-  115: Id
+  52: ParamLists
+  53: BasicType
+  54: Type
+  55: ArrayDimOrTypeList
+  56: TypeListOrEmpty
+  57: TypeListRem
+  58: _Program
+  59: _Eps
+  60: _Eof
+  61: _Err
+  62: Abstract
+  63: Var
+  64: Fun
+  65: Void
+  66: Int
+  67: Bool
+  68: String
+  69: New
+  70: Null
+  71: True
+  72: False
+  73: Class
+  74: Extends
+  75: This
+  76: While
+  77: For
+  78: If
+  79: Else
+  80: Return
+  81: Break
+  82: Print
+  83: ReadInteger
+  84: ReadLine
+  85: Static
+  86: InstanceOf
+  87: Arrow
+  88: Le
+  89: Ge
+  90: Eq
+  91: Ne
+  92: And
+  93: Or
+  94: Add
+  95: Sub
+  96: Mul
+  97: Div
+  98: Mod
+  99: Assign
+  100: Lt
+  101: Gt
+  102: Dot
+  103: Comma
+  104: Semi
+  105: Not
+  106: LPar
+  107: RPar
+  108: LBrk
+  109: RBrk
+  110: LBrc
+  111: RBrc
+  112: Colon
+  113: StringLit
+  114: UntermString
+  115: IntLit
+  116: Id
 
 Program:
   _Eof => Program -> ClassList
@@ -863,11 +866,11 @@ Expr9:
   Id => Expr9 -> Id IdOrCall
 
 NewClassOrArray:
-  Void => NewClassOrArray -> BasicType LBrk NewArrayRem
-  Int => NewClassOrArray -> BasicType LBrk NewArrayRem
-  Bool => NewClassOrArray -> BasicType LBrk NewArrayRem
-  String => NewClassOrArray -> BasicType LBrk NewArrayRem
-  Class => NewClassOrArray -> BasicType LBrk NewArrayRem
+  Void => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  Int => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  Bool => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  String => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  Class => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
   Id => NewClassOrArray -> Id LPar RPar
 
 NewArrayRem:
@@ -883,10 +886,14 @@ NewArrayRem:
   Sub => NewArrayRem -> Expr RBrk
   Not => NewArrayRem -> Expr RBrk
   LPar => NewArrayRem -> Expr RBrk
-  RBrk => NewArrayRem -> RBrk LBrk NewArrayRem
+  RBrk => NewArrayRem -> RBrk ParamLists LBrk NewArrayRem
   StringLit => NewArrayRem -> Expr RBrk
   IntLit => NewArrayRem -> Expr RBrk
   Id => NewArrayRem -> Expr RBrk
+
+ParamLists:
+  LPar => ParamLists -> LPar TypeListOrEmpty RPar ParamLists
+  LBrk => ParamLists ->
 
 BasicType:
   Void => BasicType -> Void
