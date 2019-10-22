@@ -91,41 +91,42 @@ Productions:
   89: ParenOrCast -> Class Id RPar Expr7
   90: Expr8 -> Expr9 Term8
   91: Term8 -> LBrk Expr RBrk Term8
-  92: Term8 -> Dot Id IdOrCall Term8
-  93: Term8 ->
-  94: IdOrCall -> LPar ExprListOrEmpty RPar
-  95: IdOrCall ->
-  96: Expr9 -> IntLit
-  97: Expr9 -> True
-  98: Expr9 -> False
-  99: Expr9 -> StringLit
-  100: Expr9 -> Null
-  101: Expr9 -> ReadInteger LPar RPar
-  102: Expr9 -> ReadLine LPar RPar
-  103: Expr9 -> This
-  104: Expr9 -> InstanceOf LPar Expr Comma Id RPar
-  105: Expr9 -> Id IdOrCall
-  106: Expr9 -> New NewClassOrArray
-  107: NewClassOrArray -> Id LPar RPar
-  108: NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
-  109: NewArrayRem -> RBrk ParamLists LBrk NewArrayRem
-  110: NewArrayRem -> Expr RBrk
-  111: ParamLists -> LPar TypeListOrEmpty RPar ParamLists
-  112: ParamLists ->
-  113: BasicType -> Int
-  114: BasicType -> Bool
-  115: BasicType -> Void
-  116: BasicType -> String
-  117: BasicType -> Class Id
-  118: Type -> BasicType ArrayDimOrTypeList
-  119: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
-  120: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
-  121: ArrayDimOrTypeList ->
-  122: TypeListOrEmpty -> Type TypeListRem
-  123: TypeListOrEmpty ->
-  124: TypeListRem -> Comma Type TypeListRem
-  125: TypeListRem ->
-  126: _Program -> Program
+  92: Term8 -> Dot Id Term8
+  93: Term8 -> LPar ExprListOrEmpty RPar Term8
+  94: Term8 ->
+  95: IdOrCall -> LPar ExprListOrEmpty RPar
+  96: IdOrCall ->
+  97: Expr9 -> IntLit
+  98: Expr9 -> True
+  99: Expr9 -> False
+  100: Expr9 -> StringLit
+  101: Expr9 -> Null
+  102: Expr9 -> ReadInteger LPar RPar
+  103: Expr9 -> ReadLine LPar RPar
+  104: Expr9 -> This
+  105: Expr9 -> InstanceOf LPar Expr Comma Id RPar
+  106: Expr9 -> Id
+  107: Expr9 -> New NewClassOrArray
+  108: NewClassOrArray -> Id LPar RPar
+  109: NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  110: NewArrayRem -> RBrk ParamLists LBrk NewArrayRem
+  111: NewArrayRem -> Expr RBrk
+  112: ParamLists -> LPar TypeListOrEmpty RPar ParamLists
+  113: ParamLists ->
+  114: BasicType -> Int
+  115: BasicType -> Bool
+  116: BasicType -> Void
+  117: BasicType -> String
+  118: BasicType -> Class Id
+  119: Type -> BasicType ArrayDimOrTypeList
+  120: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
+  121: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
+  122: ArrayDimOrTypeList ->
+  123: TypeListOrEmpty -> Type TypeListRem
+  124: TypeListOrEmpty ->
+  125: TypeListRem -> Comma Type TypeListRem
+  126: TypeListRem ->
+  127: _Program -> Program
 
 Tokens:
   0: Program
@@ -822,35 +823,16 @@ Term8:
   Assign => Term8 ->
   Lt => Term8 ->
   Gt => Term8 ->
-  Dot => Term8 -> Dot Id IdOrCall Term8
+  Dot => Term8 -> Dot Id Term8
   Comma => Term8 ->
   Semi => Term8 ->
+  LPar => Term8 -> LPar ExprListOrEmpty RPar Term8
   RPar => Term8 ->
   LBrk => Term8 -> LBrk Expr RBrk Term8
   RBrk => Term8 ->
 
 IdOrCall:
-  Le => IdOrCall ->
-  Ge => IdOrCall ->
-  Eq => IdOrCall ->
-  Ne => IdOrCall ->
-  And => IdOrCall ->
-  Or => IdOrCall ->
-  Add => IdOrCall ->
-  Sub => IdOrCall ->
-  Mul => IdOrCall ->
-  Div => IdOrCall ->
-  Mod => IdOrCall ->
-  Assign => IdOrCall ->
-  Lt => IdOrCall ->
-  Gt => IdOrCall ->
-  Dot => IdOrCall ->
-  Comma => IdOrCall ->
-  Semi => IdOrCall ->
   LPar => IdOrCall -> LPar ExprListOrEmpty RPar
-  RPar => IdOrCall ->
-  LBrk => IdOrCall ->
-  RBrk => IdOrCall ->
 
 Expr9:
   New => Expr9 -> New NewClassOrArray
@@ -863,7 +845,7 @@ Expr9:
   InstanceOf => Expr9 -> InstanceOf LPar Expr Comma Id RPar
   StringLit => Expr9 -> StringLit
   IntLit => Expr9 -> IntLit
-  Id => Expr9 -> Id IdOrCall
+  Id => Expr9 -> Id
 
 NewClassOrArray:
   Void => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem

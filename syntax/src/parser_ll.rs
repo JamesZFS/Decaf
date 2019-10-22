@@ -100,6 +100,8 @@ fn merge_idx_id_call<'p>(mut l: Expr<'p>, ts: Vec<IndexOrIdOrCall<'p>>) -> Expr<
                 }
                 None => l = mk_expr(loc, VarSel { owner: Some(Box::new(l)), name, var: dft() }.into()),
             }
+            IndexOrIdOrCall::Call(call_loc, arg) =>
+                l = mk_expr(call_loc, Call { func: Box::new(l), arg, func_ref: dft() }.into())
         }
     }
     l
@@ -109,6 +111,7 @@ fn merge_idx_id_call<'p>(mut l: Expr<'p>, ts: Vec<IndexOrIdOrCall<'p>>) -> Expr<
 pub enum IndexOrIdOrCall<'p> {
     Index(Loc, Expr<'p>),
     IdOrCall(Loc, &'p str, Option<(Loc, Vec<Expr<'p>>)>),
+    Call(Loc, Vec<Expr<'p>>),
 }
 
 pub enum NewClassOrArray<'p> {
@@ -526,14 +529,17 @@ impl<'p> Parser<'p> {
 
     #[rule(Term8 -> LBrk Expr RBrk Term8)]
     fn term8_index(l: Token, idx: Expr<'p>, _r: Token, r: Vec<IndexOrIdOrCall<'p>>) -> Vec<IndexOrIdOrCall<'p>> { r.pushed(IndexOrIdOrCall::Index(l.loc(), idx)) }
-    #[rule(Term8 -> Dot Id IdOrCall Term8)]
-    fn term8_id_or_call(_d: Token, name: Token, arg: Option<(Loc, Vec<Expr<'p>>)>, r: Vec<IndexOrIdOrCall<'p>>) -> Vec<IndexOrIdOrCall<'p>> {
-        r.pushed(IndexOrIdOrCall::IdOrCall(name.loc(), name.str(), arg))
+    #[rule(Term8 -> Dot Id Term8)]
+    fn term8_id_or_call(_d: Token, name: Token, r: Vec<IndexOrIdOrCall<'p>>) -> Vec<IndexOrIdOrCall<'p>> {
+        r.pushed(IndexOrIdOrCall::IdOrCall(name.loc(), name.str(), None))
+    }
+    #[rule(Term8 -> LPar ExprListOrEmpty RPar Term8)]
+    fn term8_call(l: Token, arg: Vec<Expr<'p>>, _r: Token, r: Vec<IndexOrIdOrCall<'p>>) -> Vec<IndexOrIdOrCall<'p>> {
+        r.pushed(IndexOrIdOrCall::Call(l.loc(), arg.reversed()))
     }
     #[rule(Term8 ->)]
     fn term8_0() -> Vec<IndexOrIdOrCall<'p>> { vec![] }
 
-    // todo eliminate this and make Expr -> Expr ExprOrCall
     #[rule(IdOrCall -> LPar ExprListOrEmpty RPar)]
     fn id_or_call_c(l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Option<(Loc, Vec<Expr<'p>>)> { Some((l.loc(), arg.reversed())) }
     #[rule(IdOrCall ->)]
@@ -563,16 +569,12 @@ impl<'p> Parser<'p> {
     fn expr9_instanceof(i: Token, _l: Token, expr: Expr<'p>, _c: Tokenm, name: Token, _r: Token) -> Expr<'p> {
         mk_expr(i.loc(), ClassTest { expr: Box::new(expr), name: name.str(), class: dft() }.into())
     }
-    #[rule(Expr9 -> Id IdOrCall)]
-    fn expr9_id_or_call(name: Token, ioc: Option<(Loc, Vec<Expr<'p>>)>) -> Expr<'p> {
-        match ioc {
-            Some((loc, arg)) => {
-                let func = Box::new(mk_expr(name.loc(), VarSel { owner: None, name: name.str(), var: dft() }.into()));
-                mk_expr(loc, Call { func, arg, func_ref: dft() }.into())
-            }
-            None => mk_expr(name.loc(), VarSel { owner: None, name: name.str(), var: dft() }.into()),
-        }
+
+    #[rule(Expr9 -> Id)]
+    fn expr9_id(name: Token) -> Expr<'p> {
+        mk_expr(name.loc(), VarSel { owner: None, name: name.str(), var: dft() }.into())
     }
+
     #[rule(Expr9 -> New NewClassOrArray)]
     fn expr9_new(n: Token, noa: NewClassOrArray<'p>) -> Expr<'p> {
         let loc = n.loc();
@@ -603,11 +605,13 @@ impl<'p> Parser<'p> {
     }
     // expr ]
     #[rule(NewArrayRem -> Expr RBrk)]
-    fn new_array_rem0(size: Expr<'p>, _r: Token) -> (SynTy<'p>, Expr<'p>) { (SynTy{
-        loc: dft(),
-        arr: 0,
-        kind: SynTyKind::Var
-    }, size) }
+    fn new_array_rem0(size: Expr<'p>, _r: Token) -> (SynTy<'p>, Expr<'p>) {
+        (SynTy {
+            loc: dft(),
+            arr: 0,
+            kind: SynTyKind::Var,
+        }, size)
+    }
 
     #[rule(ParamLists -> LPar TypeListOrEmpty RPar ParamLists)]
     fn param_list1(_l: Token, mut types: Vec<SynTy<'p>>, _r: Token, mut pl: SynTy<'p>) -> SynTy<'p> {
