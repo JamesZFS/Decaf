@@ -52,12 +52,12 @@ impl<'p> Parser<'p> {
             } else {
                 // *** handle error and recover ***
                 self.error(lookahead, lexer.loc());
-//                eprintln!("error at token: {}", target);
+                eprintln!("error at token: {}", target);
                 // try if la in End(A)
                 if end.contains(&(lookahead.ty as u32)) { return StackItem::_Fail; }
                 loop {
                     *lookahead = lexer.next();
-//                    eprintln!("scanning: {}", lookahead.ty as u32);
+                    eprintln!("scanning: {}", lookahead.ty as u32);
                     if let Some(x) = table.get(&(lookahead.ty as u32)) {  // la in Begin(A)
                         break x; // recover analysing A
                     }
@@ -74,7 +74,7 @@ impl<'p> Parser<'p> {
                 *lookahead = lexer.next();  // look at next lex
                 StackItem::_Token(token)
             } else {        // unmatched term
-//                eprintln!("unmatched term: {}", lookahead.ty as u32);
+                eprintln!("unmatched term: {}", lookahead.ty as u32);
                 self.error(lookahead, lexer.loc());
                 StackItem::_Fail
             }
@@ -556,11 +556,6 @@ impl<'p> Parser<'p> {
     }
     #[rule(Term8 ->)]
     fn term8_0() -> Vec<IndexOrIdOrCall<'p>> { vec![] }
-
-    #[rule(IdOrCall -> LPar ExprListOrEmpty RPar)]
-    fn id_or_call_c(l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Option<(Loc, Vec<Expr<'p>>)> { Some((l.loc(), arg.reversed())) }
-    #[rule(IdOrCall ->)]
-    fn id_or_call_i() -> Option<(Loc, Vec<Expr<'p>>)> { None }
 
     #[rule(Expr9 -> IntLit)]
     fn expr9_int(&mut self, i: Token) -> Expr<'p> { mk_int_lit(i.loc(), i.str(), &mut self.error) }
