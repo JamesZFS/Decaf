@@ -43,8 +43,8 @@ impl<'p> Parser<'p> {
         let is_nt = |x: u32| x < NT_NUM;    // if x is a non-term
 
         let mut end = f.clone();
-        end.extend(follow[target].iter());
-        let table = &table[target];
+        end.extend(follow[target].iter());  // End(A) = Follow(A) U End(Ancestors)
+        let table = &table[target]; // into 1D PS table of target
         // look for incoming term in the prod table
         let (prod, rhs) =
             if let Some(x) = table.get(&(lookahead.ty as u32)) {
@@ -52,7 +52,17 @@ impl<'p> Parser<'p> {
             } else {
                 // *** handle error and recover ***
                 self.error(lookahead, lexer.loc());
-                unimplemented!()    // todo
+                // try if la in End(A)
+                if end.contains(&(lookahead.ty as u32)) { return StackItem::_Fail; }
+                loop {
+                    *lookahead = lexer.next();
+                    if let Some(x) = table.get(&(lookahead.ty as u32)) {  // la in Begin(A)
+                        break x; // recover analysing A
+                    }
+                    if end.contains(&(lookahead.ty as u32)) {   // la in End(A)
+                        return StackItem::_Fail; // failed A, continue analysing
+                    }
+                }
             };
         let value_stk = rhs.iter().map(|&x| {
             if is_nt(x) {
@@ -533,6 +543,7 @@ impl<'p> Parser<'p> {
     fn term8_id_or_call(_d: Token, name: Token, r: Vec<IndexOrIdOrCall<'p>>) -> Vec<IndexOrIdOrCall<'p>> {
         r.pushed(IndexOrIdOrCall::IdOrCall(name.loc(), name.str(), None))
     }
+    // lambda call
     #[rule(Term8 -> LPar ExprListOrEmpty RPar Term8)]
     fn term8_call(l: Token, arg: Vec<Expr<'p>>, _r: Token, r: Vec<IndexOrIdOrCall<'p>>) -> Vec<IndexOrIdOrCall<'p>> {
         r.pushed(IndexOrIdOrCall::Call(l.loc(), arg.reversed()))
