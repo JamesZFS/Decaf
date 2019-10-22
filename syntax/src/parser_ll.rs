@@ -52,10 +52,12 @@ impl<'p> Parser<'p> {
             } else {
                 // *** handle error and recover ***
                 self.error(lookahead, lexer.loc());
+//                eprintln!("error at token: {}", target);
                 // try if la in End(A)
                 if end.contains(&(lookahead.ty as u32)) { return StackItem::_Fail; }
                 loop {
                     *lookahead = lexer.next();
+//                    eprintln!("scanning: {}", lookahead.ty as u32);
                     if let Some(x) = table.get(&(lookahead.ty as u32)) {  // la in Begin(A)
                         break x; // recover analysing A
                     }
@@ -72,6 +74,7 @@ impl<'p> Parser<'p> {
                 *lookahead = lexer.next();  // look at next lex
                 StackItem::_Token(token)
             } else {        // unmatched term
+//                eprintln!("unmatched term: {}", lookahead.ty as u32);
                 self.error(lookahead, lexer.loc());
                 StackItem::_Fail
             }
@@ -232,8 +235,8 @@ impl<'p> Parser<'p> {
     fn field_list0() -> Vec<FieldDef<'p>> { vec![] }
 
     // static function
-    #[rule(FieldDef -> Static Type Id LPar VarDefListOrEmpty RPar Block)]
-    fn filed_def_f1(&self, _s: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, body: Block<'p>) -> FieldDef<'p> {
+    #[rule(FieldDef -> Static Type Id ParenedVarDefList Block)]
+    fn filed_def_f1(&self, _s: Token, ret: SynTy<'p>, name: Token, param: Vec<&'p VarDef<'p>>, body: Block<'p>) -> FieldDef<'p> {
         let (loc, name) = (name.loc(), name.str());
         FieldDef::FuncDef(self.alloc.func.alloc(FuncDef {
             loc,
@@ -249,8 +252,8 @@ impl<'p> Parser<'p> {
     }
 
     // abstract function
-    #[rule(FieldDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi)]
-    fn filed_def_f2(&self, _a: Token, ret: SynTy<'p>, name: Token, _l: Token, param: Vec<&'p VarDef<'p>>, _r: Token, _s: Token) -> FieldDef<'p> {
+    #[rule(FieldDef -> Abstract Type Id ParenedVarDefList Semi)]
+    fn filed_def_f2(&self, _a: Token, ret: SynTy<'p>, name: Token, param: Vec<&'p VarDef<'p>>, _s: Token) -> FieldDef<'p> {
         let (loc, name) = (name.loc(), name.str());
         FieldDef::FuncDef(self.alloc.func.alloc(FuncDef {
             loc,
@@ -264,6 +267,9 @@ impl<'p> Parser<'p> {
             scope: dft(),
         }))
     }
+
+    #[rule(ParenedVarDefList -> LPar VarDefListOrEmpty RPar)]
+    fn parened_var_def_list(_l: Token, param: Vec<&'p VarDef<'p>>, _r: Token) -> Vec<&'p VarDef<'p>> { param }
 
     // normal function or var def
     #[rule(FieldDef -> Type Id FuncOrVar)]

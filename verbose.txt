@@ -9,124 +9,125 @@ Productions:
   7: MaybeExtends ->
   8: FieldList -> FieldDef FieldList
   9: FieldList ->
-  10: FieldDef -> Static Type Id LPar VarDefListOrEmpty RPar Block
-  11: FieldDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi
-  12: FieldDef -> Type Id FuncOrVar
-  13: FuncOrVar -> LPar VarDefListOrEmpty RPar Block
-  14: FuncOrVar -> Semi
-  15: VarDefListOrEmpty -> VarDefList
-  16: VarDefListOrEmpty ->
-  17: VarDefList -> VarDef VarDefListRem
-  18: VarDefListRem -> Comma VarDef VarDefListRem
-  19: VarDefListRem ->
-  20: ExprListOrEmpty -> ExprList
-  21: ExprListOrEmpty ->
-  22: ExprList -> Expr ExprListRem
-  23: ExprListRem -> Comma Expr ExprListRem
-  24: ExprListRem ->
-  25: VarDef -> Type Id
-  26: Block -> LBrc StmtList RBrc
-  27: StmtList -> Stmt StmtList
-  28: StmtList ->
-  29: Stmt -> Simple Semi
-  30: Stmt -> If LPar Expr RPar Stmt MaybeElse
-  31: Stmt -> While LPar Expr RPar Stmt
-  32: Stmt -> For LPar Simple Semi Expr Semi Simple RPar Stmt
-  33: Stmt -> Return MaybeExpr Semi
-  34: Stmt -> Print LPar ExprList RPar Semi
-  35: Stmt -> Break Semi
-  36: Stmt -> Block
-  37: Simple -> Expr MaybeAssign
-  38: Simple -> Type Id MaybeAssign
-  39: Simple -> Var Id Assign Expr
-  40: Simple ->
-  41: MaybeAssign -> Assign Expr
-  42: MaybeAssign ->
-  43: Blocked -> Stmt
-  44: MaybeElse -> Else Blocked
-  45: MaybeElse ->
-  46: MaybeExpr -> Expr
-  47: MaybeExpr ->
-  48: Op1 -> Or
-  49: Op2 -> And
-  50: Op3 -> Eq
-  51: Op3 -> Ne
-  52: Op4 -> Lt
-  53: Op4 -> Le
-  54: Op4 -> Ge
-  55: Op4 -> Gt
-  56: Op5 -> Add
-  57: Op5 -> Sub
-  58: Op6 -> Mul
-  59: Op6 -> Div
-  60: Op6 -> Mod
-  61: Op7 -> Sub
-  62: Op7 -> Not
-  63: Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody
-  64: LambdaBody -> Arrow Expr
-  65: LambdaBody -> Block
-  66: Expr -> Expr1
-  67: Expr1 -> Expr2 Term1
-  68: Term1 -> Op1 Expr2 Term1
-  69: Term1 ->
-  70: Expr2 -> Expr3 Term2
-  71: Term2 -> Op2 Expr3 Term2
-  72: Term2 ->
-  73: Expr3 -> Expr4 Term3
-  74: Term3 -> Op3 Expr4 Term3
-  75: Term3 ->
-  76: Expr4 -> Expr5 Term4
-  77: Term4 -> Op4 Expr5 Term4
-  78: Term4 ->
-  79: Expr5 -> Expr6 Term5
-  80: Term5 -> Op5 Expr6 Term5
-  81: Term5 ->
-  82: Expr6 -> Expr7 Term6
-  83: Term6 -> Op6 Expr7 Term6
-  84: Term6 ->
-  85: Expr7 -> Op7 Expr7
-  86: Expr7 -> LPar ParenOrCast
-  87: Expr7 -> Expr8
-  88: ParenOrCast -> Expr RPar Term8
-  89: ParenOrCast -> Class Id RPar Expr7
-  90: Expr8 -> Expr9 Term8
-  91: Term8 -> LBrk Expr RBrk Term8
-  92: Term8 -> Dot Id Term8
-  93: Term8 -> LPar ExprListOrEmpty RPar Term8
-  94: Term8 ->
-  95: IdOrCall -> LPar ExprListOrEmpty RPar
-  96: IdOrCall ->
-  97: Expr9 -> IntLit
-  98: Expr9 -> True
-  99: Expr9 -> False
-  100: Expr9 -> StringLit
-  101: Expr9 -> Null
-  102: Expr9 -> ReadInteger LPar RPar
-  103: Expr9 -> ReadLine LPar RPar
-  104: Expr9 -> This
-  105: Expr9 -> InstanceOf LPar Expr Comma Id RPar
-  106: Expr9 -> Id
-  107: Expr9 -> New NewClassOrArray
-  108: NewClassOrArray -> Id LPar RPar
-  109: NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
-  110: NewArrayRem -> RBrk ParamLists LBrk NewArrayRem
-  111: NewArrayRem -> Expr RBrk
-  112: ParamLists -> LPar TypeListOrEmpty RPar ParamLists
-  113: ParamLists ->
-  114: BasicType -> Int
-  115: BasicType -> Bool
-  116: BasicType -> Void
-  117: BasicType -> String
-  118: BasicType -> Class Id
-  119: Type -> BasicType ArrayDimOrTypeList
-  120: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
-  121: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
-  122: ArrayDimOrTypeList ->
-  123: TypeListOrEmpty -> Type TypeListRem
-  124: TypeListOrEmpty ->
-  125: TypeListRem -> Comma Type TypeListRem
-  126: TypeListRem ->
-  127: _Program -> Program
+  10: FieldDef -> Static Type Id ParenedVarDefList Block
+  11: FieldDef -> Abstract Type Id ParenedVarDefList Semi
+  12: ParenedVarDefList -> LPar VarDefListOrEmpty RPar
+  13: FieldDef -> Type Id FuncOrVar
+  14: FuncOrVar -> LPar VarDefListOrEmpty RPar Block
+  15: FuncOrVar -> Semi
+  16: VarDefListOrEmpty -> VarDefList
+  17: VarDefListOrEmpty ->
+  18: VarDefList -> VarDef VarDefListRem
+  19: VarDefListRem -> Comma VarDef VarDefListRem
+  20: VarDefListRem ->
+  21: ExprListOrEmpty -> ExprList
+  22: ExprListOrEmpty ->
+  23: ExprList -> Expr ExprListRem
+  24: ExprListRem -> Comma Expr ExprListRem
+  25: ExprListRem ->
+  26: VarDef -> Type Id
+  27: Block -> LBrc StmtList RBrc
+  28: StmtList -> Stmt StmtList
+  29: StmtList ->
+  30: Stmt -> Simple Semi
+  31: Stmt -> If LPar Expr RPar Stmt MaybeElse
+  32: Stmt -> While LPar Expr RPar Stmt
+  33: Stmt -> For LPar Simple Semi Expr Semi Simple RPar Stmt
+  34: Stmt -> Return MaybeExpr Semi
+  35: Stmt -> Print LPar ExprList RPar Semi
+  36: Stmt -> Break Semi
+  37: Stmt -> Block
+  38: Simple -> Expr MaybeAssign
+  39: Simple -> Type Id MaybeAssign
+  40: Simple -> Var Id Assign Expr
+  41: Simple ->
+  42: MaybeAssign -> Assign Expr
+  43: MaybeAssign ->
+  44: Blocked -> Stmt
+  45: MaybeElse -> Else Blocked
+  46: MaybeElse ->
+  47: MaybeExpr -> Expr
+  48: MaybeExpr ->
+  49: Op1 -> Or
+  50: Op2 -> And
+  51: Op3 -> Eq
+  52: Op3 -> Ne
+  53: Op4 -> Lt
+  54: Op4 -> Le
+  55: Op4 -> Ge
+  56: Op4 -> Gt
+  57: Op5 -> Add
+  58: Op5 -> Sub
+  59: Op6 -> Mul
+  60: Op6 -> Div
+  61: Op6 -> Mod
+  62: Op7 -> Sub
+  63: Op7 -> Not
+  64: Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody
+  65: LambdaBody -> Arrow Expr
+  66: LambdaBody -> Block
+  67: Expr -> Expr1
+  68: Expr1 -> Expr2 Term1
+  69: Term1 -> Op1 Expr2 Term1
+  70: Term1 ->
+  71: Expr2 -> Expr3 Term2
+  72: Term2 -> Op2 Expr3 Term2
+  73: Term2 ->
+  74: Expr3 -> Expr4 Term3
+  75: Term3 -> Op3 Expr4 Term3
+  76: Term3 ->
+  77: Expr4 -> Expr5 Term4
+  78: Term4 -> Op4 Expr5 Term4
+  79: Term4 ->
+  80: Expr5 -> Expr6 Term5
+  81: Term5 -> Op5 Expr6 Term5
+  82: Term5 ->
+  83: Expr6 -> Expr7 Term6
+  84: Term6 -> Op6 Expr7 Term6
+  85: Term6 ->
+  86: Expr7 -> Op7 Expr7
+  87: Expr7 -> LPar ParenOrCast
+  88: Expr7 -> Expr8
+  89: ParenOrCast -> Expr RPar Term8
+  90: ParenOrCast -> Class Id RPar Expr7
+  91: Expr8 -> Expr9 Term8
+  92: Term8 -> LBrk Expr RBrk Term8
+  93: Term8 -> Dot Id Term8
+  94: Term8 -> LPar ExprListOrEmpty RPar Term8
+  95: Term8 ->
+  96: IdOrCall -> LPar ExprListOrEmpty RPar
+  97: IdOrCall ->
+  98: Expr9 -> IntLit
+  99: Expr9 -> True
+  100: Expr9 -> False
+  101: Expr9 -> StringLit
+  102: Expr9 -> Null
+  103: Expr9 -> ReadInteger LPar RPar
+  104: Expr9 -> ReadLine LPar RPar
+  105: Expr9 -> This
+  106: Expr9 -> InstanceOf LPar Expr Comma Id RPar
+  107: Expr9 -> Id
+  108: Expr9 -> New NewClassOrArray
+  109: NewClassOrArray -> Id LPar RPar
+  110: NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
+  111: NewArrayRem -> RBrk ParamLists LBrk NewArrayRem
+  112: NewArrayRem -> Expr RBrk
+  113: ParamLists -> LPar TypeListOrEmpty RPar ParamLists
+  114: ParamLists ->
+  115: BasicType -> Int
+  116: BasicType -> Bool
+  117: BasicType -> Void
+  118: BasicType -> String
+  119: BasicType -> Class Id
+  120: Type -> BasicType ArrayDimOrTypeList
+  121: ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
+  122: ArrayDimOrTypeList -> LBrk RBrk ArrayDimOrTypeList
+  123: ArrayDimOrTypeList ->
+  124: TypeListOrEmpty -> Type TypeListRem
+  125: TypeListOrEmpty ->
+  126: TypeListRem -> Comma Type TypeListRem
+  127: TypeListRem ->
+  128: _Program -> Program
 
 Tokens:
   0: Program
@@ -136,116 +137,117 @@ Tokens:
   4: MaybeExtends
   5: FieldList
   6: FieldDef
-  7: FuncOrVar
-  8: VarDefListOrEmpty
-  9: VarDefList
-  10: VarDefListRem
-  11: ExprListOrEmpty
-  12: ExprList
-  13: ExprListRem
-  14: VarDef
-  15: Block
-  16: StmtList
-  17: Stmt
-  18: Simple
-  19: MaybeAssign
-  20: Blocked
-  21: MaybeElse
-  22: MaybeExpr
-  23: Op1
-  24: Op2
-  25: Op3
-  26: Op4
-  27: Op5
-  28: Op6
-  29: Op7
-  30: Expr
-  31: LambdaBody
-  32: Expr1
-  33: Term1
-  34: Expr2
-  35: Term2
-  36: Expr3
-  37: Term3
-  38: Expr4
-  39: Term4
-  40: Expr5
-  41: Term5
-  42: Expr6
-  43: Term6
-  44: Expr7
-  45: ParenOrCast
-  46: Expr8
-  47: Term8
-  48: IdOrCall
-  49: Expr9
-  50: NewClassOrArray
-  51: NewArrayRem
-  52: ParamLists
-  53: BasicType
-  54: Type
-  55: ArrayDimOrTypeList
-  56: TypeListOrEmpty
-  57: TypeListRem
-  58: _Program
-  59: _Eps
-  60: _Eof
-  61: _Err
-  62: Abstract
-  63: Var
-  64: Fun
-  65: Void
-  66: Int
-  67: Bool
-  68: String
-  69: New
-  70: Null
-  71: True
-  72: False
-  73: Class
-  74: Extends
-  75: This
-  76: While
-  77: For
-  78: If
-  79: Else
-  80: Return
-  81: Break
-  82: Print
-  83: ReadInteger
-  84: ReadLine
-  85: Static
-  86: InstanceOf
-  87: Arrow
-  88: Le
-  89: Ge
-  90: Eq
-  91: Ne
-  92: And
-  93: Or
-  94: Add
-  95: Sub
-  96: Mul
-  97: Div
-  98: Mod
-  99: Assign
-  100: Lt
-  101: Gt
-  102: Dot
-  103: Comma
-  104: Semi
-  105: Not
-  106: LPar
-  107: RPar
-  108: LBrk
-  109: RBrk
-  110: LBrc
-  111: RBrc
-  112: Colon
-  113: StringLit
-  114: UntermString
-  115: IntLit
-  116: Id
+  7: ParenedVarDefList
+  8: FuncOrVar
+  9: VarDefListOrEmpty
+  10: VarDefList
+  11: VarDefListRem
+  12: ExprListOrEmpty
+  13: ExprList
+  14: ExprListRem
+  15: VarDef
+  16: Block
+  17: StmtList
+  18: Stmt
+  19: Simple
+  20: MaybeAssign
+  21: Blocked
+  22: MaybeElse
+  23: MaybeExpr
+  24: Op1
+  25: Op2
+  26: Op3
+  27: Op4
+  28: Op5
+  29: Op6
+  30: Op7
+  31: Expr
+  32: LambdaBody
+  33: Expr1
+  34: Term1
+  35: Expr2
+  36: Term2
+  37: Expr3
+  38: Term3
+  39: Expr4
+  40: Term4
+  41: Expr5
+  42: Term5
+  43: Expr6
+  44: Term6
+  45: Expr7
+  46: ParenOrCast
+  47: Expr8
+  48: Term8
+  49: IdOrCall
+  50: Expr9
+  51: NewClassOrArray
+  52: NewArrayRem
+  53: ParamLists
+  54: BasicType
+  55: Type
+  56: ArrayDimOrTypeList
+  57: TypeListOrEmpty
+  58: TypeListRem
+  59: _Program
+  60: _Eps
+  61: _Eof
+  62: _Err
+  63: Abstract
+  64: Var
+  65: Fun
+  66: Void
+  67: Int
+  68: Bool
+  69: String
+  70: New
+  71: Null
+  72: True
+  73: False
+  74: Class
+  75: Extends
+  76: This
+  77: While
+  78: For
+  79: If
+  80: Else
+  81: Return
+  82: Break
+  83: Print
+  84: ReadInteger
+  85: ReadLine
+  86: Static
+  87: InstanceOf
+  88: Arrow
+  89: Le
+  90: Ge
+  91: Eq
+  92: Ne
+  93: And
+  94: Or
+  95: Add
+  96: Sub
+  97: Mul
+  98: Div
+  99: Mod
+  100: Assign
+  101: Lt
+  102: Gt
+  103: Dot
+  104: Comma
+  105: Semi
+  106: Not
+  107: LPar
+  108: RPar
+  109: LBrk
+  110: RBrk
+  111: LBrc
+  112: RBrc
+  113: Colon
+  114: StringLit
+  115: UntermString
+  116: IntLit
+  117: Id
 
 Program:
   _Eof => Program -> ClassList
@@ -280,13 +282,16 @@ FieldList:
   RBrc => FieldList ->
 
 FieldDef:
-  Abstract => FieldDef -> Abstract Type Id LPar VarDefListOrEmpty RPar Semi
+  Abstract => FieldDef -> Abstract Type Id ParenedVarDefList Semi
   Void => FieldDef -> Type Id FuncOrVar
   Int => FieldDef -> Type Id FuncOrVar
   Bool => FieldDef -> Type Id FuncOrVar
   String => FieldDef -> Type Id FuncOrVar
   Class => FieldDef -> Type Id FuncOrVar
-  Static => FieldDef -> Static Type Id LPar VarDefListOrEmpty RPar Block
+  Static => FieldDef -> Static Type Id ParenedVarDefList Block
+
+ParenedVarDefList:
+  LPar => ParenedVarDefList -> LPar VarDefListOrEmpty RPar
 
 FuncOrVar:
   Semi => FuncOrVar -> Semi
