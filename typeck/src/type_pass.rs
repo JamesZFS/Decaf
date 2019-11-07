@@ -25,7 +25,7 @@ impl<'a> TypePass<'a> {
         self.scoped(ScopeOwner::Class(c), |s|
             for f in &c.field { // in class scope c of self, for all funcdefs in c:
                 if let FieldDef::FuncDef(f) = f {
-                    if f.is_abstr() { continue; }  // skip type check for abstract func
+                    if f.is_abstr() { continue; }  // todo skip type check for abstract func
                     s.cur_func = Some(f);
                     let ret = s.scoped(ScopeOwner::Param(f), |s|
                         s.block(&f.body.as_ref().unwrap())); // in f's param scope

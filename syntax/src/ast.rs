@@ -1,5 +1,5 @@
 use crate::{ty::*, symbol::*};
-use common::{Loc, Ref, BinOp, UnOp};
+use common::{Loc, Ref, BinOp, UnOp, HashSet};
 use typed_arena::Arena;
 use std::cell::{Cell, RefCell};
 
@@ -29,6 +29,7 @@ pub struct ClassDef<'a> {
     pub field: Vec<FieldDef<'a>>,
     pub parent_ref: Cell<Option<&'a ClassDef<'a>>>,
     pub scope: RefCell<Scope<'a>>,
+    pub abstr_methods: RefCell<HashSet<&'a str>>
 }
 
 impl<'a> ClassDef<'a> {

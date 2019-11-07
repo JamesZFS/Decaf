@@ -3,6 +3,7 @@ use common::{ErrorKind::*, Ref, MAIN_CLASS, MAIN_METHOD, NO_LOC, HashMap, HashSe
 use syntax::{ast::*, ScopeOwner, Symbol, Ty};
 use std::{ops::{Deref, DerefMut}, iter};
 use hashbrown::hash_map::Entry;
+use std::borrow::Borrow;
 
 pub(crate) struct SymbolPass<'a>(pub TypeCk<'a>);
 
@@ -58,7 +59,7 @@ impl<'a> SymbolPass<'a> {
             self.class_def(c, &mut checked);    // scan class
             if c.name == MAIN_CLASS {
                 if c.abstr_ {   // Main class shouldn't be abstract
-                    return self.issue(NO_LOC, NoMainClass)
+                    return self.issue(NO_LOC, NoMainClass);
                 } else {
                     p.main.set(Some(c));
                 }
@@ -74,7 +75,10 @@ impl<'a> SymbolPass<'a> {
     fn class_def(&mut self, c: &'a ClassDef<'a>, checked: &mut HashSet<Ref<'a, ClassDef<'a>>>) {
         if !checked.insert(Ref(c)) { return; }  // already scanned
         // scan base class
-        if let Some(p) = c.parent_ref.get() { self.class_def(p, checked); }
+        if let Some(p) = c.parent_ref.get() {
+            self.class_def(p, checked);
+            c.abstr_methods.borrow_mut().clone_from(&p.abstr_methods.borrow());
+        }
         self.cur_class = Some(c);
         // scan and scope current class todo why not scope p?
         self.scoped(ScopeOwner::Class(c), |s| for f in &c.field {
@@ -83,6 +87,9 @@ impl<'a> SymbolPass<'a> {
                 FieldDef::VarDef(v) => s.var_def(v)
             };
         });
+        if !c.abstr_methods.borrow().is_empty() && !c.abstr_ {
+            self.issue(c.loc, BadConcreteClass(c.name))
+        }
     }
 
     fn func_def(&mut self, f: &'a FuncDef<'a>) {
@@ -90,7 +97,7 @@ impl<'a> SymbolPass<'a> {
         self.scoped(ScopeOwner::Param(f), |s| {
             if !f.static_ { s.scopes.declare(Symbol::This(f)); }
             for v in &f.param { s.var_def(v); }
-            if let Some(b) = f.body.as_ref() { // todo for non-abstract method
+            if let Some(b) = f.body.as_ref() {
                 s.block(b); // check block
             }
         });
@@ -105,7 +112,7 @@ impl<'a> SymbolPass<'a> {
                         Symbol::Func(pf) => {
                             if f.static_ || pf.static_ {
                                 self.issue(f.loc, ConflictDeclaration { prev: pf.loc, name: f.name })
-                            } else if !Ty::mk_func(f).assignable_to(Ty::mk_func(pf)) {
+                            } else if !Ty::mk_func(f).assignable_to(Ty::mk_func(pf)) {  // signature mismatch
                                 self.issue(f.loc, OverrideMismatch { func: f.name, p: p.name })
                             } else { true }
                         }
@@ -115,7 +122,15 @@ impl<'a> SymbolPass<'a> {
                 _ => self.issue(f.loc, ConflictDeclaration { prev: sym.loc(), name: f.name }),
             }
         } else { true };
-        if ok { self.scopes.declare(Symbol::Func(f)); }
+        if ok {
+            self.scopes.declare(Symbol::Func(f));
+            // todo try implementing or inserting an abstr method to current class
+            if f.is_abstr() {   // insert this abstr method into c's abstr method set
+                self.cur_class.unwrap().abstr_methods.borrow_mut().insert(f.name);
+            } else {  // remove
+                self.cur_class.unwrap().abstr_methods.borrow_mut().remove(f.name);
+            }
+        }
     }
 
     fn var_def(&mut self, v: &'a VarDef<'a>) {

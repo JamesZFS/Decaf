@@ -71,6 +71,7 @@ pub enum ErrorKind<'a, Ty> {
   IndexNotArray,
   IndexNotInt,
   NoReturn,
+  BadConcreteClass(&'a str),
 }
 
 impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
@@ -112,6 +113,7 @@ impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
       IndexNotArray => write!(f, "[] can only be applied to arrays"),
       IndexNotInt => write!(f, "array subscript must be an integer"),
       NoReturn => write!(f, "missing return statement: control reaches end of non-void block"),
+      BadConcreteClass(name) => write!(f, "'{}' is not abstract and does not override all abstract methods", name)
     }
   }
 }
