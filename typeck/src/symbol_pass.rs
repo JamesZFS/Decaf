@@ -3,7 +3,6 @@ use common::{ErrorKind::*, Ref, MAIN_CLASS, MAIN_METHOD, NO_LOC, HashMap, HashSe
 use syntax::{ast::*, ScopeOwner, Symbol, Ty};
 use std::{ops::{Deref, DerefMut}, iter};
 use hashbrown::hash_map::Entry;
-use std::borrow::Borrow;
 
 pub(crate) struct SymbolPass<'a>(pub TypeCk<'a>);
 
@@ -124,7 +123,7 @@ impl<'a> SymbolPass<'a> {
         } else { true };
         if ok {
             self.scopes.declare(Symbol::Func(f));
-            // todo try implementing or inserting an abstr method to current class
+            // try implementing or inserting an abstr method to current class
             if f.is_abstr() {   // insert this abstr method into c's abstr method set
                 self.cur_class.unwrap().abstr_methods.borrow_mut().insert(f.name);
             } else {  // remove

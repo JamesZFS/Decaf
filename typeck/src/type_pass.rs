@@ -50,7 +50,7 @@ impl<'a> TypePass<'a> {
             }
             StmtKind::LocalVarDef(v) => {
                 self.cur_var_def = Some(v);
-                if let Some((loc, e)) = &v.init {
+                if let Some((loc, e)) = &v.init {   // with init expr
                     let (l, r) = (v.ty.get(), self.expr(e));
                     if !r.assignable_to(l) { self.issue(*loc, IncompatibleBinary { l, op: "=", r }) }
                 }
@@ -156,6 +156,7 @@ impl<'a> TypePass<'a> {
                 Ty::mk_obj(self.cur_class.unwrap())
             }
             NewClass(n) => if let Some(c) = self.scopes.lookup_class(n.name) {
+                if c.abstr_ { self.issue(e.loc, NewAbstractClass(c.name)) }
                 n.class.set(Some(c));
                 Ty::mk_obj(c)
             } else { self.issue(e.loc, NoSuchClass(n.name)) },
