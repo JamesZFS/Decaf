@@ -8,8 +8,8 @@ fn main() {
 //        format!("TestCases/S1/result/{}.result", task),
 //        Pa::Pa1b,
 //    ));
-    for &path in ["TestCases/S1", "TestCases/S1-LL"].iter() {
-        for result in test_all(path, Pa::Pa1b).unwrap() {
+    for &path in ["TestCases/S2-rs"].iter() {
+        for result in test_all(path, Pa::Pa2).unwrap() {
             println!("{:?}", result);
         }
     }

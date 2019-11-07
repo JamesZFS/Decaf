@@ -76,7 +76,8 @@ pub struct FuncDef<'a> {
     pub ret: SynTy<'a>,
     pub param: Vec<&'a VarDef<'a>>,
     pub static_: bool,
-    pub body: Option<Block<'a>>,    // when body is None => it's an abstract method
+    pub body: Option<Block<'a>>,
+    // when body is None => it's an abstract method
     // placing ret and param ty in one slice is mainly to some space, especially the size of struct Ty
     // [0] is ret_ty, [1..] is parm_ty
     pub ret_param_ty: Cell<Option<&'a [Ty<'a>]>>,
@@ -87,6 +88,13 @@ pub struct FuncDef<'a> {
 
 impl<'a> FuncDef<'a> {
     pub fn ret_ty(&self) -> Ty<'a> { self.ret_param_ty.get().unwrap()[0] }
+
+    pub fn is_abstr(&self) -> bool {
+        match self.body {
+            None => true,
+            Some(_) => false,
+        }
+    }
 }
 
 pub struct VarDef<'a> {
