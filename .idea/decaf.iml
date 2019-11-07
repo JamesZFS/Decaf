@@ -42,16 +42,52 @@
       <sourceFolder url="file://$MODULE_DIR$/driver/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/driver/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/driver/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/common\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/common\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/common\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/print\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/print\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/print\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tac\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tac\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tac\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/codegen\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/codegen\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/codegen\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tacopt\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tacopt\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tacopt\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/syntax\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/syntax\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/syntax\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/driver\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/driver\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/driver\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tacgen\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tacgen\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tacgen\benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/typeck\examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/typeck\tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/typeck\benches" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/codegen/target" />
+      <excludeFolder url="file://$MODULE_DIR$/codegen\target" />
       <excludeFolder url="file://$MODULE_DIR$/common/target" />
+      <excludeFolder url="file://$MODULE_DIR$/common\target" />
       <excludeFolder url="file://$MODULE_DIR$/driver/target" />
+      <excludeFolder url="file://$MODULE_DIR$/driver\target" />
       <excludeFolder url="file://$MODULE_DIR$/print/target" />
+      <excludeFolder url="file://$MODULE_DIR$/print\target" />
       <excludeFolder url="file://$MODULE_DIR$/syntax/target" />
+      <excludeFolder url="file://$MODULE_DIR$/syntax\target" />
       <excludeFolder url="file://$MODULE_DIR$/tac/target" />
+      <excludeFolder url="file://$MODULE_DIR$/tac\target" />
       <excludeFolder url="file://$MODULE_DIR$/tacgen/target" />
+      <excludeFolder url="file://$MODULE_DIR$/tacgen\target" />
       <excludeFolder url="file://$MODULE_DIR$/tacopt/target" />
+      <excludeFolder url="file://$MODULE_DIR$/tacopt\target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/typeck/target" />
+      <excludeFolder url="file://$MODULE_DIR$/typeck\target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

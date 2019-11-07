@@ -14,10 +14,13 @@ pub struct TypeCkAlloc<'a> {
     pub ty: Arena<Ty<'a>>,
 }
 
+// *** the overall pipeline ***
 pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Errors<'a, Ty<'a>>> {
+    // 1st scan, constructing sym tables
     let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: None, alloc });
     s.program(p);
     if !s.errors.0.is_empty() { return Err(s.0.errors.sorted()); }
+    // 2nd scan
     let mut t = TypePass(s.0);
     t.program(p);
     if !t.errors.0.is_empty() { return Err(t.0.errors.sorted()); }
@@ -25,19 +28,20 @@ pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Er
 }
 
 struct TypeCk<'a> {
-  errors: Errors<'a, Ty<'a>>,
-  scopes: ScopeStack<'a>,
-  loop_cnt: u32,
-  // `cur_used` is only used to determine 2 kinds of errors:
-  // Class.var (cur_used == true) => BadFieldAssess; Class (cur_used == false) => UndeclaredVar
-  cur_used: bool,
-  cur_func: Option<&'a FuncDef<'a>>,
-  cur_class: Option<&'a ClassDef<'a>>,
-  // actually only use cur_var_def's loc
-  // if cur_var_def is Some, will use it's loc to search for symbol in TypePass::var_sel
-  // this can reject code like `int a = a;`
-  cur_var_def: Option<&'a VarDef<'a>>,
-  alloc: &'a TypeCkAlloc<'a>,
+    errors: Errors<'a, Ty<'a>>,
+    scopes: ScopeStack<'a>,
+    // the symbol tables
+    loop_cnt: u32,
+    // `cur_used` is only used to determine 2 kinds of errors:
+    // Class.var (cur_used == true) => BadFieldAssess; Class (cur_used == false) => UndeclaredVar
+    cur_used: bool,
+    cur_func: Option<&'a FuncDef<'a>>,
+    cur_class: Option<&'a ClassDef<'a>>,
+    // actually only use cur_var_def's loc
+    // if cur_var_def is Some, will use it's loc to search for symbol in TypePass::var_sel
+    // this can reject code like `int a = a;`
+    cur_var_def: Option<&'a VarDef<'a>>,
+    alloc: &'a TypeCkAlloc<'a>,
 }
 
 impl<'a> TypeCk<'a> {
@@ -70,12 +74,12 @@ impl<'a> TypeCk<'a> {
 }
 
 impl<'a> Deref for TypeCk<'a> {
-  type Target = Errors<'a, Ty<'a>>;
-  fn deref(&self) -> &Self::Target { &self.errors }
+    type Target = Errors<'a, Ty<'a>>;
+    fn deref(&self) -> &Self::Target { &self.errors }
 }
 
 impl<'a> DerefMut for TypeCk<'a> {
-  fn deref_mut(&mut self) -> &mut Self::Target { &mut self.errors }
+    fn deref_mut(&mut self) -> &mut Self::Target { &mut self.errors }
 }
 
 trait TypeCkTrait<'a> {
