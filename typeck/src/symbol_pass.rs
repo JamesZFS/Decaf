@@ -3,7 +3,6 @@ use common::{ErrorKind::*, Ref, MAIN_CLASS, MAIN_METHOD, NO_LOC, HashMap, HashSe
 use syntax::{ast::*, ScopeOwner, Symbol, Ty};
 use std::{ops::{Deref, DerefMut}, iter};
 use hashbrown::hash_map::Entry;
-use syntax::TyKind::Void;
 
 pub(crate) struct SymbolPass<'a>(pub TypeCk<'a>);
 
@@ -24,7 +23,7 @@ impl<'a> SymbolPass<'a> {
             if let Some(prev) = self.scopes.lookup_class(c.name) {
                 self.issue(c.loc, ConflictDeclaration { prev: prev.loc, name: c.name })
             } else {
-                self.scopes.declare(Symbol::Class(c));
+                self.scopes.declare(Symbol::Class(c));  // declare a class in global scope
             }
         }
         for c in &p.class { // link class deriving relations
@@ -66,16 +65,18 @@ impl<'a> SymbolPass<'a> {
             }
         }
         // check Main function
-        if p.main.get().map(|c| match c.scope.borrow().get(MAIN_METHOD) {
+        if p.main.get().map(|c| match c.scope.borrow().get(MAIN_METHOD) { // must contains a static main() function
             Some(Symbol::Func(main)) if main.static_ && main.param.is_empty() && main.ret_ty() == Ty::void() => false,
             _ => true
         }).unwrap_or(true) { self.issue(NO_LOC, NoMainClass) }
     }
 
     fn class_def(&mut self, c: &'a ClassDef<'a>, checked: &mut HashSet<Ref<'a, ClassDef<'a>>>) {
-        if !checked.insert(Ref(c)) { return; }
+        if !checked.insert(Ref(c)) { return; }  // already scanned
+        // scan base class
         if let Some(p) = c.parent_ref.get() { self.class_def(p, checked); }
         self.cur_class = Some(c);
+        // scan and scope current class todo why not scope p?
         self.scoped(ScopeOwner::Class(c), |s| for f in &c.field {
             match f {
                 FieldDef::FuncDef(f) => s.func_def(f),
@@ -90,7 +91,7 @@ impl<'a> SymbolPass<'a> {
             if !f.static_ { s.scopes.declare(Symbol::This(f)); }
             for v in &f.param { s.var_def(v); }
             if let Some(b) = f.body.as_ref() { // todo for non-abstract method
-                s.block(b);
+                s.block(b); // check block
             }
         });
         let ret_param_ty = iter::once(ret_ty).chain(f.param.iter().map(|v| v.ty.get()));
@@ -120,15 +121,18 @@ impl<'a> SymbolPass<'a> {
     fn var_def(&mut self, v: &'a VarDef<'a>) {
         v.ty.set(self.ty(&v.syn_ty, false));
         if v.ty.get() == Ty::void() { self.issue(v.loc, VoidVar(v.name)) }
+        // TODO for Var type
+
+        // todo how to open parents' scopes ?
         let ok = if let Some((sym, owner)) = self.scopes.lookup(v.name) {
             match (self.scopes.cur_owner(), owner) {
                 (ScopeOwner::Class(c1), ScopeOwner::Class(c2)) if Ref(c1) != Ref(c2) && sym.is_var() =>
-                    self.issue(v.loc, OverrideVar(v.name)),
+                    self.issue(v.loc, OverrideVar(v.name)), // c2 is base of c1
                 (ScopeOwner::Class(_), ScopeOwner::Class(_)) | (_, ScopeOwner::Param(_)) | (_, ScopeOwner::Local(_)) =>
-                    self.issue(v.loc, ConflictDeclaration { prev: sym.loc(), name: v.name }),
+                    self.issue(v.loc, ConflictDeclaration { prev: sym.loc(), name: v.name }),   // decaf forbids var shadowing
                 _ => true,
             }
-        } else { true };
+        } else { true };    // not found, ok
         if ok {
             v.owner.set(Some(self.scopes.cur_owner()));
             self.scopes.declare(Symbol::Var(v));
