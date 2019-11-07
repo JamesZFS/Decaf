@@ -76,7 +76,7 @@ impl<'a> SymbolPass<'a> {
         // scan base class
         if let Some(p) = c.parent_ref.get() {
             self.class_def(p, checked);
-            c.abstr_methods.borrow_mut().clone_from(&p.abstr_methods.borrow());
+            c.unimpl_mthds.borrow_mut().clone_from(&p.unimpl_mthds.borrow()); // init unimplemented methods from base
         }
         self.cur_class = Some(c);
         // scan and scope current class todo why not scope p?
@@ -86,7 +86,7 @@ impl<'a> SymbolPass<'a> {
                 FieldDef::VarDef(v) => s.var_def(v)
             };
         });
-        if !c.abstr_methods.borrow().is_empty() && !c.abstr_ {
+        if !c.unimpl_mthds.borrow().is_empty() && !c.abstr_ {
             self.issue(c.loc, BadConcreteClass(c.name))
         }
     }
@@ -109,7 +109,7 @@ impl<'a> SymbolPass<'a> {
                 (ScopeOwner::Class(c), ScopeOwner::Class(p)) if Ref(c) != Ref(p) => {
                     match sym {
                         Symbol::Func(pf) => {
-                            if f.static_ || pf.static_ {
+                            if f.static_ || pf.static_ || (f.is_abstr() && !pf.is_abstr()) {
                                 self.issue(f.loc, ConflictDeclaration { prev: pf.loc, name: f.name })
                             } else if !Ty::mk_func(f).assignable_to(Ty::mk_func(pf)) {  // signature mismatch
                                 self.issue(f.loc, OverrideMismatch { func: f.name, p: p.name })
@@ -125,9 +125,9 @@ impl<'a> SymbolPass<'a> {
             self.scopes.declare(Symbol::Func(f));
             // try implementing or inserting an abstr method to current class
             if f.is_abstr() {   // insert this abstr method into c's abstr method set
-                self.cur_class.unwrap().abstr_methods.borrow_mut().insert(f.name);
+                self.cur_class.unwrap().unimpl_mthds.borrow_mut().insert(f.name);
             } else {  // remove
-                self.cur_class.unwrap().abstr_methods.borrow_mut().remove(f.name);
+                self.cur_class.unwrap().unimpl_mthds.borrow_mut().remove(f.name);
             }
         }
     }

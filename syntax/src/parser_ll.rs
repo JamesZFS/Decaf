@@ -215,7 +215,7 @@ impl<'p> Parser<'p> {
 
     #[rule(ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc)]
     fn class_def(&self, abstr_: bool, c: Token, name: Token, parent: Option<&'p str>, _l: Token, field: Vec<FieldDef<'p>>, _r: Token) -> &'p ClassDef<'p> {
-        self.alloc.class.alloc(ClassDef { abstr_, loc: c.loc(), name: name.str(), parent, field: field.reversed(), parent_ref: dft(), scope: dft(), abstr_methods: dft() })
+        self.alloc.class.alloc(ClassDef { abstr_, loc: c.loc(), name: name.str(), parent, field: field.reversed(), parent_ref: dft(), scope: dft(), unimpl_mthds: dft() })
     }
 
     #[rule(MaybeAbstract -> Abstract)]

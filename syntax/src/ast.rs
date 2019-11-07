@@ -29,7 +29,7 @@ pub struct ClassDef<'a> {
     pub field: Vec<FieldDef<'a>>,
     pub parent_ref: Cell<Option<&'a ClassDef<'a>>>,
     pub scope: RefCell<Scope<'a>>,
-    pub abstr_methods: RefCell<HashSet<&'a str>>
+    pub unimpl_mthds: RefCell<HashSet<&'a str>> // unimplemented methods
 }
 
 impl<'a> ClassDef<'a> {
