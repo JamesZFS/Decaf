@@ -59,9 +59,9 @@ pub enum ErrorKind<'a, Ty> {
     BadFieldAccess { name: &'a str, owner: Ty },
     PrivateFieldAccess { name: &'a str, owner: Ty },
     NoSuchField { name: &'a str, owner: Ty },
-    NotFunc { name: &'a str, owner: Ty },
+//    NotFunc { name: &'a str, owner: Ty },
     LengthWithArgument(u32),
-    ArgCountMismatch { name: &'a str, expect: u32, actual: u32 },
+    FuncArgCountMismatch { name: &'a str, expect: u32, actual: u32 },
     ArgMismatch { loc: u32, arg: Ty, param: Ty },
     ThisInStatic,
     NotObject(Ty),
@@ -74,6 +74,8 @@ pub enum ErrorKind<'a, Ty> {
     // new feats:
     BadConcreteClass(&'a str),
     NewAbstractClass(&'a str),
+    NotCallable(Ty),
+    LambdaArgCountMismatch { expect: u32, actual: u32 },
     DebugError(&'a str)
 }
 
@@ -105,8 +107,8 @@ impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
             PrivateFieldAccess { name, owner } => write!(f, "field '{}' of '{:?}' not accessible here", name, owner),
             NoSuchField { name, owner } => write!(f, "field '{}' not found in '{:?}'", name, owner),
             LengthWithArgument(cnt) => write!(f, "function 'length' expects 0 argument(s) but {} given", cnt),
-            NotFunc { name, owner } => write!(f, "'{}' is not a method in class '{:?}'", name, owner),
-            ArgCountMismatch { name, expect, actual } => write!(f, "function '{}' expects {} argument(s) but {} given", name, expect, actual),
+//            NotFunc { name, owner } => write!(f, "'{}' is not a method in class '{:?}'", name, owner),
+            FuncArgCountMismatch { name, expect, actual } => write!(f, "function '{}' expects {} argument(s) but {} given", name, expect, actual),
             ArgMismatch { loc, arg, param } => write!(f, "incompatible argument {}: {:?} given, {:?} expected", loc, arg, param),
             ThisInStatic => write!(f, "can not use this in static function"),
             NotObject(ty) => write!(f, "{:?} is not a class type", ty),
@@ -119,6 +121,8 @@ impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
             // new feats:
             BadConcreteClass(name) => write!(f, "'{}' is not abstract and does not override all abstract methods", name),
             NewAbstractClass(name) => write!(f, "cannot instantiate abstract class '{}'", name),
+            NotCallable(ty) => write!(f, "{:?} is not a callable type", ty),
+            LambdaArgCountMismatch { expect, actual } => write!(f, "lambda expression expects {} argument(s) but {} given", expect, actual),
             DebugError(msg) => write!(f, "debugger: {}", msg)
         }
     }

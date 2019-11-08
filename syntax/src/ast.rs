@@ -216,7 +216,14 @@ pub struct Call<'a> {
     // hint: there are 2 places using `func` as VarSel, and there are 2 unimplemented!() respectively
     pub func: Box<Expr<'a>>,
     pub arg: Vec<Expr<'a>>,
-    pub func_ref: Cell<Option<&'a FuncDef<'a>>>,
+    pub func_ref: Cell<Option<Callable<'a>>>,
+}
+
+#[derive(Copy, Clone, derive_more::From)]
+pub enum Callable<'a> { // type of Call expr's lhs
+    FuncDef(&'a FuncDef<'a>),
+    Lambda(&'a Lambda<'a>),
+    Length
 }
 
 pub struct Binary<'a> {

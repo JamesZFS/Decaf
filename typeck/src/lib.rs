@@ -3,7 +3,7 @@ mod symbol_pass;
 mod type_pass;
 
 use common::{Errors, ErrorKind::*, Ref};
-use syntax::{FuncDef, ClassDef, SynTy, SynTyKind, ScopeOwner, Ty, TyKind, Program, VarDef};
+use syntax::{FuncDef, ClassDef, SynTy, SynTyKind, ScopeOwner, Ty, TyKind, Program, VarDef, Callable};
 use typed_arena::Arena;
 use std::ops::{Deref, DerefMut};
 use crate::{symbol_pass::SymbolPass, type_pass::TypePass, scope_stack::ScopeStack};
@@ -17,7 +17,7 @@ pub struct TypeCkAlloc<'a> {
 // *** the overall pipeline ***
 pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Errors<'a, Ty<'a>>> {
     // 1st scan, constructing sym tables
-    let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: None, alloc });
+    let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: None, cur_caller: None, alloc });
     s.program(p);
     if !s.errors.0.is_empty() { return Err(s.0.errors.sorted()); }
     // 2nd scan
@@ -41,6 +41,8 @@ struct TypeCk<'a> {
     // if cur_var_def is Some, will use it's loc to search for symbol in TypePass::var_sel
     // this can reject code like `int a = a;`
     cur_var_def: Option<&'a VarDef<'a>>,
+    cur_caller: Option<Callable<'a>>,
+    // type of current Call expr's lhs
     alloc: &'a TypeCkAlloc<'a>,
 }
 
@@ -71,6 +73,22 @@ impl<'a> TypeCk<'a> {
             _ => Ty { arr: s.arr + (is_arr as u32), kind }
         }
     }
+
+    const NULL_TO_INT: [Ty<'a>; 1] = [Ty::int()];
+
+//    pub fn length_function() -> FuncDef<'a> {
+//        FuncDef {
+//            loc: NO_LOC,
+//            name: LENGTH,
+//            ret: SynTy { loc: NO_LOC, arr: 0, kind: SynTyKind::Int },
+//            param: vec![],
+//            static_: false,
+//            body: None,
+//            ret_param_ty: Cell::new(Some(&Self::NULL_TO_INT)),    // () => int
+//            class: dft(),
+//            scope: dft(),
+//        }
+//    }
 }
 
 impl<'a> Deref for TypeCk<'a> {

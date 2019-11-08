@@ -246,7 +246,10 @@ impl<'a> TacGen<'a> {
             self.length(arr, f)
           }
           _ => {
-            let fu = c.func_ref.get().unwrap();
+            let fu = match c.func_ref.get().unwrap() {
+              Callable::FuncDef(fd) => fd,
+              _ => unimplemented!(),
+            };
             let ret = if fu.ret_ty() != Ty::void() { Some(self.reg()) } else { None };
             let args = c.arg.iter().map(|a| self.expr(a, f)).collect::<Vec<_>>();
             let hint = CallHint {

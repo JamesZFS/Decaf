@@ -1,7 +1,7 @@
 use crate::{TypeCk, TypeCkTrait};
 use common::{ErrorKind::*, Loc, LENGTH, BinOp, UnOp, ErrorKind, Ref};
 use syntax::ast::*;
-use syntax::{ScopeOwner, Symbol, ty::*, dft};
+use syntax::{ScopeOwner, Symbol, ty::*};
 use std::ops::{Deref, DerefMut};
 
 pub(crate) struct TypePass<'a>(pub TypeCk<'a>);
@@ -25,7 +25,7 @@ impl<'a> TypePass<'a> {
         self.scoped(ScopeOwner::Class(c), |s|
             for f in &c.field { // in class scope c of self, for all funcdefs in c:
                 if let FieldDef::FuncDef(f) = f {
-                    if f.is_abstr() { continue; }  // todo skip type check for abstract func
+                    if f.is_abstr() { continue; }  // skip type check for abstract func
                     s.cur_func = Some(f);
                     let ret = s.scoped(ScopeOwner::Param(f), |s|
                         s.block(&f.body.as_ref().unwrap())); // in f's param scope
@@ -196,10 +196,12 @@ impl<'a> TypePass<'a> {
 
         if let Some(owner) = &v.owner { // has owner
             self.cur_used = true;
-            let owner = self.expr(owner);   // owner checked
+            let owner = self.expr(owner);   // owner checked, ** recurse **
             self.cur_used = false;
-            if v.name == LENGTH && owner.is_arr() {
-                return Ty::new(TyKind::Func(&[Ty::int()]));
+            if v.name == LENGTH && owner.is_arr() {  // arr.length()
+//                TypeCk::length_function();
+                self.cur_caller = Some(Callable::Length); // todo how to use const item?
+                return Ty::new(TyKind::Func(&TypeCk::NULL_TO_INT));
             }
             match owner {
                 // selecting an object's var or method
@@ -210,17 +212,19 @@ impl<'a> TypePass<'a> {
                             v.field.set(Some(FieldDef::VarDef(var)));
                             // only allow self & descendents to access field
                             if !self.cur_class.unwrap().extends(c) {
-                                self.issue(loc, PrivateFieldAccess { name: v.name, owner })
+                                self.issue(loc, PrivateFieldAccess { name: var.name, owner })
                             }
+                            self.cur_caller = None;
                             var.ty.get()
                         }
-                        Symbol::Func(f) => {
+                        Symbol::Func(f) => {  // methods are always public
                             v.field.set(Some(FieldDef::FuncDef(f)));
                             // only allow self & descendents to access field or access static method
-                            if !f.static_ && !self.cur_class.unwrap().extends(c) {
-                                self.issue(loc, PrivateFieldAccess { name: v.name, owner })
-                            }
-                            f.ret_ty()
+                            /*if !f.static_ && !self.cur_class.unwrap().extends(c) {
+                                self.issue(loc, PrivateFieldAccess { name: f.name, owner })
+                            }*/
+                            self.cur_caller = Some(f.into());
+                            Ty::mk_func(f)
                         }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
                     }
@@ -233,16 +237,18 @@ impl<'a> TypePass<'a> {
                 Ty { arr: 0, kind: TyKind::Class(Ref(c)) } => if let Some(sym) = c.lookup(v.name) {
                     match sym {
                         Symbol::Func(f) => if f.static_ {
+//                            println!("got static method {}", f.name);
                             v.field.set(Some(FieldDef::FuncDef(f)));
-                            f.ret_ty()
-                        } else { self.issue(loc, BadFieldAccess { name: v.name, owner }) }
+                            self.cur_caller = Some(f.into());
+                            Ty::mk_func(f)
+                        } else { self.issue(loc, BadFieldAccess { name: f.name, owner }) }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }) // no static var etc.
                     }
                 } else { self.issue(loc, NoSuchField { name: v.name, owner }) },
                 e => e.error_or(|| self.issue(loc, BadFieldAccess { name: v.name, owner })),
             }
         } else { // no owner
-            // a  |  fun
+            // a  |  fun  |  A
             // if this stmt is in an VarDef, it cannot access the variable that is being declared
             if let Some(sym) = self.scopes.lookup_before(v.name, self.cur_var_def.map(|v| v.loc).unwrap_or(loc)) {
                 match sym {
@@ -254,17 +260,19 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
                         }
+                        self.cur_caller = None;
                         var.ty.get()
                     }
                     Symbol::Func(f) => {  // fun
                         v.field.set(Some(FieldDef::FuncDef(f)));
                         if !f.static_ {
-                            let cur = self.cur_func.unwrap_or_else(|| unreachable!("var_sel bad unwarpping"));
+                            let cur = self.cur_func.unwrap();
                             if cur.static_ {
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
                         }
-                        f.ret_ty()
+                        self.cur_caller = Some(f.into());
+                        Ty::mk_func(f)
                     }
                     Symbol::Class(c) if self.cur_used => { Ty::mk_class(c) }
                     _ => self.issue(loc, UndeclaredVar(v.name)),
@@ -273,29 +281,15 @@ impl<'a> TypePass<'a> {
         }
     }
 
-    fn call(&mut self, cl: &'a Call<'a>, loc: Loc) -> Ty<'a> {
-        if let ExprKind::VarSel(v) = &cl.func.kind { // specially deal with arr.length()
-            if let Some(owner) = &v.owner {
-                self.cur_used = true;
-                let owner = self.expr(owner);
-                self.cur_used = false;
-                if owner == Ty::error() { return Ty::error(); } // early stop
-                if v.name == LENGTH && owner.is_arr() {
-                    if !cl.arg.is_empty() {
-                        self.issue(loc, LengthWithArgument(cl.arg.len() as u32))
-                    }
-                    return Ty::int(); // eg: int[] a; a.length();
-                }
-            } // call current class's method
+    fn call(&mut self, c: &'a Call<'a>, loc: Loc) -> Ty<'a> {
+//        println!("enter call {}", loc);
+        let lhs_ty = self.expr(&c.func);
+        if lhs_ty == Ty::error() { return Ty::error(); }
+        c.func_ref.set(self.cur_caller);
+        match lhs_ty.kind {
+            TyKind::Func(f) => self.check_arg_param(&c.arg, f, loc),
+            _ => self.issue(loc, NotCallable(lhs_ty))
         }
-        let expr = self.expr(&cl.func);
-        match expr.kind {
-            TyKind::Func(f) => {
-                self.check_arg_param(&c.arg, f.ret_param_ty.get().unwrap(), f.name, loc)
-            }
-            _ => self.issue(loc, NotFunc { name: "", owner: dft() })
-        }
-        // todo
     }
 }
 
@@ -305,10 +299,17 @@ impl<'a> TypePass<'a> {
         if ty != Ty::bool() { ty.error_or(|| self.issue(e.loc, TestNotBool)) }
     }
 
-    fn check_arg_param(&mut self, arg: &'a [Expr<'a>], ret_param: &[Ty<'a>], name: &'a str, loc: Loc) -> Ty<'a> {
+    fn check_arg_param(&mut self, arg: &'a [Expr<'a>], ret_param: &[Ty<'a>], loc: Loc) -> Ty<'a> {
         let (ret, param) = (ret_param[0], &ret_param[1..]);
         if param.len() != arg.len() {
-            self.issue(loc, ArgCountMismatch { name, expect: param.len() as u32, actual: arg.len() as u32 })
+            match self.cur_caller.unwrap_or_else(|| unreachable!("got None cur_caller in check_arg_param")) {
+                Callable::FuncDef(f) =>
+                    self.issue::<()>(loc, FuncArgCountMismatch { name: f.name, expect: param.len() as u32, actual: arg.len() as u32 }),
+                Callable::Lambda(_) =>
+                    self.issue(loc, LambdaArgCountMismatch { expect: param.len() as u32, actual: arg.len() as u32 }),
+                Callable::Length =>
+                    self.issue(loc, LengthWithArgument(arg.len() as u32)),
+            };
         }
         for (idx, arg0) in arg.iter().enumerate() {
             let arg = self.expr(arg0);
