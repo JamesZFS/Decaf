@@ -314,7 +314,7 @@ impl<'p> Parser<'p> {
     #[rule(Expr -> Call)]
     fn expr_call(func: Expr<'p>) -> Expr<'p> { func }
 
-    // lambda call
+    // lambda / function call
     #[rule(Call -> Expr LPar ExprListOrEmpty RPar)]
     fn expr_call1(func: Expr<'p>, l: Token, arg: Vec<Expr<'p>>, _r: Token) -> Expr<'p> {
         mk_expr(l.loc(), Call { func: Box::new(func), arg, func_ref: dft() }.into())

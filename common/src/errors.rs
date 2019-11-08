@@ -74,6 +74,7 @@ pub enum ErrorKind<'a, Ty> {
     // new feats:
     BadConcreteClass(&'a str),
     NewAbstractClass(&'a str),
+    DebugError(&'a str)
 }
 
 impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
@@ -117,7 +118,8 @@ impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
             NoReturn => write!(f, "missing return statement: control reaches end of non-void block"),
             // new feats:
             BadConcreteClass(name) => write!(f, "'{}' is not abstract and does not override all abstract methods", name),
-            NewAbstractClass(name) => write!(f, "cannot instantiate abstract class '{}'", name)
+            NewAbstractClass(name) => write!(f, "cannot instantiate abstract class '{}'", name),
+            DebugError(msg) => write!(f, "debugger: {}", msg)
         }
     }
 }

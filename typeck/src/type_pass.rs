@@ -211,7 +211,10 @@ impl<'a> TypePass<'a> {
                         }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
                     }
-                } else { self.issue(loc, NoSuchField { name: v.name, owner }) },
+                } else {
+//                    self.issue(loc, NoSuchField { name: v.name, owner })
+                    self.issue(loc, DebugError("in var_sel, no such field"))
+                },
                 e => e.error_or(|| self.issue(loc, BadFieldAccess { name: v.name, owner })),
             }
         } else {
@@ -236,7 +239,7 @@ impl<'a> TypePass<'a> {
     }
 
     fn call(&mut self, c: &'a Call<'a>, loc: Loc) -> Ty<'a> {
-        let v = if let ExprKind::VarSel(v) = &c.func.kind { v } else { unimplemented!() };
+        let v = if let ExprKind::VarSel(v) = &c.func.kind { v } else { unimplemented!("got function call of lambda expr") };
         let owner = if let Some(owner) = &v.owner {
             self.cur_used = true;
             let owner = self.expr(owner);
@@ -249,7 +252,7 @@ impl<'a> TypePass<'a> {
                 return Ty::int();
             }
             owner
-        } else { Ty::mk_obj(self.cur_class.unwrap()) };
+        } else { Ty::mk_obj(self.cur_class.unwrap()) }; // call current class's method
         match owner {
             Ty { arr: 0, kind: TyKind::Object(Ref(cl)) } | Ty { arr: 0, kind: TyKind::Class(Ref(cl)) } => {
                 if let Some(sym) = cl.lookup(v.name) {
@@ -270,9 +273,13 @@ impl<'a> TypePass<'a> {
                         }
                         _ => self.issue(loc, NotFunc { name: v.name, owner }),
                     }
-                } else { self.issue(loc, NoSuchField { name: v.name, owner }) }
+                } else {
+//                    self.issue(loc, NoSuchField { name: v.name, owner })
+                    self.issue(loc, DebugError("in call, no such field"))
+                }
             }
-            _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
+//            _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
+            _ => self.issue(loc, DebugError("in call, bad field access")),
         }
     }
 }

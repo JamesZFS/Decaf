@@ -55,7 +55,7 @@ impl<'a> SymbolPass<'a> {
         // start constructing symbol tables within class scopes
         let mut checked = HashSet::new();
         for c in &p.class {
-            self.class_def(c, &mut checked);    // scan class
+            self.class_def(c, &mut checked);    // scan classes
             if c.name == MAIN_CLASS {
                 if c.abstr_ {   // Main class shouldn't be abstract
                     return self.issue(NO_LOC, NoMainClass);
@@ -97,7 +97,7 @@ impl<'a> SymbolPass<'a> {
             if !f.static_ { s.scopes.declare(Symbol::This(f)); }
             for v in &f.param { s.var_def(v); }
             if let Some(b) = f.body.as_ref() {
-                s.block(b); // check block
+                s.block(b); // check block for non-abstract methods
             }
         });
         let ret_param_ty = iter::once(ret_ty).chain(f.param.iter().map(|v| v.ty.get()));
