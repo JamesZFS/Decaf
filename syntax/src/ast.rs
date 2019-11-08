@@ -172,7 +172,7 @@ pub struct Expr<'a> {
 
 #[derive(derive_more::From)]
 pub enum ExprKind<'a> {
-    VarSel(VarSel<'a>),
+    VarSel(VarSel<'a>), // maybe callable
     IndexSel(IndexSel<'a>),
     IntLit(i32),
     BoolLit(bool),
@@ -188,7 +188,7 @@ pub enum ExprKind<'a> {
     NewArray(NewArray<'a>),
     ClassTest(ClassTest<'a>),
     ClassCast(ClassCast<'a>),
-    Lambda(Lambda<'a>),
+    Lambda(Lambda<'a>), // callable
 }
 
 pub struct Lambda<'a> {
@@ -213,7 +213,6 @@ pub struct IndexSel<'a> {
 }
 
 pub struct Call<'a> {
-    // the framework only support `func` as VarSel
     // hint: there are 2 places using `func` as VarSel, and there are 2 unimplemented!() respectively
     pub func: Box<Expr<'a>>,
     pub arg: Vec<Expr<'a>>,
