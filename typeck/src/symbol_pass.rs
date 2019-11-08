@@ -130,7 +130,7 @@ impl<'a> SymbolPass<'a> {
                 self.cur_class.unwrap().unimpl_mthds.borrow_mut().remove(f.name);
             }
         }
-    }
+    } // todo ret_ty and param_ty for lambda function
 
     fn var_def(&mut self, v: &'a VarDef<'a>) {
         v.ty.set(self.ty(&v.syn_ty, false));

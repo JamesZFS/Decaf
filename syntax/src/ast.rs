@@ -204,7 +204,7 @@ pub enum LambdaKind<'a> {
 pub struct VarSel<'a> {
     pub owner: Option<Box<Expr<'a>>>,
     pub name: &'a str,
-    pub var: Cell<Option<&'a VarDef<'a>>>,
+    pub field: Cell<Option<FieldDef<'a>>>,
 }
 
 pub struct IndexSel<'a> {

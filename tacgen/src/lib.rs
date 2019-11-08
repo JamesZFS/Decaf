@@ -182,7 +182,10 @@ impl<'a> TacGen<'a> {
     let assign = self.cur_assign.take();
     match &e.kind {
       VarSel(v) => Reg({
-        let var = v.var.get().unwrap();
+        let var = match v.field.get().unwrap() {
+          FieldDef::FuncDef(_) => unimplemented!(),
+          FieldDef::VarDef(vd) => vd,
+        };
         let off = self.var_info[&Ref(var)].off;
         match var.owner.get().unwrap() {
           ScopeOwner::Local(_) | ScopeOwner::Param(_) => if let Some(src) = assign { // off is register

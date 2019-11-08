@@ -181,7 +181,7 @@ impl<'a> TypePass<'a> {
                     Ty::mk_obj(cl)
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
-            Lambda(_) => { unimplemented!() }
+            Lambda(_) => { unimplemented!() }   // todo
         };
         e.ty.set(ty);
         ty
@@ -196,25 +196,45 @@ impl<'a> TypePass<'a> {
 
         if let Some(owner) = &v.owner {
             self.cur_used = true;
-            let owner = self.expr(owner);
+            let owner = self.expr(owner);   // owner checked
             self.cur_used = false;
             match owner {
+                // selecting an object's var or method
                 Ty { arr: 0, kind: TyKind::Object(Ref(c)) } => if let Some(sym) = c.lookup(v.name) {
                     match sym {
                         Symbol::Var(var) => {
-                            v.var.set(Some(var));
+                            v.field.set(Some(FieldDef::VarDef(var)));
                             // only allow self & descendents to access field
                             if !self.cur_class.unwrap().extends(c) {
                                 self.issue(loc, PrivateFieldAccess { name: v.name, owner })
                             }
                             var.ty.get()
                         }
+                        Symbol::Func(f) => {
+                            v.field.set(Some(FieldDef::FuncDef(f)));
+                            // only allow self & descendents to access field
+                            if !self.cur_class.unwrap().extends(c) {
+                                self.issue(loc, PrivateFieldAccess { name: v.name, owner })
+                            }
+                            f.ret_ty()
+                        }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
                     }
-                } else {
+                } else {    // symbol not found
 //                    self.issue(loc, NoSuchField { name: v.name, owner })
                     self.issue(loc, DebugError("in var_sel, no such field"))
                 },
+                // selecting a static method
+                Ty { arr: 0, kind: TyKind::Class(Ref(c)) } => if let Some(sym) = c.lookup(v.name) {
+                    match sym {
+                        Symbol::Func(f) => if f.static_ {
+                            v.field.set(Some(FieldDef::FuncDef(f)));
+                            f.ret_ty()
+                        } else { self.issue(loc, BadFieldAccess { name: v.name, owner: owner }) }
+                        _ => self.issue(loc, BadFieldAccess { name: v.name, owner: owner }) // no static var etc.
+                    }
+                } else { self.issue(loc, BadFieldAccess { name: v.name, owner: owner }) },
+                // todo array.length()
                 e => e.error_or(|| self.issue(loc, BadFieldAccess { name: v.name, owner })),
             }
         } else {
@@ -222,14 +242,24 @@ impl<'a> TypePass<'a> {
             if let Some(sym) = self.scopes.lookup_before(v.name, self.cur_var_def.map(|v| v.loc).unwrap_or(loc)) {
                 match sym {
                     Symbol::Var(var) => {
-                        v.var.set(Some(var));
+                        v.field.set(Some(FieldDef::VarDef(var)));
                         if var.owner.get().unwrap().is_class() {
                             let cur = self.cur_func.unwrap();
-                            if cur.static_ {
+                            if cur.static_ {  // static function cannot access class's member var
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
                         }
                         var.ty.get()
+                    }
+                    Symbol::Func(f) => {
+                        v.field.set(Some(FieldDef::FuncDef(f)));
+                        if !f.static_ {
+                            let cur = self.cur_func.unwrap_or_else(|| unreachable!("var_sel bad unwarpping"));
+                            if cur.static_ {
+                                self.issue(loc, RefInStatic { field: v.name, func: cur.name })
+                            }
+                        }
+                        f.ret_ty()
                     }
                     Symbol::Class(c) if self.cur_used => { Ty::mk_class(c) }
                     _ => self.issue(loc, UndeclaredVar(v.name)),
