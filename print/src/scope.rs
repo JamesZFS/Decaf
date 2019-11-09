@@ -1,4 +1,4 @@
-use common::{IndentPrinter, IgnoreResult, Loc};
+use common::{IndentPrinter, IgnoreResult};
 use syntax::{ast::*, Scope};
 use std::fmt::Write;
 
@@ -55,34 +55,60 @@ pub fn block(b: &Block, p: &mut IndentPrinter) {
     write!(p, "LOCAL SCOPE:").ignore();
     p.indent(|p| {
         show_scope(&b.scope.borrow(), p);
-        for s in &b.stmt {
-            match &s.kind {
-                StmtKind::If(i) => {
-                    block(&i.on_true, p);
-                    if let Some(on_false) = &i.on_false { block(on_false, p); }
-                }
-                StmtKind::While(w) => block(&w.body, p),
-                StmtKind::For(f) => block(&f.body, p),
-                StmtKind::Block(b) => block(b, p),
-                // lambda expr
-                StmtKind::Assign(Assign { dst: _, src }) => expr(src, p),
-                StmtKind::LocalVarDef(VarDef { init: Some((_, e)), .. }) => expr(e, p),
-                StmtKind::ExprEval(e) => expr(e, p),
-                StmtKind::Return(Some(e)) => expr(e, p),
-                StmtKind::Print(es) => for e in es { expr(e, p) }
-                _ => {}
-            }
-        }
+        for s in &b.stmt { stmt(s, p); }
     });
 }
 
-pub fn expr(e: &Expr, p: &mut IndentPrinter) {
-    match &e.kind {
+pub fn stmt(s: &Stmt, p: &mut IndentPrinter) {
+    match &s.kind {
+        StmtKind::If(i) => {
+            expr(&i.cond, p);
+            block(&i.on_true, p);
+            if let Some(on_false) = &i.on_false { block(on_false, p); }
+        }
+        StmtKind::While(While { cond, body }) => {
+            expr(cond, p);
+            block(body, p)
+        }
+        StmtKind::For(For{ init, cond, update, body }) => {
+            simple_stmt(init, p);
+            expr(cond, p);
+            simple_stmt(update, p);
+            block(body, p)
+        },
+        StmtKind::Block(b) => block(b, p),
+        StmtKind::Return(Some(e)) => expr(e, p),
+        StmtKind::Print(es) => for e in es { expr(e, p) }
+        _ => simple_stmt(s, p)
+    };
+}
+
+pub fn simple_stmt(s: &Stmt, p: &mut IndentPrinter) {
+    match &s.kind {
+        StmtKind::Assign(Assign { dst, src }) => {
+            lvalue(dst, p);
+            expr(src, p)
+        },
+        StmtKind::LocalVarDef(VarDef { init: Some((_, e)), .. }) => expr(e, p),
+        StmtKind::ExprEval(e) => expr(e, p),
+        StmtKind::Skip(_) => {},
+        _ => {}
+    }
+}
+
+pub fn lvalue(l: &Expr, p: &mut IndentPrinter) {
+    match &l.kind {
         ExprKind::VarSel(VarSel { owner: Some(o), .. }) => expr(o, p),
         ExprKind::IndexSel(IndexSel { arr, idx }) => {
             expr(arr, p);
             expr(idx, p)
         }
+        _ => {}
+    }
+}
+
+pub fn expr(e: &Expr, p: &mut IndentPrinter) {
+    match &e.kind {
         ExprKind::Call(Call { func, arg, .. }) => {
             expr(func, p);
             for x in arg {
@@ -98,6 +124,6 @@ pub fn expr(e: &Expr, p: &mut IndentPrinter) {
         ExprKind::ClassTest(ClassTest { expr: e, .. }) => expr(e, p),
         ExprKind::ClassCast(ClassCast { expr: e, .. }) => expr(e, p),
         ExprKind::Lambda(l) => lambda_expr(l, p),   // all we're looking for is lambda expr
-        _ => {}
+        _ => lvalue(e, p)
     };
 }

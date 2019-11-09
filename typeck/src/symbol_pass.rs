@@ -177,8 +177,7 @@ impl<'a> SymbolPass<'a> {
                 for st in &f.body.stmt { s.stmt(st); }
             }),
             StmtKind::Block(b) => self.block(b),
-            StmtKind::ExprEval()
-            _ => {}
+            _ => {} // todo search everywhere in blocks for lambda expr
         };
     }
 }
