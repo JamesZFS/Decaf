@@ -34,8 +34,8 @@ pub fn func_def(f: &FuncDef, p: &mut IndentPrinter) {
     });
 }
 
-pub fn lambda_expr(l: &Lambda, loc: &Loc, p: &mut IndentPrinter) {
-    write!(p, "FORMAL SCOPE OF 'lambda@{:?}':", loc).ignore();
+pub fn lambda_expr(l: &Lambda, p: &mut IndentPrinter) {
+    write!(p, "FORMAL SCOPE OF '{}':", l.name).ignore();
     p.indent(|p| {
         show_scope(&l.scope.borrow(), p);   // formal scope
         match &l.body { // local scope
@@ -44,9 +44,9 @@ pub fn lambda_expr(l: &Lambda, loc: &Loc, p: &mut IndentPrinter) {
                 write!(p, "LOCAL SCOPE:").ignore();
                 p.indent(|p| {
                     show_scope(&s.borrow(), p);
-                    if let ExprKind::Lambda(l) = &e.kind { lambda_expr(l, &e.loc, p); }
+                    expr(e, p); // ** recurse **
                 });
-            },
+            }
         }
     });
 }
@@ -65,9 +65,39 @@ pub fn block(b: &Block, p: &mut IndentPrinter) {
                 StmtKind::For(f) => block(&f.body, p),
                 StmtKind::Block(b) => block(b, p),
                 // lambda expr
-                StmtKind::ExprEval(Expr { loc, ty: _, kind: ExprKind::Lambda(l) }) => lambda_expr(l, loc, p),
+                StmtKind::Assign(Assign { dst: _, src }) => expr(src, p),
+                StmtKind::LocalVarDef(VarDef { init: Some((_, e)), .. }) => expr(e, p),
+                StmtKind::ExprEval(e) => expr(e, p),
+                StmtKind::Return(Some(e)) => expr(e, p),
+                StmtKind::Print(es) => for e in es { expr(e, p) }
                 _ => {}
             }
         }
     });
+}
+
+pub fn expr(e: &Expr, p: &mut IndentPrinter) {
+    match &e.kind {
+        ExprKind::VarSel(VarSel { owner: Some(o), .. }) => expr(o, p),
+        ExprKind::IndexSel(IndexSel { arr, idx }) => {
+            expr(arr, p);
+            expr(idx, p)
+        }
+        ExprKind::Call(Call { func, arg, .. }) => {
+            expr(func, p);
+            for x in arg {
+                expr(x, p);
+            }
+        }
+        ExprKind::Unary(Unary { op: _, r }) => expr(r, p),
+        ExprKind::Binary(Binary { op: _, l, r }) => {
+            expr(l, p);
+            expr(r, p);
+        }
+        ExprKind::NewArray(NewArray { elem: _, len }) => expr(len, p),
+        ExprKind::ClassTest(ClassTest { expr: e, .. }) => expr(e, p),
+        ExprKind::ClassCast(ClassCast { expr: e, .. }) => expr(e, p),
+        ExprKind::Lambda(l) => lambda_expr(l, p),   // all we're looking for is lambda expr
+        _ => {}
+    };
 }

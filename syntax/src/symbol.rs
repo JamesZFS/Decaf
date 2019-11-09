@@ -10,7 +10,7 @@ pub enum Symbol<'a> {
     Func(&'a FuncDef<'a>),
     This(&'a FuncDef<'a>),
     Class(&'a ClassDef<'a>),
-    Lambda(&'a Lambda<'a>), // lambda & name
+    Lambda(&'a Lambda<'a>),
 }
 
 impl<'a> Symbol<'a> {

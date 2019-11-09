@@ -177,6 +177,7 @@ impl<'a> SymbolPass<'a> {
                 for st in &f.body.stmt { s.stmt(st); }
             }),
             StmtKind::Block(b) => self.block(b),
+            StmtKind::ExprEval()
             _ => {}
         };
     }

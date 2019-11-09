@@ -197,13 +197,7 @@ impl<'a> TypePass<'a> {
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
             Lambda(l) => {
-                // todo declare symbol for l and push it to scope of current scope owner
-//                self.scopes.declare();
-
-                // todo scan params, then link them to l.scope
-
                 // todo scan in the scope of l.body and determine ret type
-
                 // todo assign l.ret_param_ty
 
                 unimplemented!()
@@ -222,10 +216,9 @@ impl<'a> TypePass<'a> {
 
         if let Some(owner) = &v.owner { // has owner
             self.cur_used = true;
-            let owner = self.expr(owner);   // owner checked, ** recurse **
+            let owner = self.expr(owner);   // owner check ? ** recurse **
             self.cur_used = false;
             if v.name == LENGTH && owner.is_arr() {  // arr.length()
-//                TypeCk::length_function();
                 self.cur_caller = Some(Callable::Length); // todo how to use const item?
                 return Ty::new(TyKind::Func(&TypeCk::NULL_TO_INT));
             }
@@ -254,10 +247,7 @@ impl<'a> TypePass<'a> {
                         }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
                     }
-                } else {    // symbol not found
-                    self.issue(loc, NoSuchField { name: v.name, owner })
-//                    self.issue(loc, DebugError("in var_sel, no such field"))
-                },
+                } else { self.issue(loc, NoSuchField { name: v.name, owner }) },  // symbol not found
                 // selecting a static method
                 // A.static_fun
                 Ty { arr: 0, kind: TyKind::Class(Ref(c)) } => if let Some(sym) = c.lookup(v.name) {
