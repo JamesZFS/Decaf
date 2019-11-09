@@ -1,6 +1,7 @@
 use std::iter;
 use common::Loc;
 use syntax::{ScopeOwner, Symbol, ClassDef, Program};
+use std::borrow::Borrow;
 
 pub(crate) struct ScopeStack<'a> {
     // `global` must be ScopeOwner::Global, but we will not depend on this, so just define it as ScopeOwner
@@ -57,5 +58,20 @@ impl<'a> ScopeStack<'a> {
             Symbol::Class(c) => *c,
             _ => unreachable!("Global scope should only contain classes."),
         })
+    }
+
+    pub fn debug_print(&self) {
+        use common::{IndentPrinter, IgnoreResult};
+        use std::fmt::Write;
+        let mut p = IndentPrinter::default();
+        self.stack.iter().rev().chain(iter::once(&self.global))
+            .for_each(|owner| {
+                let p = &mut p;
+                let desc = owner.description();
+                writeln!(p, "Scope of {}", desc).ignore();
+                p.indent(|p| print::scope::show_scope(owner.scope().borrow(), p));
+                writeln!(p, "===========================================").ignore();
+            });
+        println!("{}", p.finish());
     }
 }

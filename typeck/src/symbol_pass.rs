@@ -138,6 +138,9 @@ impl<'a> SymbolPass<'a> {
         // TODO for Var type
 
         // todo how to open parents' scopes ?
+        if self.cur_class.unwrap().name == "B" && v.name == "u" {
+            self.scopes.debug_print();
+        }
         let ok = if let Some((sym, owner)) = self.scopes.lookup(v.name) {
             match (self.scopes.cur_owner(), owner) {
                 (ScopeOwner::Class(c1), ScopeOwner::Class(c2)) if Ref(c1) != Ref(c2) && sym.is_var() =>

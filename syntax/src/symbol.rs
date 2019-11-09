@@ -1,6 +1,7 @@
 use crate::{Block, ClassDef, FuncDef, VarDef, Program, Ty};
 use common::{Loc, HashMap};
 use std::{cell::{RefMut, Ref}, fmt};
+use std::borrow::Borrow;
 
 pub type Scope<'a> = HashMap<&'a str, Symbol<'a>>;  // *** the essence of a scope ***
 
@@ -80,6 +81,15 @@ impl<'a> ScopeOwner<'a> {
     pub fn is_param(&self) -> bool { if let ScopeOwner::Param(_) = self { true } else { false } }
     pub fn is_class(&self) -> bool { if let ScopeOwner::Class(_) = self { true } else { false } }
     pub fn is_global(&self) -> bool { if let ScopeOwner::Global(_) = self { true } else { false } }
+
+    pub fn description(&self) -> String {
+        match self {
+            ScopeOwner::Local(b) => format!("a block at {:?}", b.loc),
+            ScopeOwner::Param(f) => format!("Method {}::{}", f.class.get().map_or("???", |c| c.name), f.name),
+            ScopeOwner::Class(c) => format!("Class {}", c.name),
+            ScopeOwner::Global(_) => format!("Global Classes"),
+        }
+    }
 }
 
 impl fmt::Debug for Symbol<'_> {
