@@ -79,7 +79,7 @@ impl<'a> SymbolPass<'a> {
             c.unimpl_mthds.borrow_mut().clone_from(&p.unimpl_mthds.borrow()); // init unimplemented methods from base
         }
         self.cur_class = Some(c);
-        // scan and scope current class todo why not scope p?
+        // scan and scope current class, all ancestors are scoped in StackScope::open
         self.scoped(ScopeOwner::Class(c), |s| for f in &c.field {
             match f {
                 FieldDef::FuncDef(f) => s.func_def(f),
@@ -137,10 +137,6 @@ impl<'a> SymbolPass<'a> {
         if v.ty.get() == Ty::void() { self.issue(v.loc, VoidVar(v.name)) }
         // TODO for Var type
 
-        // todo how to open parents' scopes ?
-        if self.cur_class.unwrap().name == "B" && v.name == "u" {
-            self.scopes.debug_print();
-        }
         let ok = if let Some((sym, owner)) = self.scopes.lookup(v.name) {
             match (self.scopes.cur_owner(), owner) {
                 (ScopeOwner::Class(c1), ScopeOwner::Class(c2)) if Ref(c1) != Ref(c2) && sym.is_var() =>

@@ -1,7 +1,6 @@
 use crate::{Block, ClassDef, FuncDef, VarDef, Program, Ty};
 use common::{Loc, HashMap};
 use std::{cell::{RefMut, Ref}, fmt};
-use std::borrow::Borrow;
 
 pub type Scope<'a> = HashMap<&'a str, Symbol<'a>>;  // *** the essence of a scope ***
 

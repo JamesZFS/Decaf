@@ -21,9 +21,9 @@ pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Er
     s.program(p);
     if !s.errors.0.is_empty() { return Err(s.0.errors.sorted()); }
     // 2nd scan
-//    let mut t = TypePass(s.0);
-//    t.program(p);
-//    if !t.errors.0.is_empty() { return Err(t.0.errors.sorted()); }
+    let mut t = TypePass(s.0);
+    t.program(p);
+    if !t.errors.0.is_empty() { return Err(t.0.errors.sorted()); }
     Ok(())
 }
 

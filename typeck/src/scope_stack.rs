@@ -60,6 +60,7 @@ impl<'a> ScopeStack<'a> {
         })
     }
 
+    #[allow(dead_code)]
     pub fn debug_print(&self) {
         use common::{IndentPrinter, IgnoreResult};
         use std::fmt::Write;
