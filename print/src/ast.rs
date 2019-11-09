@@ -165,7 +165,7 @@ impl Printable for LambdaKind<'_> {
   fn print(&self, p: &mut IndentPrinter) {
     match self {
       LambdaKind::Block(b) => { b.print(p) },
-      LambdaKind::Expr(e) => { e.print(p) },
+      LambdaKind::Expr(e, _) => { e.print(p) },
     }
   }
 }

@@ -194,11 +194,16 @@ pub enum ExprKind<'a> {
 pub struct Lambda<'a> {
     pub params: Vec<&'a VarDef<'a>>,
     pub body: LambdaKind<'a>,
+    // [0] is ret_ty, [1..] is parm_ty
+    pub ret_param_ty: Cell<Option<&'a [Ty<'a>]>>,
+    // `class` will always be set during typeck (no matter whether it is static)
+    pub class: Cell<Option<&'a ClassDef<'a>>>,
+    pub scope: RefCell<Scope<'a>>,
 }
 
 pub enum LambdaKind<'a> {
     Block(Box<Block<'a>>),
-    Expr(Box<Expr<'a>>),
+    Expr(Box<Expr<'a>>, RefCell<Scope<'a>>), // if this is a expr-lambda, it should contain a local scope
 }
 
 pub struct VarSel<'a> {

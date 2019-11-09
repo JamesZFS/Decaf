@@ -94,30 +94,37 @@ impl<'a> SymbolPass<'a> {
     fn func_def(&mut self, f: &'a FuncDef<'a>) {
         let ret_ty = self.ty(&f.ret, false);
         self.scoped(ScopeOwner::Param(f), |s| {
-            if !f.static_ { s.scopes.declare(Symbol::This(f)); }
-            for v in &f.param { s.var_def(v); }
+            if !f.static_ { s.scopes.declare(Symbol::This(f)); }    // push `this` as the first formal param
+            for v in &f.param { s.var_def(v); } // then push all formal params ?
             if let Some(b) = f.body.as_ref() {
-                s.block(b); // check block for non-abstract methods
-            }
+                s.block(b); // scan block for non-abstract methods ?
+            } // else: abstract method, skip
         });
+        // create signature for f
         let ret_param_ty = iter::once(ret_ty).chain(f.param.iter().map(|v| v.ty.get()));
         let ret_param_ty = self.alloc.ty.alloc_extend(ret_param_ty);
         f.ret_param_ty.set(Some(ret_param_ty));
         f.class.set(self.cur_class);
+        // check overriding problems ?
         let ok = if let Some((sym, owner)) = self.scopes.lookup(f.name) {
             match (self.scopes.cur_owner(), owner) {
                 (ScopeOwner::Class(c), ScopeOwner::Class(p)) if Ref(c) != Ref(p) => {
                     match sym {
                         Symbol::Func(pf) => {
                             if f.static_ || pf.static_ || (f.is_abstr() && !pf.is_abstr()) {
+                                // static methods aren't overridable x
+                                // concrete method -> abstract method x
                                 self.issue(f.loc, ConflictDeclaration { prev: pf.loc, name: f.name })
-                            } else if !Ty::mk_func(f).assignable_to(Ty::mk_func(pf)) {  // signature mismatch
+                            } else if !Ty::mk_func(f).assignable_to(Ty::mk_func(pf)) {
+                                // signature mismatch x
                                 self.issue(f.loc, OverrideMismatch { func: f.name, p: p.name })
                             } else { true }
                         }
+                        // else: var or etc. to method x
                         _ => self.issue(f.loc, ConflictDeclaration { prev: sym.loc(), name: f.name }),
                     }
                 }
+                // conflict with current class's methods x
                 _ => self.issue(f.loc, ConflictDeclaration { prev: sym.loc(), name: f.name }),
             }
         } else { true };

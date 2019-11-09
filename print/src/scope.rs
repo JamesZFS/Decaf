@@ -1,4 +1,4 @@
-use common::{IndentPrinter, IgnoreResult};
+use common::{IndentPrinter, IgnoreResult, Loc};
 use syntax::{ast::*, Scope};
 use std::fmt::Write;
 
@@ -29,8 +29,25 @@ pub fn class_def(c: &ClassDef, p: &mut IndentPrinter) {
 pub fn func_def(f: &FuncDef, p: &mut IndentPrinter) {
     write!(p, "FORMAL SCOPE OF '{}':", f.name).ignore();
     p.indent(|p| {
-        show_scope(&f.scope.borrow(), p);
+        show_scope(&f.scope.borrow(), p);   // formal scope
         if let Some(ref b) = f.body { block(b, p); } // non-abstract method
+    });
+}
+
+pub fn lambda_expr(l: &Lambda, loc: &Loc, p: &mut IndentPrinter) {
+    write!(p, "FORMAL SCOPE OF 'lambda@{:?}':", loc).ignore();
+    p.indent(|p| {
+        show_scope(&l.scope.borrow(), p);   // formal scope
+        match &l.body { // local scope
+            LambdaKind::Block(b) => block(b, p),
+            LambdaKind::Expr(e, s) => {
+                write!(p, "LOCAL SCOPE:").ignore();
+                p.indent(|p| {
+                    show_scope(&s.borrow(), p);
+                    if let ExprKind::Lambda(l) = &e.kind { lambda_expr(l, &e.loc, p); }
+                });
+            },
+        }
     });
 }
 
@@ -47,6 +64,12 @@ pub fn block(b: &Block, p: &mut IndentPrinter) {
                 StmtKind::While(w) => block(&w.body, p),
                 StmtKind::For(f) => block(&f.body, p),
                 StmtKind::Block(b) => block(b, p),
+                // lambda expr
+                StmtKind::ExprEval(
+                    Expr {
+                        loc, ty: _,
+                        kind: ExprKind::Lambda(l)
+                    }) => lambda_expr(l, loc, p),
                 _ => {}
             }
         }

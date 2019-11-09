@@ -465,12 +465,12 @@ impl<'p> Parser<'p> {
     // 'fun(...)' ???
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody)]
     fn expr_lambda(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, body: LambdaKind<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { params: params.reversed(), body }.into())
+        mk_expr(f.loc(), Lambda { params: params.reversed(), body, ret_param_ty: dft(), class: dft(), scope: dft() }.into())
     }
     // ??? is '=> expr'
     #[rule(LambdaBody -> Arrow Expr)]
     fn lambda_kind_expr(_a: Token, e: Expr<'p>) -> LambdaKind<'p> {
-        LambdaKind::Expr(Box::new(e))
+        LambdaKind::Expr(Box::new(e), dft())
     }
     // ??? is '{...}'
     #[rule(LambdaBody -> Block)]

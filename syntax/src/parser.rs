@@ -120,7 +120,6 @@ priority = [
 '[A-Za-z]\w*' = 'Id'
 '.' = '_Err'
 "##)]
-
 impl<'p> Parser<'p> {
     #[rule(Program -> ClassList)]
     fn program(&self, class: Vec<&'p ClassDef<'p>>) -> &'p Program<'p> {
@@ -142,7 +141,7 @@ impl<'p> Parser<'p> {
             field,
             parent_ref: dft(),
             scope: dft(),
-            unimpl_mthds: dft()
+            unimpl_mthds: dft(),
         })
     }
 
@@ -295,7 +294,7 @@ impl<'p> Parser<'p> {
             syn_ty: SynTy {
                 loc: Default::default(),
                 arr: 0,
-                kind: SynTyKind::Var
+                kind: SynTyKind::Var,
             },
             init: Some((a.loc(), init)),
             ty: dft(),
@@ -397,12 +396,12 @@ impl<'p> Parser<'p> {
     // lambda expr
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Arrow Expr)]
     fn expr_lambda0(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, _a: Token, e: Expr<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { params, body: LambdaKind::Expr(Box::new(e)) }.into())
+        mk_expr(f.loc(), Lambda { params, body: LambdaKind::Expr(Box::new(e), dft()), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
     }
 
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Block)]
     fn expr_lambda1(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, b: Block<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { params, body: LambdaKind::Block(Box::new(b)) }.into())
+        mk_expr(f.loc(), Lambda { params, body: LambdaKind::Block(Box::new(b)), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
     }
 
     #[rule(ExprList -> ExprList Comma Expr)]
@@ -451,7 +450,7 @@ impl<'p> Parser<'p> {
         SynTy {
             loc: ret.loc,
             arr: 0,
-            kind: SynTyKind::FunType((Box::new(ret), params))
+            kind: SynTyKind::FunType((Box::new(ret), params)),
         }
     }
     #[rule(TypeListOrEmpty ->)]
@@ -463,5 +462,4 @@ impl<'p> Parser<'p> {
     fn type_list0(t: SynTy<'p>) -> Vec<SynTy<'p>> { vec![t] }
     #[rule(TypeList -> TypeList Comma Type)]
     fn type_list1(mut tl: Vec<SynTy<'p>>, _c: Token, t: SynTy<'p>) -> Vec<SynTy<'p>> { tl.pushed(t) }
-
 }
