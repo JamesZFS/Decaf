@@ -16,14 +16,17 @@ impl<'a> ScopeStack<'a> {
 
     pub fn lookup(&self, name: &'a str) -> Option<(Symbol<'a>, ScopeOwner<'a>)> {
         self.stack.iter().rev().chain(iter::once(&self.global)) // iter the stack, then iter the global
-            .filter_map(|&owner| owner.scope().get(name).map(|&sym| (sym, owner)))
+            .filter_map(|&owner| owner.scope().get(name)
+                .filter(|&sym| !sym.is_lambda()) // shouldn't conflict with lambda exprs
+                .map(|&sym| (sym, owner)))
             .next() // yields the first hit
     }
 
     // do lookup, but will ignore those local symbols whose loc >= the given loc
     pub fn lookup_before(&self, name: &'a str, loc: Loc) -> Option<Symbol<'a>> {
         self.stack.iter().rev().chain(iter::once(&self.global))
-            .filter_map(|&owner| owner.scope().get(name).cloned().filter(|sym| !(owner.is_local() && sym.loc() >= loc)))
+            .filter_map(|&owner| owner.scope().get(name).cloned()
+                .filter(|&sym| !(owner.is_local() && sym.loc() >= loc)))    // todo just filter out local?
             .next() // yields the first hit
     }
 

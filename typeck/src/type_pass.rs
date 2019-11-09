@@ -27,7 +27,7 @@ impl<'a> TypePass<'a> {
                 if let FieldDef::FuncDef(f) = f {
                     if f.is_abstr() { continue; }  // skip type check for abstract func
                     s.cur_func = Some(f);
-                    let ret = s.scoped(ScopeOwner::Func(f), |s|
+                    let ret = s.scoped(ScopeOwner::FuncParam(f), |s|
                         s.block(&f.body.as_ref().unwrap())); // in f's param scope
                     if !ret && f.ret_ty() != Ty::void() { s.issue(f.body.as_ref().unwrap().loc, ErrorKind::NoReturn) }
                 };
@@ -36,7 +36,7 @@ impl<'a> TypePass<'a> {
 
     fn block(&mut self, b: &'a Block<'a>) -> bool {
         let mut ret = false;
-        self.scoped(ScopeOwner::Local(b), |s| for st in &b.stmt { ret = s.stmt(st); });
+        self.scoped(ScopeOwner::mk_local_block(b), |s| for st in &b.stmt { ret = s.stmt(st); });
         ret
     }
 
@@ -89,7 +89,7 @@ impl<'a> TypePass<'a> {
                 self.loop_cnt -= 1;
                 false
             }
-            StmtKind::For(f) => self.scoped(ScopeOwner::Local(&f.body), |s| {
+            StmtKind::For(f) => self.scoped(ScopeOwner::mk_local_block(&f.body), |s| {
                 s.stmt(&f.init);
                 s.check_bool(&f.cond);
                 s.stmt(&f.update);

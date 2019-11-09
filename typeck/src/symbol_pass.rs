@@ -93,7 +93,7 @@ impl<'a> SymbolPass<'a> {
 
     fn func_def(&mut self, f: &'a FuncDef<'a>) {
         let ret_ty = self.ty(&f.ret, false);
-        self.scoped(ScopeOwner::Func(f), |s| {
+        self.scoped(ScopeOwner::FuncParam(f), |s| {
             if !f.static_ { s.scopes.declare(Symbol::This(f)); }    // push `this` as the first formal param
             for v in &f.param { s.var_def(v); } // then push all formal params ?
             if let Some(b) = f.body.as_ref() {
@@ -149,9 +149,9 @@ impl<'a> SymbolPass<'a> {
                 (ScopeOwner::Class(c1), ScopeOwner::Class(c2)) if Ref(c1) != Ref(c2) && sym.is_var() =>
                     self.issue(v.loc, OverrideVar(v.name)), // c2 is base of c1
                 (ScopeOwner::Class(_), ScopeOwner::Class(_)) |
-                (_, ScopeOwner::Local(_)) |
-                (_, ScopeOwner::Func(_)) |
-                (_, ScopeOwner::Lambda(_)) =>
+                (_, ScopeOwner::Local(_, _)) |
+                (_, ScopeOwner::FuncParam(_)) |
+                (_, ScopeOwner::LambdaParam(_)) =>
                     self.issue(v.loc, ConflictDeclaration { prev: sym.loc(), name: v.name }),   // decaf forbids var shadowing
                 _ => true,  // only case: shadowing var def in class scope
             }
@@ -164,7 +164,9 @@ impl<'a> SymbolPass<'a> {
     }
 
     fn block(&mut self, b: &'a Block<'a>) {
-        self.scoped(ScopeOwner::Local(b), |s| for st in &b.stmt { s.stmt(st); });
+        self.scoped(ScopeOwner::mk_local_block(b), |s| for st in &b.stmt {
+            s.stmt(st);
+        });
     }
 
     fn stmt(&mut self, s: &'a Stmt<'a>) {
@@ -178,12 +180,13 @@ impl<'a> SymbolPass<'a> {
                 self.expr(&w.cond);
                 self.block(&w.body)
             }
-            StmtKind::For(For { init, cond, update, body }) => self.scoped(ScopeOwner::Local(body), |s| {
-                s.simple(init);
-                s.expr(cond);
-                s.simple(update);
-                for st in &body.stmt { s.stmt(st); }
-            }),
+            StmtKind::For(For { init, cond, update, body }) =>
+                self.scoped(ScopeOwner::mk_local_block(body), |s| {
+                    s.simple(init);
+                    s.expr(cond);
+                    s.simple(update);
+                    for st in &body.stmt { s.stmt(st); }
+                }),
             StmtKind::Block(b) => self.block(b),
             StmtKind::Return(Some(e)) => self.expr(e),
             StmtKind::Print(es) => for e in es { self.expr(e) }
@@ -229,15 +232,29 @@ impl<'a> SymbolPass<'a> {
                 self.expr(r);
             }
             ExprKind::NewArray(NewArray { elem: _, len }) => self.expr(len),
-            ExprKind::ClassTest(ClassTest { expr: e, .. }) =>self.expr(e),
-            ExprKind::ClassCast(ClassCast { expr: e, .. }) =>self.expr(e),
+            ExprKind::ClassTest(ClassTest { expr: e, .. }) => self.expr(e),
+            ExprKind::ClassCast(ClassCast { expr: e, .. }) => self.expr(e),
             ExprKind::Lambda(l) => self.lambda_expr(l),   // all we're looking for is lambda expr
             _ => self.lvalue(e)
         };
     }
 
     fn lambda_expr(&mut self, l: &'a Lambda<'a>) {
+        // scan params, then push them to l.scope
+        self.scoped(ScopeOwner::LambdaParam(l), |s| {
+            for v in &l.params { s.var_def(v); }
+            // * difficulty: expr or block, too many cases to discuss.
+            match &l.body {
+                LambdaKind::Block(b) => s.block(b),
+                LambdaKind::Expr(e, inner_s) =>
+                    s.scoped(ScopeOwner::Local(None, inner_s), |s| s.expr(e))
+            }
+        });
+        assert!(l.ret_ty.get() == None);
+        // ret_ty of l not yet determined, so we don't create its signature here
+        // instead, it should be done in type pass!
+        self.scopes.declare(Symbol::Lambda(l));
 
-        unimplemented!()
+        unimplemented!();
     }
 }
