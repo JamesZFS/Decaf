@@ -1,4 +1,4 @@
-use crate::{Block, ClassDef, FuncDef, VarDef, Program, Ty};
+use crate::{Block, ClassDef, FuncDef, VarDef, Program, Ty, Lambda};
 use common::{Loc, HashMap};
 use std::{cell::{RefMut, Ref}, fmt};
 
@@ -10,15 +10,21 @@ pub enum Symbol<'a> {
     Func(&'a FuncDef<'a>),
     This(&'a FuncDef<'a>),
     Class(&'a ClassDef<'a>),
+    Lambda(&'a Lambda<'a>), // lambda & name
 }
 
 impl<'a> Symbol<'a> {
+//    pub fn mk_lambda(l: &'a Lambda<'a>) -> Symbol<'a> {
+//        Symbol::Lambda(l, format!("lambda@{:?}", l.loc))
+//    }
+
     pub fn name(&self) -> &'a str {
         match self {
             Symbol::Var(v) => v.name,
             Symbol::Func(f) => f.name,
             Symbol::This(_) => "this",
             Symbol::Class(c) => c.name,
+            Symbol::Lambda(l) => &l.name
         }
     }
 
@@ -27,6 +33,7 @@ impl<'a> Symbol<'a> {
             Symbol::Var(v) => v.loc,
             Symbol::Func(f) | Symbol::This(f) => f.loc,
             Symbol::Class(c) => c.loc,
+            Symbol::Lambda(l) => l.loc
         }
     }
 
@@ -37,6 +44,7 @@ impl<'a> Symbol<'a> {
             Symbol::Func(f) => Ty::mk_func(f),
             Symbol::This(f) => Ty::mk_obj(f.class.get().unwrap()),
             Symbol::Class(c) => Ty::mk_obj(c),
+            Symbol::Lambda(l) => Ty::mk_lambda(l),
         }
     }
 
@@ -52,6 +60,7 @@ pub enum ScopeOwner<'a> {
     Param(&'a FuncDef<'a>),
     Class(&'a ClassDef<'a>),
     Global(&'a Program<'a>),
+    Lambda(&'a Lambda<'a>, Loc),
 }
 
 impl<'a> ScopeOwner<'a> {
@@ -63,6 +72,7 @@ impl<'a> ScopeOwner<'a> {
             Param(x) => x.scope.borrow(),
             Class(x) => x.scope.borrow(),
             Global(x) => x.scope.borrow(),
+            Lambda(x, _) => x.scope.borrow()
         }
     }
 
@@ -73,6 +83,7 @@ impl<'a> ScopeOwner<'a> {
             Param(x) => x.scope.borrow_mut(),
             Class(x) => x.scope.borrow_mut(),
             Global(x) => x.scope.borrow_mut(),
+            Lambda(x, _) => x.scope.borrow_mut()
         }
     }
 
@@ -87,6 +98,7 @@ impl<'a> ScopeOwner<'a> {
             ScopeOwner::Param(f) => format!("Method {}::{}", f.class.get().map_or("???", |c| c.name), f.name),
             ScopeOwner::Class(c) => format!("Class {}", c.name),
             ScopeOwner::Global(_) => format!("Global Classes"),
+            ScopeOwner::Lambda(_l, loc) => format!("lambda@{:?}", loc)
         }
     }
 }
@@ -101,6 +113,7 @@ impl fmt::Debug for Symbol<'_> {
                 write!(f, "{:?} -> {}class {}", c.loc, if c.abstr_ { "ABSTRACT " } else { "" }, c.name)?;
                 if let Some(p) = c.parent_ref.get() { write!(f, " : {}", p.name) } else { Ok(()) }
             }
+            Symbol::Lambda(l) => write!(f, "{:?} -> function {} : {:?}", l.loc, l.name, Ty::mk_lambda(l))
         }
     }
 }

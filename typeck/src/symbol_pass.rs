@@ -141,7 +141,7 @@ impl<'a> SymbolPass<'a> {
 
     fn var_def(&mut self, v: &'a VarDef<'a>) {
         if v.syn_ty.kind != SynTyKind::Var {
-            v.ty.set(self.ty(&v.syn_ty, false));
+            v.ty.set(self.ty(&v.syn_ty, false)); // report possible type errors ?
             if v.syn_ty.kind != SynTyKind::Var && v.ty.get() == Ty::void() { self.issue(v.loc, VoidVar(v.name)) }
         }  // Var type checking is in the type pass
         let ok = if let Some((sym, owner)) = self.scopes.lookup(v.name) {

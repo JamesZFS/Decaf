@@ -192,6 +192,8 @@ pub enum ExprKind<'a> {
 }
 
 pub struct Lambda<'a> {
+    pub loc: Loc,
+    pub name: String,
     pub params: Vec<&'a VarDef<'a>>,
     pub body: LambdaKind<'a>,
     // [0] is ret_ty, [1..] is parm_ty

@@ -1,4 +1,4 @@
-use crate::{ClassDef, FuncDef};
+use crate::{ClassDef, FuncDef, Lambda};
 use common::{Loc, Ref};
 use std::fmt;
 
@@ -85,7 +85,7 @@ impl<'a> Ty<'a> {
         if self == Ty::error() { T::default() } else { f() }
     }
 
-    pub fn assignable_to(&self, rhs: Ty<'a>) -> bool {
+    pub fn assignable_to(&self, rhs: Ty<'a>) -> bool { // self <: rhs
         use TyKind::*;
         match (self.kind, rhs.kind) {
             (Error, _) | (_, Error) => true,
@@ -114,6 +114,7 @@ impl<'a> Ty<'a> {
     pub fn mk_obj(c: &'a ClassDef<'a>) -> Ty<'a> { Ty::new(TyKind::Object(Ref(c))) }
     pub fn mk_class(c: &'a ClassDef<'a>) -> Ty<'a> { Ty::new(TyKind::Class(Ref(c))) }
     pub fn mk_func(f: &'a FuncDef<'a>) -> Ty<'a> { Ty::new(TyKind::Func(f.ret_param_ty.get().unwrap())) }
+    pub fn mk_lambda(l: &'a Lambda<'a>) -> Ty<'a> { Ty::new(TyKind::Func(l.ret_param_ty.get().unwrap_or_else(|| unimplemented!("lambda missing ret_param_ty")))) }
 
     // if you want something like `is_void()`, just use `== Ty::void()`
     pub fn is_arr(&self) -> bool { self.arr > 0 }

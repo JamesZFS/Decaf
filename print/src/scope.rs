@@ -65,11 +65,7 @@ pub fn block(b: &Block, p: &mut IndentPrinter) {
                 StmtKind::For(f) => block(&f.body, p),
                 StmtKind::Block(b) => block(b, p),
                 // lambda expr
-                StmtKind::ExprEval(
-                    Expr {
-                        loc, ty: _,
-                        kind: ExprKind::Lambda(l)
-                    }) => lambda_expr(l, loc, p),
+                StmtKind::ExprEval(Expr { loc, ty: _, kind: ExprKind::Lambda(l) }) => lambda_expr(l, loc, p),
                 _ => {}
             }
         }

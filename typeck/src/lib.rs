@@ -1,3 +1,5 @@
+use std::iter;
+
 mod scope_stack;
 mod symbol_pass;
 mod type_pass;
@@ -54,18 +56,19 @@ impl<'a> TypeCk<'a> {
             SynTyKind::Bool => TyKind::Bool,
             SynTyKind::String => TyKind::String,
             SynTyKind::Void => TyKind::Void,
-            SynTyKind::Var => unreachable!(),
+            SynTyKind::Var => unreachable!("should not convert from `var` SynTy to any Ty"),
             SynTyKind::Named(name) => if let Some(c) = self.scopes.lookup_class(name) {
                 TyKind::Object(Ref(c))
             } else { self.issue(s.loc, NoSuchClass(name)) },
-            _ => unimplemented!() // todo function SynTy -> Ty
-//            SynTyKind::FunType(ft) => {
-//                let mut dst = [Ty::default(); LEN];
-//                for (st, out) in ft.iter().zip(dst.iter_mut()) {
-//                    *out = self.ty(st, false);
-//                }
-//              TyKind::Func(&dst)
-//            }
+            SynTyKind::FunType((ret_ty, param)) => {    // * difficulty: hard to alloc undetermined sized &[Ty]
+                let ret_param = iter::once(self.ty(ret_ty, false))
+                    .chain(param.iter().map(|p| match p.kind {
+                        SynTyKind::Void => self.issue(p.loc,VoidFuncTypeArg),
+                        _ => self.ty(p, false)
+                    })).collect::<Vec<_>>(); // first to Vec
+                let ret_param = self.alloc.ty.alloc_extend(ret_param); // then to array
+                TyKind::Func(ret_param)
+            }
         };
         match kind {
             TyKind::Error => Ty::error(),

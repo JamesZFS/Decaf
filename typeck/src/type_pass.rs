@@ -23,7 +23,7 @@ impl<'a> TypePass<'a> {
     fn class_def(&mut self, c: &'a ClassDef<'a>) {
         self.cur_class = Some(c);
         self.scoped(ScopeOwner::Class(c), |s|
-            for f in &c.field { // in class scope c of self, for all funcdefs in c:
+            for f in &c.field { // in class scope c of self, for all func defs in c:
                 if let FieldDef::FuncDef(f) = f {
                     if f.is_abstr() { continue; }  // skip type check for abstract func
                     s.cur_func = Some(f);
@@ -50,9 +50,9 @@ impl<'a> TypePass<'a> {
             }
             StmtKind::LocalVarDef(v) => {
                 self.cur_var_def = Some(v);
-                match v.syn_ty.kind {
+                match &v.syn_ty.kind {
                     SynTyKind::Var => match &v.init {
-                        None => unreachable!(), // rejected by syntax parser
+                        None => unreachable!("var deduction without init expr should be rejected by syntax parser"),
                         Some((_, e)) => {
 //                            println!("var decl at {:?}", v.loc);
                             let r = self.expr(e);
@@ -196,7 +196,18 @@ impl<'a> TypePass<'a> {
                     Ty::mk_obj(cl)
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
-            Lambda(_) => { unimplemented!() }   // todo
+            Lambda(l) => {
+                // todo declare symbol for l and push it to scope of current scope owner
+//                self.scopes.declare();
+
+                // todo scan params, then link them to l.scope
+
+                // todo scan in the scope of l.body and determine ret type
+
+                // todo assign l.ret_param_ty
+
+                unimplemented!()
+            }
         };
         e.ty.set(ty);
         ty

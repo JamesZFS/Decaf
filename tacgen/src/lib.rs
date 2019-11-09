@@ -204,6 +204,7 @@ impl<'a> TacGen<'a> {
             }
           }
           ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
+          ScopeOwner::Lambda(_, _) => unimplemented!()
         }
       }),
       IndexSel(i) => Reg({
