@@ -188,7 +188,7 @@ impl<'a> TacGen<'a> {
         };
         let off = self.var_info[&Ref(var)].off;
         match var.owner.get().unwrap() {
-          ScopeOwner::Local(_) | ScopeOwner::Param(_) => if let Some(src) = assign { // off is register
+          ScopeOwner::Local(_) | ScopeOwner::Func(_) => if let Some(src) = assign { // off is register
             // don't care this return, the below 0 is the same
             (f.push(TacKind::Assign { dst: off, src: [src] }), 0).1
           } else { off }
@@ -204,7 +204,7 @@ impl<'a> TacGen<'a> {
             }
           }
           ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
-          ScopeOwner::Lambda(_, _) => unimplemented!()
+          ScopeOwner::Lambda(_) => unimplemented!()
         }
       }),
       IndexSel(i) => Reg({

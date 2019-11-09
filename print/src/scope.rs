@@ -68,13 +68,13 @@ pub fn stmt(s: &Stmt, p: &mut IndentPrinter) {
         }
         StmtKind::While(While { cond, body }) => {
             expr(cond, p);
-            block(body, p)
+            block(body, p);
         }
         StmtKind::For(For{ init, cond, update, body }) => {
             simple_stmt(init, p);
             expr(cond, p);
             simple_stmt(update, p);
-            block(body, p)
+            block(body, p);
         },
         StmtKind::Block(b) => block(b, p),
         StmtKind::Return(Some(e)) => expr(e, p),
@@ -87,7 +87,7 @@ pub fn simple_stmt(s: &Stmt, p: &mut IndentPrinter) {
     match &s.kind {
         StmtKind::Assign(Assign { dst, src }) => {
             lvalue(dst, p);
-            expr(src, p)
+            expr(src, p);
         },
         StmtKind::LocalVarDef(VarDef { init: Some((_, e)), .. }) => expr(e, p),
         StmtKind::ExprEval(e) => expr(e, p),
@@ -101,7 +101,7 @@ pub fn lvalue(l: &Expr, p: &mut IndentPrinter) {
         ExprKind::VarSel(VarSel { owner: Some(o), .. }) => expr(o, p),
         ExprKind::IndexSel(IndexSel { arr, idx }) => {
             expr(arr, p);
-            expr(idx, p)
+            expr(idx, p);
         }
         _ => {}
     }

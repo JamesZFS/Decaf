@@ -57,10 +57,10 @@ impl<'a> Symbol<'a> {
 #[derive(Copy, Clone)]
 pub enum ScopeOwner<'a> {
     Local(&'a Block<'a>),
-    Param(&'a FuncDef<'a>),
+    Func(&'a FuncDef<'a>),
     Class(&'a ClassDef<'a>),
     Global(&'a Program<'a>),
-    Lambda(&'a Lambda<'a>, Loc),
+    Lambda(&'a Lambda<'a>),
 }
 
 impl<'a> ScopeOwner<'a> {
@@ -69,10 +69,10 @@ impl<'a> ScopeOwner<'a> {
         use ScopeOwner::*;
         match self {
             Local(x) => x.scope.borrow(),
-            Param(x) => x.scope.borrow(),
+            Func(x) => x.scope.borrow(),
             Class(x) => x.scope.borrow(),
             Global(x) => x.scope.borrow(),
-            Lambda(x, _) => x.scope.borrow()
+            Lambda(x) => x.scope.borrow()
         }
     }
 
@@ -80,25 +80,25 @@ impl<'a> ScopeOwner<'a> {
         use ScopeOwner::*;
         match self {
             Local(x) => x.scope.borrow_mut(),
-            Param(x) => x.scope.borrow_mut(),
+            Func(x) => x.scope.borrow_mut(),
             Class(x) => x.scope.borrow_mut(),
             Global(x) => x.scope.borrow_mut(),
-            Lambda(x, _) => x.scope.borrow_mut()
+            Lambda(x) => x.scope.borrow_mut()
         }
     }
 
     pub fn is_local(&self) -> bool { if let ScopeOwner::Local(_) = self { true } else { false } }
-    pub fn is_param(&self) -> bool { if let ScopeOwner::Param(_) = self { true } else { false } }
+    pub fn is_param(&self) -> bool { if let ScopeOwner::Func(_) = self { true } else { false } }
     pub fn is_class(&self) -> bool { if let ScopeOwner::Class(_) = self { true } else { false } }
     pub fn is_global(&self) -> bool { if let ScopeOwner::Global(_) = self { true } else { false } }
 
     pub fn description(&self) -> String {
         match self {
             ScopeOwner::Local(b) => format!("a block at {:?}", b.loc),
-            ScopeOwner::Param(f) => format!("Method {}::{}", f.class.get().map_or("???", |c| c.name), f.name),
+            ScopeOwner::Func(f) => format!("Method {}::{}", f.class.get().map_or("???", |c| c.name), f.name),
             ScopeOwner::Class(c) => format!("Class {}", c.name),
             ScopeOwner::Global(_) => format!("Global Classes"),
-            ScopeOwner::Lambda(_l, loc) => format!("lambda@{:?}", loc)
+            ScopeOwner::Lambda(l) => l.name.clone()
         }
     }
 }

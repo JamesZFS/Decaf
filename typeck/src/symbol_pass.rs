@@ -93,7 +93,7 @@ impl<'a> SymbolPass<'a> {
 
     fn func_def(&mut self, f: &'a FuncDef<'a>) {
         let ret_ty = self.ty(&f.ret, false);
-        self.scoped(ScopeOwner::Param(f), |s| {
+        self.scoped(ScopeOwner::Func(f), |s| {
             if !f.static_ { s.scopes.declare(Symbol::This(f)); }    // push `this` as the first formal param
             for v in &f.param { s.var_def(v); } // then push all formal params ?
             if let Some(b) = f.body.as_ref() {
@@ -148,15 +148,19 @@ impl<'a> SymbolPass<'a> {
             match (self.scopes.cur_owner(), owner) {
                 (ScopeOwner::Class(c1), ScopeOwner::Class(c2)) if Ref(c1) != Ref(c2) && sym.is_var() =>
                     self.issue(v.loc, OverrideVar(v.name)), // c2 is base of c1
-                (ScopeOwner::Class(_), ScopeOwner::Class(_)) | (_, ScopeOwner::Param(_)) | (_, ScopeOwner::Local(_)) =>
+                (ScopeOwner::Class(_), ScopeOwner::Class(_)) |
+                (_, ScopeOwner::Local(_)) |
+                (_, ScopeOwner::Func(_)) |
+                (_, ScopeOwner::Lambda(_)) =>
                     self.issue(v.loc, ConflictDeclaration { prev: sym.loc(), name: v.name }),   // decaf forbids var shadowing
-                _ => true,
+                _ => true,  // only case: shadowing var def in class scope
             }
         } else { true };    // not found, ok
         if ok {
             v.owner.set(Some(self.scopes.cur_owner()));
             self.scopes.declare(Symbol::Var(v));
         }
+        if let Some((_, e)) = &v.init { self.expr(e); }
     }
 
     fn block(&mut self, b: &'a Block<'a>) {
@@ -165,19 +169,75 @@ impl<'a> SymbolPass<'a> {
 
     fn stmt(&mut self, s: &'a Stmt<'a>) {
         match &s.kind {
-            StmtKind::LocalVarDef(v) => self.var_def(v),
             StmtKind::If(i) => {
+                self.expr(&i.cond);
                 self.block(&i.on_true);
-                if let Some(of) = &i.on_false { self.block(of); }
+                if let Some(on_false) = &i.on_false { self.block(on_false); }
             }
-            StmtKind::While(w) => self.block(&w.body),
-            StmtKind::For(f) => self.scoped(ScopeOwner::Local(&f.body), |s| {
-                s.stmt(&f.init);
-                s.stmt(&f.update);
-                for st in &f.body.stmt { s.stmt(st); }
+            StmtKind::While(w) => {
+                self.expr(&w.cond);
+                self.block(&w.body)
+            }
+            StmtKind::For(For { init, cond, update, body }) => self.scoped(ScopeOwner::Local(body), |s| {
+                s.simple(init);
+                s.expr(cond);
+                s.simple(update);
+                for st in &body.stmt { s.stmt(st); }
             }),
             StmtKind::Block(b) => self.block(b),
-            _ => {} // todo search everywhere in blocks for lambda expr
+            StmtKind::Return(Some(e)) => self.expr(e),
+            StmtKind::Print(es) => for e in es { self.expr(e) }
+            _ => self.simple(s)
         };
+    }
+
+    fn simple(&mut self, s: &'a Stmt<'a>) {
+        match &s.kind {
+            StmtKind::Assign(Assign { dst, src }) => {
+                self.lvalue(dst);
+                self.expr(src);
+            }
+            StmtKind::LocalVarDef(v) => self.var_def(v),
+            StmtKind::ExprEval(e) => self.expr(e),
+            StmtKind::Skip(_) => {}
+            _ => {}
+        }
+    }
+
+    fn lvalue(&mut self, l: &'a Expr<'a>) {
+        match &l.kind {
+            ExprKind::VarSel(VarSel { owner: Some(o), .. }) => self.expr(o),
+            ExprKind::IndexSel(IndexSel { arr, idx }) => {
+                self.expr(arr);
+                self.expr(idx);
+            }
+            _ => {}
+        }
+    }
+
+    fn expr(&mut self, e: &'a Expr<'a>) {
+        match &e.kind {
+            ExprKind::Call(Call { func, arg, .. }) => {
+                self.expr(func);
+                for x in arg {
+                    self.expr(x);
+                }
+            }
+            ExprKind::Unary(Unary { op: _, r }) => self.expr(r),
+            ExprKind::Binary(Binary { op: _, l, r }) => {
+                self.expr(l);
+                self.expr(r);
+            }
+            ExprKind::NewArray(NewArray { elem: _, len }) => self.expr(len),
+            ExprKind::ClassTest(ClassTest { expr: e, .. }) =>self.expr(e),
+            ExprKind::ClassCast(ClassCast { expr: e, .. }) =>self.expr(e),
+            ExprKind::Lambda(l) => self.lambda_expr(l),   // all we're looking for is lambda expr
+            _ => self.lvalue(e)
+        };
+    }
+
+    fn lambda_expr(&mut self, l: &'a Lambda<'a>) {
+
+        unimplemented!()
     }
 }

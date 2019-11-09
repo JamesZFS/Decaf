@@ -27,7 +27,7 @@ impl<'a> TypePass<'a> {
                 if let FieldDef::FuncDef(f) = f {
                     if f.is_abstr() { continue; }  // skip type check for abstract func
                     s.cur_func = Some(f);
-                    let ret = s.scoped(ScopeOwner::Param(f), |s|
+                    let ret = s.scoped(ScopeOwner::Func(f), |s|
                         s.block(&f.body.as_ref().unwrap())); // in f's param scope
                     if !ret && f.ret_ty() != Ty::void() { s.issue(f.body.as_ref().unwrap().loc, ErrorKind::NoReturn) }
                 };
