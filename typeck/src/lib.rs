@@ -54,7 +54,7 @@ impl<'a> TypeCk<'a> {
             SynTyKind::Bool => TyKind::Bool,
             SynTyKind::String => TyKind::String,
             SynTyKind::Void => TyKind::Void,
-            SynTyKind::Var => TyKind::Error,   // todo: Var type deduction
+            SynTyKind::Var => unreachable!(),
             SynTyKind::Named(name) => if let Some(c) = self.scopes.lookup_class(name) {
                 TyKind::Object(Ref(c))
             } else { self.issue(s.loc, NoSuchClass(name)) },

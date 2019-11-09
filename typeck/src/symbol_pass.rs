@@ -1,6 +1,6 @@
 use crate::{TypeCk, TypeCkTrait};
 use common::{ErrorKind::*, Ref, MAIN_CLASS, MAIN_METHOD, NO_LOC, HashMap, HashSet};
-use syntax::{ast::*, ScopeOwner, Symbol, Ty};
+use syntax::{ast::*, ScopeOwner, Symbol, Ty, SynTyKind};
 use std::{ops::{Deref, DerefMut}, iter};
 use hashbrown::hash_map::Entry;
 
@@ -130,13 +130,13 @@ impl<'a> SymbolPass<'a> {
                 self.cur_class.unwrap().unimpl_mthds.borrow_mut().remove(f.name);
             }
         }
-    } // todo ret_ty and param_ty for lambda function
+    }
 
     fn var_def(&mut self, v: &'a VarDef<'a>) {
-        v.ty.set(self.ty(&v.syn_ty, false));
-        if v.ty.get() == Ty::void() { self.issue(v.loc, VoidVar(v.name)) }
-        // TODO for Var type
-
+        if v.syn_ty.kind != SynTyKind::Var {
+            v.ty.set(self.ty(&v.syn_ty, false));
+            if v.syn_ty.kind != SynTyKind::Var && v.ty.get() == Ty::void() { self.issue(v.loc, VoidVar(v.name)) }
+        }  // Var type checking is in the type pass
         let ok = if let Some((sym, owner)) = self.scopes.lookup(v.name) {
             match (self.scopes.cur_owner(), owner) {
                 (ScopeOwner::Class(c1), ScopeOwner::Class(c2)) if Ref(c1) != Ref(c2) && sym.is_var() =>

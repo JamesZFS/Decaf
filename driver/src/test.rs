@@ -1,7 +1,7 @@
 use driver::*;
 
 fn main() {
-//    let task = "abstract-ok-1";
+//    let task = "var-error-1";
 //    println!("{:?}", test_one_caught(
 //        format!("TestCases/S2-rs/{}.decaf", task),
 //        format!("TestCases/S2-rs/out/{}.result", task),

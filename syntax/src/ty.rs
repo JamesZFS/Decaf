@@ -120,6 +120,7 @@ impl<'a> Ty<'a> {
     pub fn is_func(&self) -> bool { self.arr == 0 && if let TyKind::Func(_) = self.kind { true } else { false } }
     pub fn is_class(&self) -> bool { self.arr == 0 && if let TyKind::Class(_) = self.kind { true } else { false } }
     pub fn is_object(&self) -> bool { self.arr == 0 && if let TyKind::Object(_) = self.kind { true } else { false } }
+    pub fn is_void(&self) -> bool { self.kind == TyKind::Void }
 }
 
 impl fmt::Debug for Ty<'_> {

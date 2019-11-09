@@ -50,9 +50,24 @@ impl<'a> TypePass<'a> {
             }
             StmtKind::LocalVarDef(v) => {
                 self.cur_var_def = Some(v);
-                if let Some((loc, e)) = &v.init {   // with init expr
-                    let (l, r) = (v.ty.get(), self.expr(e));
-                    if !r.assignable_to(l) { self.issue(*loc, IncompatibleBinary { l, op: "=", r }) }
+                match v.syn_ty.kind {
+                    SynTyKind::Var => match &v.init {
+                        None => unreachable!(), // rejected by syntax parser
+                        Some((_, e)) => {
+//                            println!("var decl at {:?}", v.loc);
+                            let r = self.expr(e);
+//                            println!("{:?}", r);
+                            if r.is_void() {
+                                self.issue(v.loc, VoidVar(v.name))
+                            } else {
+                                v.ty.set(r);
+                            }
+                        }
+                    }
+                    _ => if let Some((loc, e)) = &v.init {   // with init expr
+                        let (l, r) = (v.ty.get(), self.expr(e));
+                        if !r.assignable_to(l) { self.issue(*loc, IncompatibleBinary { l, op: "=", r }) }
+                    }
                 }
                 self.cur_var_def = None;
                 false
