@@ -243,7 +243,7 @@ impl<'a> SymbolPass<'a> {
         // scan params, then push them to l.scope
         self.scoped(ScopeOwner::LambdaParam(l), |s| {
             for v in &l.params { s.var_def(v); }
-            // * difficulty: expr or block, too many cases to discuss.
+            // * difficulty: expr or block, too many cases to discuss. sol: using tuple in ScopeOwner::Local
             match &l.body {
                 LambdaKind::Block(b) => s.block(b),
                 LambdaKind::Expr(e, inner_s) =>
@@ -254,7 +254,5 @@ impl<'a> SymbolPass<'a> {
         // ret_ty of l not yet determined, so we don't create its signature here
         // instead, it should be done in type pass!
         self.scopes.declare(Symbol::Lambda(l));
-
-        unimplemented!();
     }
 }

@@ -1,6 +1,7 @@
 use crate::{ClassDef, FuncDef, Lambda};
 use common::{Loc, Ref};
 use std::fmt;
+use std::cell;
 
 #[derive(Eq, PartialEq)]
 pub enum SynTyKind<'a> {
@@ -100,6 +101,14 @@ impl<'a> Ty<'a> {
                 _ => false,
             }
         }
+    }
+
+    pub fn sup(ts: cell::Ref<Vec<Ty<'a>>>) -> Option<Ty<'a>> {
+        unimplemented!()
+    }
+
+    pub fn inf(ts: cell::Ref<Vec<Ty<'a>>>) -> Option<Ty<'a>> {
+        unimplemented!()
     }
 
     // why don't use const items?

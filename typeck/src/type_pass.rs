@@ -3,6 +3,8 @@ use common::{ErrorKind::*, Loc, LENGTH, BinOp, UnOp, ErrorKind, Ref};
 use syntax::ast::*;
 use syntax::{ScopeOwner, Symbol, ty::*};
 use std::ops::{Deref, DerefMut};
+use std::borrow::Borrow;
+use std::iter;
 
 pub(crate) struct TypePass<'a>(pub TypeCk<'a>);
 
@@ -44,6 +46,7 @@ impl<'a> TypePass<'a> {
     fn stmt(&mut self, s: &'a Stmt<'a>) -> bool {
         match &s.kind {
             StmtKind::Assign(a) => {
+                // todo for lambda scope, check a's assignability
                 let (l, r) = (self.expr(&a.dst), self.expr(&a.src));
                 if !r.assignable_to(l) { self.issue(s.loc, IncompatibleBinary { l, op: "=", r }) }
                 false
@@ -96,10 +99,17 @@ impl<'a> TypePass<'a> {
                 for st in &f.body.stmt { s.stmt(st); } // not calling block(), because the scope is already opened
                 false
             }),
+            // return type checking is here
             StmtKind::Return(r) => {
-                let expect = self.cur_func.unwrap().ret_ty();
                 let actual = r.as_ref().map(|e| self.expr(e)).unwrap_or(Ty::void());
-                if !actual.assignable_to(expect) { self.issue(s.loc, ReturnMismatch { actual, expect }) }
+                match self.scopes.cur_lambda() {
+                    None => {  // in normal method body
+                        let expect = self.cur_func.unwrap().ret_ty();
+                        if !actual.assignable_to(expect) { self.issue(s.loc, ReturnMismatch { actual, expect }) }
+                    }
+                    Some(l) =>  // in a lambda's body, we gather candidate return ty here
+                        l.can_tys.borrow_mut().push(actual)
+                }
                 actual != Ty::void()
             }
             StmtKind::Print(p) => {
@@ -134,7 +144,11 @@ impl<'a> TypePass<'a> {
             }
             IntLit(_) | ReadInt(_) => Ty::int(),
             BoolLit(_) => Ty::bool(),
-            StringLit(_) | ReadLine(_) => Ty::string(),
+            StringLit(s) => { // todo
+//                if *s == "C.a()" { self.scopes.debug_print() }
+                Ty::string()
+            }
+            ReadLine(_) => Ty::string(),
             NullLit(_) => Ty::null(),
             Call(c) => self.call(c, e.loc),
             Unary(u) => {
@@ -198,9 +212,31 @@ impl<'a> TypePass<'a> {
             }
             Lambda(l) => {
                 // todo scan in the scope of l.body and determine ret type
-                // todo assign l.ret_param_ty
-
-                unimplemented!()
+                let ret_ty = self.scoped(ScopeOwner::LambdaParam(l), |s| {
+                    match &l.body {
+                        LambdaKind::Block(b) => {
+                            assert!(l.can_tys.borrow().len() == 0);
+                            // gather all return types in its body
+                            let returned = s.block(b);
+                            match Ty::sup(l.can_tys.borrow()) {
+                                None => s.issue(l.loc, IncompatibleRetTypes),
+                                Some(ret_ty) => if !returned && !ret_ty.is_void() {
+                                    s.issue(l.loc, NoReturn)
+                                } else { ret_ty }
+                            }
+                        }
+                        LambdaKind::Expr(e, inner_s) =>
+                            s.scoped(ScopeOwner::Local(None, inner_s), |s| s.expr(e)),
+                    }
+                });
+                l.ret_ty.set(Some(ret_ty));
+                if ret_ty == Ty::error() { return Ty::error(); }
+                // create sinature for l
+                let ret_param_ty = iter::once(ret_ty).chain(l.params.iter().map(|v| v.ty.get()));
+                let ret_param_ty = self.alloc.ty.alloc_extend(ret_param_ty);
+                l.ret_param_ty.set(Some(ret_param_ty));
+                l.class.set(self.cur_class);
+                Ty::new(TyKind::Func(ret_param_ty))
             }
         };
         e.ty.set(ty);

@@ -1,6 +1,6 @@
 use std::iter;
 use common::Loc;
-use syntax::{ScopeOwner, Symbol, ClassDef, Program};
+use syntax::{ScopeOwner, Symbol, ClassDef, Program, Lambda};
 use std::borrow::Borrow;
 
 pub(crate) struct ScopeStack<'a> {
@@ -27,6 +27,13 @@ impl<'a> ScopeStack<'a> {
         self.stack.iter().rev().chain(iter::once(&self.global))
             .filter_map(|&owner| owner.scope().get(name).cloned()
                 .filter(|&sym| !(owner.is_local() && sym.loc() >= loc)))    // todo just filter out local?
+            .next() // yields the first hit
+    }
+
+    // look for the uppermost lambda param scope
+    pub fn cur_lambda(&self) -> Option<&'a Lambda<'a>> {
+        self.stack.iter().rev()
+            .filter_map(|&owner| if let ScopeOwner::LambdaParam(l) = owner { Some(l) } else { None })
             .next() // yields the first hit
     }
 

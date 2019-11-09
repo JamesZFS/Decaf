@@ -396,12 +396,12 @@ impl<'p> Parser<'p> {
     // lambda expr
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Arrow Expr)]
     fn expr_lambda0(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, _a: Token, e: Expr<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), body: LambdaKind::Expr(Box::new(e), dft()), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
+        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), can_tys: dft(), body: LambdaKind::Expr(Box::new(e), dft()), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
     }
 
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Block)]
     fn expr_lambda1(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, b: Block<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), body: LambdaKind::Block(Box::new(b)), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
+        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), can_tys: dft(), body: LambdaKind::Block(Box::new(b)), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
     }
 
     #[rule(ExprList -> ExprList Comma Expr)]

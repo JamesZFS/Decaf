@@ -196,6 +196,7 @@ pub struct Lambda<'a> {
     pub name: String,
     pub params: Vec<&'a VarDef<'a>>,
     pub ret_ty: Cell<Option<Ty<'a>>>,
+    pub can_tys: RefCell<Vec<Ty<'a>>>,  // candidate types
     pub body: LambdaKind<'a>,
     // [0] is ret_ty, [1..] is parm_ty
     pub ret_param_ty: Cell<Option<&'a [Ty<'a>]>>,
