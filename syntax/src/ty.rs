@@ -138,15 +138,29 @@ impl<'a> Ty<'a> {
                     TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void =>
                         if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
                     TyKind::Object(c) => {
+                        println!("==INTO TyKind::Object==");
+                        tys.iter().for_each(|t| println!("{:?} ", t));
                         // reduce and conquer
                         let mut p = tk.clone();
                         loop {
-                            if it.clone().all(|ti| ti.assignable_to(p)) {
-                                break Ok(p);
+                            println!("p is {:?}", p);
+                            if it.clone().all(|ti| {
+                                print!("\tti is {:?} ", ti);
+                                if ti.assignable_to(p) {
+                                    println!("ok");
+                                    true
+                                }
+                                else {
+                                    println!("bad");
+                                    false
+                                }
+                            }) {
+                                println!("Ok!\n");
+                                return Ok(p);
                             } else {
                                 p.kind = match p.kind.parent_class_ref() {
                                     Some(c) => TyKind::Class(Ref(c)),
-                                    None => { break Err(FailToDetermineTy); }   // p has no parent
+                                    None => { println!("Fail!\n"); return Err(FailToDetermineTy); }   // p has no parent
                                 }
                             }
                         }
