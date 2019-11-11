@@ -3,7 +3,6 @@ use common::{ErrorKind::*, Loc, LENGTH, BinOp, UnOp, ErrorKind, Ref};
 use syntax::ast::*;
 use syntax::{ScopeOwner, Symbol, ty::*};
 use std::ops::{Deref, DerefMut};
-use std::borrow::Borrow;
 use std::iter;
 
 pub(crate) struct TypePass<'a>(pub TypeCk<'a>);
@@ -211,17 +210,20 @@ impl<'a> TypePass<'a> {
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
             Lambda(l) => {
-                // todo scan in the scope of l.body and determine ret type
                 let ret_ty = self.scoped(ScopeOwner::LambdaParam(l), |s| {
                     match &l.body {
                         LambdaKind::Block(b) => {
-                            assert!(l.can_tys.borrow().len() == 0);
+                            assert_eq!(l.can_tys.borrow().len(), 0);
                             // gather all return types in its body
                             let returned = s.block(b);
-                            match Ty::sup(l.can_tys.borrow()) {
-                                None => s.issue(l.loc, IncompatibleRetTypes),
-                                Some(ret_ty) => if !returned && !ret_ty.is_void() {
-                                    s.issue(l.loc, NoReturn)
+                            let can_tys = l.can_tys.replace(Default::default());
+                            match Ty::sup(&can_tys) {
+                                Err(_) => {
+                                    if !returned { s.issue(b.loc, NoReturn) };
+                                    s.issue(b.loc, IncompatibleRetTypes)
+                                },
+                                Ok(ret_ty) => if !returned && !ret_ty.is_void() {
+                                    s.issue(b.loc, NoReturn)
                                 } else { ret_ty }
                             }
                         }

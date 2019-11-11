@@ -1,7 +1,7 @@
 use crate::{ClassDef, FuncDef, Lambda};
 use common::{Loc, Ref};
 use std::fmt;
-use std::cell;
+use std::fmt::{Formatter, Error};
 
 #[derive(Eq, PartialEq)]
 pub enum SynTyKind<'a> {
@@ -77,6 +77,8 @@ pub struct Ty<'a> {
     pub kind: TyKind<'a>,
 }
 
+pub struct FailToDetermineTy;  // thrown when failing to deduce the sup/inf ty of multiple tys
+
 impl<'a> Ty<'a> {
     // make a type with array dimension = 0
     pub const fn new(kind: TyKind<'a>) -> Ty<'a> { Ty { arr: 0, kind } }
@@ -86,7 +88,8 @@ impl<'a> Ty<'a> {
         if self == Ty::error() { T::default() } else { f() }
     }
 
-    pub fn assignable_to(&self, rhs: Ty<'a>) -> bool { // self <: rhs
+    pub fn assignable_to(&self, rhs: Ty<'a>) -> bool {
+        // self <: rhs
         use TyKind::*;
         match (self.kind, rhs.kind) {
             (Error, _) | (_, Error) => true,
@@ -103,11 +106,87 @@ impl<'a> Ty<'a> {
         }
     }
 
-    pub fn sup(ts: cell::Ref<Vec<Ty<'a>>>) -> Option<Ty<'a>> {
-        unimplemented!()
+    pub fn sup(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+        if tys.is_empty() { return Ok(Ty::void()); };
+
+        assert!(tys.iter().all(|t| !t.is_class()));
+        let arr = tys[0].arr;
+        if tys.iter().skip(1).any(|t| t.arr != arr) { return Err(FailToDetermineTy); } // check arr matching
+
+        // skip prefix error and null type
+        let mut has_error: Option<Ty<'a>> = None;
+        let mut has_null: Option<Ty<'a>> = None;
+        let mut it = tys.iter();
+        let first_non_err_or_null_ty = loop {
+            let t = it.next();
+            match t {
+                None => break None,
+                Some(t) => match t.kind {
+                    TyKind::Error => {
+                        has_error = Some(*t);
+                    }
+                    TyKind::Null => {
+                        has_null = Some(*t);
+                    }
+                    _ => break Some(t)  // skip until the first non error and non null type
+                }
+            }
+        };
+        match first_non_err_or_null_ty {
+            Some(tk) => { // compute remaining ty
+                let rem_ty = match tk.kind { // rem_ty == None means conflict occurs
+                    TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void =>
+                        if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
+                    TyKind::Object(c) => {
+                        // reduce and conquer
+                        let mut p = tk.clone();
+                        loop {
+                            if it.clone().all(|ti| ti.assignable_to(p)) {
+                                break Ok(p);
+                            } else {
+                                p.kind = match p.kind.parent_class_ref() {
+                                    Some(c) => TyKind::Class(Ref(c)),
+                                    None => { break Err(FailToDetermineTy); }   // p has no parent
+                                }
+                            }
+                        }
+                    }
+                    TyKind::Func(f) => {
+                        let same_form = it.clone().all(|ti| if let TyKind::Func(fi) = ti.kind {
+                            fi.len() == f.len()
+                        } else { false });  // check function form
+                        if !same_form { return Err(FailToDetermineTy); }
+                        // r = sup(r1, r2, ..., rn)
+                        let r = Ty::sup(&std::iter::once(tk).chain(it.clone()) // ** recurse **
+                            .map(|tj| tj.to_func()[0]).collect())?;
+
+                        let mut res = vec![r];
+                        // ti = inf(s1i, s2i, ..., snj)
+                        for i in 1..f.len() {
+                            let ti = Ty::inf(&std::iter::once(tk).chain(it.clone()) // ** recurse **
+                                .map(|tj| tj.to_func()[i]/* Sji */).collect())?;
+                            res.push(ti);
+                        }
+                        unimplemented!()
+//                        Ty{ arr, kind: TyKind::Func() } // todo we need allocator
+                    }
+                    _ => unreachable!(),
+                };
+                match (has_null, rem_ty) {
+                    (_, Err(e)) => Err(e),
+                    (Some(n), Ok(t)) => if n.assignable_to(t) { Ok(t) } else { Err(FailToDetermineTy) },
+                    (None, Ok(t)) => Ok(t)
+                }
+            }
+            None => match (has_error, has_null) { // just discuss prefix tys
+                (_, Some(n)) => Ok(n),
+                (Some(e), None) => Ok(e),
+                (None, None) => unreachable!()  // means an empty candidate list
+            }
+        }
     }
 
-    pub fn inf(ts: cell::Ref<Vec<Ty<'a>>>) -> Option<Ty<'a>> {
+    pub fn inf(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         unimplemented!()
     }
 
@@ -131,11 +210,36 @@ impl<'a> Ty<'a> {
     pub fn is_class(&self) -> bool { self.arr == 0 && if let TyKind::Class(_) = self.kind { true } else { false } }
     pub fn is_object(&self) -> bool { self.arr == 0 && if let TyKind::Object(_) = self.kind { true } else { false } }
     pub fn is_void(&self) -> bool { self.kind == TyKind::Void }
+    pub fn is_null(&self) -> bool { self.kind == TyKind::Null }
+    pub fn is_err(&self) -> bool { self.kind == TyKind::Error }
+    pub fn is_basic(&self) -> bool {
+        match self.kind {
+            TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void => true,
+            _ => false
+        }
+    }
+
+    pub fn to_func(&self) -> &'a [Ty<'a>] {
+        match self.kind {
+            TyKind::Func(f) => f,
+            _ => panic!("`{:?}` is not a function", self)
+        }
+    }
 }
 
-impl fmt::Debug for Ty<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        match &self.kind {
+impl<'a> TyKind<'a> {
+    pub fn parent_class_ref(&self) -> Option<&'a ClassDef<'a>> {
+        match self {
+            TyKind::Object(o) => o.parent_ref.get(),
+            TyKind::Class(c) => c.parent_ref.get(),
+            _ => panic!("TyKind `{:?}` is not a class type!", self)
+        }
+    }
+}
+
+impl fmt::Debug for TyKind<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        match self {
             TyKind::Int => write!(f, "int"),
             TyKind::Bool => write!(f, "bool"),
             TyKind::String => write!(f, "string"),
@@ -152,6 +256,13 @@ impl fmt::Debug for Ty<'_> {
                 write!(f, ")")
             }
         }?;
+        Ok(())
+    }
+}
+
+impl fmt::Debug for Ty<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(f, "{:?}", self.kind);
         for _ in 0..self.arr { write!(f, "[]")?; }
         Ok(())
     }

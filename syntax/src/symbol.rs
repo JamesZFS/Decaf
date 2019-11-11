@@ -96,6 +96,7 @@ impl<'a> ScopeOwner<'a> {
     pub fn is_class(&self) -> bool { if let ScopeOwner::Class(_) = self { true } else { false } }
     pub fn is_global(&self) -> bool { if let ScopeOwner::Global(_) = self { true } else { false } }
     pub fn is_lambda_param(&self) -> bool { if let ScopeOwner::LambdaParam(_) = self { true } else { false } }
+    pub fn is_param(&self) -> bool { if let ScopeOwner::FuncParam(_) | ScopeOwner::LambdaParam(_) = self { true } else { false } }
 
     pub fn description(&self) -> String {
         match self {
@@ -114,7 +115,7 @@ impl<'a> ScopeOwner<'a> {
 impl fmt::Debug for Symbol<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         match self {
-            Symbol::Var(v) => write!(f, "{:?} -> variable {}{} : {:?}", v.loc, if v.owner.get().unwrap().is_func_param() { "@" } else { "" }, v.name, v.ty.get()),
+            Symbol::Var(v) => write!(f, "{:?} -> variable {}{} : {:?}", v.loc, if v.owner.get().unwrap().is_param() { "@" } else { "" }, v.name, v.ty.get()),
             Symbol::Func(fu) => write!(f, "{:?} -> {}function {} : {:?}", fu.loc, if fu.static_ { "STATIC " } else if fu.is_abstr() { "ABSTRACT " } else { "" }, fu.name, Ty::mk_func(fu)),
             Symbol::This(fu) => write!(f, "{:?} -> variable @this : class {}", fu.loc, fu.class.get().unwrap().name),
             Symbol::Class(c) => {
