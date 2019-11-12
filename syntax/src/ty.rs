@@ -80,16 +80,6 @@ pub struct Ty<'a> {
 
 pub struct FailToDetermineTy;  // thrown when failing to deduce the sup/inf ty of multiple tys
 
-//#[cfg(debug_print)]
-//macro_rules! debug {
-//    ($($x:expr),*) => { dbg!($x*) }
-//}
-//
-//#[cfg(not(debug_print))]
-//macro_rules! debug {
-//    ($($x:expr),*) => { }
-//}
-
 impl<'a> Ty<'a> {
     // make a type with array dimension = 0
     pub const fn new(kind: TyKind<'a>) -> Ty<'a> { Ty { arr: 0, kind } }
@@ -117,7 +107,109 @@ impl<'a> Ty<'a> {
         }
     }
 
+    // find minimal super ty of given types
     pub fn sup(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+//        print!("CALL SUP, get returns: ");
+//        tys.iter().for_each(|t| print!("{:?}, ", t));
+//        println!();
+        if tys.is_empty() { return Ok(Ty::void()); };
+
+        debug_assert!(tys.iter().all(|t| !t.is_class()));
+        let arr = tys[0].arr;
+        if tys.iter().skip(1).any(|t| t.arr != arr) { return Err(FailToDetermineTy); } // check arr matching
+
+        // critical! todo scan the whole tys and filter out null | err
+        // skip prefix error and null type
+        let mut has_error: Option<Ty<'a>> = None;
+        let mut has_null: Option<Ty<'a>> = None;
+        let mut it = tys.iter();
+        let first_non_err_or_null_ty = loop {
+            let t = it.next();
+            match t {
+                None => break None,
+                Some(t) => match t.kind {
+                    TyKind::Error => {
+                        has_error = Some(*t);
+                    }
+                    TyKind::Null => {
+                        has_null = Some(*t);
+                    }
+                    _ => break Some(t)  // skip until the first non error and non null type
+                }
+            }
+        };
+        match first_non_err_or_null_ty {
+            Some(tk) => { // compute remaining ty
+                let rem_ty = match tk.kind { // rem_ty == None means conflict occurs
+                    TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void =>
+                        if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
+                    TyKind::Object(c) => {
+//                        println!("\tin Object branch");
+                        // pre check
+                        if !it.clone().all(|tj| tj.is_object()) { return Err(FailToDetermineTy); }
+                        // println!("==INTO TyKind::Object==");
+                        // tys.iter().for_each(|t| println!("{:?} ", t));
+                        // find lowest common parent class
+                        let mut p = tk.clone();
+                        loop {
+                            if it.clone().all(|ti| ti.assignable_to(p)) {
+//                                println!("\t✅ {:?}", p);
+                                return Ok(p);
+                            } else {
+                                p.kind = match p.kind.parent_class_ref() {
+                                    Some(c) => TyKind::Object(Ref(c)),
+                                    None => return Err(FailToDetermineTy) // p has no parent
+                                }
+                            }
+                        }
+                    }
+                    TyKind::Func(f) => {
+//                        println!("\tin Function branch");
+                        // pre check function form
+                        let same_form = it.clone().all(|ti| if let TyKind::Func(fi) = ti.kind {
+                            fi.len() == f.len()
+                        } else { false });
+                        if !same_form { return Err(FailToDetermineTy); }
+                        let it = std::iter::once(tk).chain(it); // concat tk
+                        // r = sup(r1, r2, ..., rn)
+                        let r = it.clone().map(|tj| tj.to_func()[0]).collect::<Vec<_>>();
+                        // ** recursively solve **
+                        let r = Ty::sup(&r, allocator)?;
+
+                        let mut res = vec![r];
+                        // ti = inf(s1i, s2i, ..., snj)
+                        for i in 1..f.len() {
+                            let si = it.clone().map(|tj| tj.to_func()[i]/* Sji */).collect::<Vec<_>>();
+                            // ** recursively solve **
+                            let ti = Ty::inf(&si, allocator)?;
+                            res.push(ti);
+                        }
+                        let ret_param = allocator.alloc_extend(res.into_iter());
+                        let res = Ty { arr, kind: TyKind::Func(ret_param) };
+//                        println!("\t✅ {:?}", res);
+                        Ok(res)
+                    }
+                    _ => unreachable!(),
+                };
+                match (has_null, rem_ty) {
+                    (_, Err(e)) => Err(e),
+                    (Some(n), Ok(t)) => if n.assignable_to(t) { Ok(t) } else { Err(FailToDetermineTy) },
+                    (None, Ok(t)) => Ok(t)
+                }
+            }
+            None => match (has_error, has_null) { // just discuss prefix tys
+                (_, Some(n)) => Ok(n),
+                (Some(e), None) => Ok(e),
+                (None, None) => unreachable!()  // means an empty candidate list
+            }
+        }
+    }
+
+    // find maximal inferior ty of given types
+    pub fn inf(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+//        print!("CALL INF, get returns: ");
+//        tys.iter().for_each(|t| print!("{:?}, ", t));
+//        println!();
         if tys.is_empty() { return Ok(Ty::void()); };
 
         debug_assert!(tys.iter().all(|t| !t.is_class()));
@@ -149,41 +241,45 @@ impl<'a> Ty<'a> {
                     TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void =>
                         if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
                     TyKind::Object(c) => {
-                        // println!("==INTO TyKind::Object==");
-                        // tys.iter().for_each(|t| println!("{:?} ", t));
-                        // reduce and conquer
-                        let mut p = tk.clone();
-                        loop {
-                            if it.clone().all(|ti| ti.assignable_to(p) ) {
-                                return Ok(p);
-                            } else {
-                                p.kind = match p.kind.parent_class_ref() {
-                                    Some(c) => TyKind::Object(Ref(c)),
-                                    None => return Err(FailToDetermineTy) // p has no parent
-                                }
+//                        println!("\tin Object branch");
+                        // pre check
+                        if !it.clone().all(|tj| tj.is_object()) { return Err(FailToDetermineTy); }
+                        let it = std::iter::once(tk).chain(it); // concat tk
+                        // find highest child class (i.e. one of the given tys!)
+                        match it.clone().filter(|&ti|
+                            it.clone().all(|tj| tj == ti || ti.assignable_to(*tj))).next() {
+                            None => Ok(Ty::null()),
+                            Some(t) => {
+//                                println!("\t✅ {:?}", *t);
+                                Ok(*t)
                             }
                         }
                     }
                     TyKind::Func(f) => {
+//                        println!("\tin Function branch");
+                        // pre check function form
                         let same_form = it.clone().all(|ti| if let TyKind::Func(fi) = ti.kind {
                             fi.len() == f.len()
-                        } else { false });  // check function form
+                        } else { false });
                         if !same_form { return Err(FailToDetermineTy); }
+                        let it = std::iter::once(tk).chain(it); // concat tk
                         // r = sup(r1, r2, ..., rn)
-                        let r = std::iter::once(tk).chain(it.clone()) // ** recurse **
-                            .map(|tj| tj.to_func()[0]).collect::<Vec<_>>();
-                        let r = Ty::sup(&r, allocator)?;
+                        let r = it.clone().map(|tj| tj.to_func()[0]).collect::<Vec<_>>();
+                        // ** recursively solve **
+                        let r = Ty::inf(&r, allocator)?;
 
                         let mut res = vec![r];
                         // ti = inf(s1i, s2i, ..., snj)
                         for i in 1..f.len() {
-                            let si = std::iter::once(tk).chain(it.clone())
-                                .map(|tj| tj.to_func()[i]/* Sji */).collect::<Vec<_>>();
-                            let ti = Ty::inf(&si, allocator)?;  // ** recurse **
+                            let si = it.clone().map(|tj| tj.to_func()[i]/* Sji */).collect::<Vec<_>>();
+                            // ** recursively solve **
+                            let ti = Ty::sup(&si, allocator)?;
                             res.push(ti);
                         }
                         let ret_param = allocator.alloc_extend(res.into_iter());
-                        Ok(Ty{ arr, kind: TyKind::Func(ret_param) })
+                        let res = Ty { arr, kind: TyKind::Func(ret_param) };
+//                        println!("\t✅ {:?}", res);
+                        Ok(res)
                     }
                     _ => unreachable!(),
                 };
@@ -199,10 +295,6 @@ impl<'a> Ty<'a> {
                 (None, None) => unreachable!()  // means an empty candidate list
             }
         }
-    }
-
-    pub fn inf(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
-        unimplemented!()
     }
 
     // why don't use const items?
@@ -277,7 +369,7 @@ impl fmt::Debug for TyKind<'_> {
 
 impl fmt::Debug for Ty<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(f, "{:?}", self.kind);
+        write!(f, "{:?}", self.kind)?;
         for _ in 0..self.arr { write!(f, "[]")?; }
         Ok(())
     }
