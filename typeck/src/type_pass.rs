@@ -64,7 +64,7 @@ impl<'a> TypePass<'a> {
                             } else {},  // pass
 //                            ScopeOwner::Local(Some(_), _s) =>
                             _ =>
-                                if self.scopes.rank(&ScopeOwner::LambdaParam(cur_lambda)) < self.scopes.rank(&cap_scope) { // todo can capture scopes outside outmost lambda
+                                if self.scopes.rank(&ScopeOwner::LambdaParam(cur_lambda)) < self.scopes.rank(&cap_scope) { // todo array | member var should pass
 //                                    dbg!(s.loc, cap_sym, cap_scope);
 //                                    eprintln!();
                                     self.issue(s.loc, AssignToCapturedVar)
@@ -159,10 +159,10 @@ impl<'a> TypePass<'a> {
         let ty_scope = match &e.kind {
             VarSel(v) => self.var_sel(v, e.loc), // may be an LValue
             IndexSel(i) => {  // may be an LValue
-                let ((arr, owner), idx) = (self.expr(&i.arr), self.expr(&i.idx).0);
+                let (arr, idx) = (self.expr(&i.arr).0, self.expr(&i.idx).0);
                 if idx != Ty::int() { idx.error_or(|| self.issue(e.loc, IndexNotInt)) }
                 match arr {
-                    Ty { arr, kind } if arr > 0 => (Ty { arr: arr - 1, kind }, owner),
+                    Ty { arr, kind } if arr > 0 => (Ty { arr: arr - 1, kind }, None),
                     e => e.error_or(|| self.issue(i.arr.loc, IndexNotArray)),
                 }
             }
@@ -303,7 +303,7 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, PrivateFieldAccess { name: var.name, owner })
                             }
                             self.cur_caller = None;
-                            (var.ty.get(), var.owner.get().map(|scope| (sym, scope))) // various types of scope owner
+                            (var.ty.get(), None) // here we exclude assignment checking for member vars
                         }
                         Symbol::Func(f) => {  // methods are always public
                             v.field.set(Some(FieldDef::FuncDef(f)));

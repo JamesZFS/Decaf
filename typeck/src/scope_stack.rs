@@ -34,7 +34,7 @@ impl<'a> ScopeStack<'a> {
         let mut rk = 0;
         self.stack.iter().rev().chain(iter::once(&self.global)).find(|&s| {
             rk += 1;
-            s.description() == scope.description()
+            s.description() == scope.description() // todo, this code is very ugly and incomplete, try using better approach
         }).unwrap_or_else(|| unreachable!());
         rk
     }
