@@ -77,21 +77,7 @@ impl<'a> TypeCk<'a> {
         }
     }
 
-    const NULL_TO_INT: [Ty<'a>; 1] = [Ty::int()];
-
-//    pub fn length_function() -> FuncDef<'a> {
-//        FuncDef {
-//            loc: NO_LOC,
-//            name: LENGTH,
-//            ret: SynTy { loc: NO_LOC, arr: 0, kind: SynTyKind::Int },
-//            param: vec![],
-//            static_: false,
-//            body: None,
-//            ret_param_ty: Cell::new(Some(&Self::NULL_TO_INT)),    // () => int
-//            class: dft(),
-//            scope: dft(),
-//        }
-//    }
+    const VOID_TO_INT: [Ty<'a>; 1] = [Ty::int()];
 }
 
 impl<'a> Deref for TypeCk<'a> {

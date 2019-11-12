@@ -46,8 +46,25 @@ impl<'a> TypePass<'a> {
         match &s.kind {
             StmtKind::Assign(a) => {
                 // todo for lambda scope, check a's assignability
-                let (l, r) = (self.expr(&a.dst), self.expr(&a.src));
+                let ((l, sym_scope), r) = (self.expr(&a.dst), self.expr(&a.src).0);
                 if !r.assignable_to(l) { self.issue(s.loc, IncompatibleBinary { l, op: "=", r }) }
+                match self.scopes.cur_lambda() {
+                    None => if let Some((sym, scope)) = sym_scope { // normal context
+                        if sym.is_func() && scope.is_class() {
+                            self.issue(s.loc, AssignToMemberMethod(sym.name()))
+                        }
+                    }
+                    Some(lambda) => match sym_scope { // in a lambda context
+                        None => {}
+                        Some((sym, scope)) => match scope {
+                            ScopeOwner::Class(_) => if sym.is_func() {
+                                self.issue(s.loc, AssignToMemberMethod(sym.name()))
+                            } else {},  // pass
+                            ScopeOwner::LambdaParam(l_lambda) => if Ref(l_lambda) == Ref(lambda) {}, // pass
+                            _ => self.issue(s.loc, AssignToCapturedVar)
+                        },
+                    }
+                }
                 false
             }
             StmtKind::LocalVarDef(v) => {
@@ -56,7 +73,7 @@ impl<'a> TypePass<'a> {
                     SynTyKind::Var => match &v.init {
                         None => unreachable!("var deduction without init expr should be rejected by syntax parser"),
                         Some((_, e)) => {
-                            let r = self.expr(e);
+                            let r = self.expr(e).0;
                             if r.is_void() {
                                 self.issue(v.loc, VoidVar(v.name))
                             } else {
@@ -65,7 +82,7 @@ impl<'a> TypePass<'a> {
                         }
                     }
                     _ => if let Some((loc, e)) = &v.init {   // with init expr
-                        let (l, r) = (v.ty.get(), self.expr(e));
+                        let (l, r) = (v.ty.get(), self.expr(e).0);
                         if !r.assignable_to(l) { self.issue(*loc, IncompatibleBinary { l, op: "=", r }) }
                     }
                 }
@@ -98,7 +115,7 @@ impl<'a> TypePass<'a> {
             }),
             // return type checking is here
             StmtKind::Return(r) => {
-                let actual = r.as_ref().map(|e| self.expr(e)).unwrap_or(Ty::void());
+                let actual = r.as_ref().map(|e| self.expr(e).0).unwrap_or(Ty::void());
                 match self.scopes.cur_lambda() {
                     None => {  // in normal method body
                         let expect = self.cur_func.unwrap().ret_ty();
@@ -111,7 +128,7 @@ impl<'a> TypePass<'a> {
             }
             StmtKind::Print(p) => {
                 for (i, e) in p.iter().enumerate() {
-                    let ty = self.expr(e);
+                    let ty = self.expr(e).0;
                     if ty != Ty::bool() && ty != Ty::int() && ty != Ty::string() {
                         ty.error_or(|| self.issue(e.loc, BadPrintArg { loc: i as u32 + 1, ty }))
                     }
@@ -127,44 +144,50 @@ impl<'a> TypePass<'a> {
     }
 
     // e.ty is set to the return value
-    fn expr(&mut self, e: &'a Expr<'a>) -> Ty<'a> {
+    // returns (expr ty, scope of this expr(for LValue if there is one, else None for RValue))
+    fn expr(&mut self, e: &'a Expr<'a>) -> (Ty<'a>, Option<(Symbol<'a>, ScopeOwner<'a>)>) {
         use ExprKind::*;
-        let ty = match &e.kind {
-            VarSel(v) => self.var_sel(v, e.loc),
-            IndexSel(i) => {
-                let (arr, idx) = (self.expr(&i.arr), self.expr(&i.idx));
+        let ty_scope = match &e.kind {
+            VarSel(v) => self.var_sel(v, e.loc), // may be an LValue
+            IndexSel(i) => {  // may be an LValue
+                let ((arr, owner), idx) = (self.expr(&i.arr), self.expr(&i.idx).0);
                 if idx != Ty::int() { idx.error_or(|| self.issue(e.loc, IndexNotInt)) }
                 match arr {
-                    Ty { arr, kind } if arr > 0 => Ty { arr: arr - 1, kind },
+                    Ty { arr, kind } if arr > 0 => (Ty { arr: arr - 1, kind }, owner),
                     e => e.error_or(|| self.issue(i.arr.loc, IndexNotArray)),
                 }
             }
-            IntLit(_) | ReadInt(_) => Ty::int(),
-            BoolLit(_) => Ty::bool(),
-            StringLit(_s) => {
-//                if *s == "C.a()" { self.scopes.debug_print() }
-                Ty::string()
+            IntLit(_) | ReadInt(_) => (Ty::int(), None),
+            BoolLit(_) => (Ty::bool(), None),
+            StringLit(_s) => (Ty::string(), None),
+            ReadLine(_) => (Ty::string(), None),
+            NullLit(_) => (Ty::null(), None),
+            Call(c) => {
+                let lhs_ty = self.expr(&c.func).0;
+                if lhs_ty == Ty::error() { return (Ty::error(), None); }
+                c.func_ref.set(self.cur_caller);
+                match lhs_ty.kind {
+                    TyKind::Func(f) => (self.check_arg_param(&c.arg, f, e.loc), None),    // todo maybe panic!
+                    _ => self.issue(e.loc, NotCallable(lhs_ty))
+                }
             }
-            ReadLine(_) => Ty::string(),
-            NullLit(_) => Ty::null(),
-            Call(c) => self.call(c, e.loc),
             Unary(u) => {
-                let r = self.expr(&u.r);
+                let r = self.expr(&u.r).0;
                 let (ty, op) = match u.op {
                     UnOp::Neg => (Ty::int(), "-"),
                     UnOp::Not => (Ty::bool(), "!"),
                 };
                 if r != ty { r.error_or(|| self.issue(e.loc, IncompatibleUnary { op, r })) }
-                ty
+                (ty, None)
             }
             Binary(b) => {
                 use BinOp::*;
-                let (l, r) = (self.expr(&b.l), self.expr(&b.r));
+                let (l, r) = (self.expr(&b.l).0, self.expr(&b.r).0);
                 if l == Ty::error() || r == Ty::error() {
                     // not using wildcard match, so that if we add new operators in the future, compiler can tell us
                     match b.op {
-                        Add | Sub | Mul | Div | Mod => Ty::int(),
-                        And | Or | Eq | Ne | Lt | Le | Gt | Ge => Ty::bool()
+                        Add | Sub | Mul | Div | Mod => (Ty::int(), None),
+                        And | Or | Eq | Ne | Lt | Le | Gt | Ge => (Ty::bool(), None)
                     }
                 } else {
                     let (ret, ok) = match b.op {
@@ -174,44 +197,44 @@ impl<'a> TypePass<'a> {
                         And | Or => (Ty::bool(), l == Ty::bool() && r == Ty::bool())
                     };
                     if !ok { self.issue(e.loc, IncompatibleBinary { l, op: b.op.to_op_str(), r }) }
-                    ret
+                    (ret, None)
                 }
             }
             This(_) => {
                 if self.cur_func.unwrap().static_ { self.issue(e.loc, ThisInStatic) }
-                Ty::mk_obj(self.cur_class.unwrap())
+                let cur_class = self.cur_class.unwrap();
+                (Ty::mk_obj(cur_class), None)
             }
             NewClass(n) => if let Some(c) = self.scopes.lookup_class(n.name) {
                 if c.abstr_ { self.issue(e.loc, NewAbstractClass(c.name)) }
                 n.class.set(Some(c));
-                Ty::mk_obj(c)
+                (Ty::mk_obj(c), None)
             } else { self.issue(e.loc, NoSuchClass(n.name)) },
             NewArray(n) => {
-                let len = self.expr(&n.len);
+                let len = self.expr(&n.len).0;
                 if len != Ty::int() { len.error_or(|| self.issue(n.len.loc, NewArrayNotInt)) }
-                self.ty(&n.elem, true)
+                (self.ty(&n.elem, true), None)
             }
             ClassTest(c) => {
-                let src = self.expr(&c.expr);
+                let src = self.expr(&c.expr).0;
                 if !src.is_object() { src.error_or(|| self.issue(e.loc, NotObject(src))) }
                 if let Some(cl) = self.scopes.lookup_class(c.name) {
                     c.class.set(Some(cl));
-                    Ty::bool()
+                    (Ty::bool(), None)
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
             ClassCast(c) => {
-                let src = self.expr(&c.expr);
+                let src = self.expr(&c.expr).0;
                 if !src.is_object() { src.error_or(|| self.issue(e.loc, NotObject(src))) }
                 if let Some(cl) = self.scopes.lookup_class(c.name) {
                     c.class.set(Some(cl));
-                    Ty::mk_obj(cl)
+                    (Ty::mk_obj(cl), None)
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
             Lambda(l) => {
                 let ret_ty = self.scoped(ScopeOwner::LambdaParam(l), |s| {
                     match &l.body {
                         LambdaKind::Block(b) => {
-                            debug_assert_eq!(l.can_tys.borrow().len(), 0);
                             // gather all return types in its body
                             let returned = s.block(b);
                             let can_tys = l.can_tys.replace(Default::default());
@@ -219,7 +242,7 @@ impl<'a> TypePass<'a> {
                                 Err(_) => {
                                     if !returned { s.issue(b.loc, NoReturn) };
                                     s.issue(b.loc, IncompatibleRetTypes)
-                                },
+                                }
                                 Ok(ret_ty) => {
                                     if !returned && !ret_ty.is_void() { s.issue::<()>(b.loc, NoReturn); }
                                     ret_ty
@@ -227,24 +250,24 @@ impl<'a> TypePass<'a> {
                             }
                         }
                         LambdaKind::Expr(e, inner_s) =>
-                            s.scoped(ScopeOwner::Local(None, inner_s), |s| s.expr(e)),
+                            s.scoped(ScopeOwner::Local(None, inner_s), |s| s.expr(e)).0,
                     }
                 });
                 l.ret_ty.set(Some(ret_ty));
-                if ret_ty == Ty::error() { return Ty::error(); }
+                if ret_ty == Ty::error() { return (Ty::error(), None); }
                 // create sinature for l
                 let ret_param_ty = iter::once(ret_ty).chain(l.params.iter().map(|v| v.ty.get()));
                 let ret_param_ty = self.alloc.ty.alloc_extend(ret_param_ty);
                 l.ret_param_ty.set(Some(ret_param_ty));
                 l.class.set(self.cur_class);
-                Ty::new(TyKind::Func(ret_param_ty))
+                (Ty::new(TyKind::Func(ret_param_ty)), None)
             }
         };
-        e.ty.set(ty);
-        ty
+        e.ty.set(ty_scope.0);
+        ty_scope
     }
 
-    fn var_sel(&mut self, v: &'a VarSel<'a>, loc: Loc) -> Ty<'a> {
+    fn var_sel(&mut self, v: &'a VarSel<'a>, loc: Loc) -> (Ty<'a>, Option<(Symbol<'a>, ScopeOwner<'a>)>) {
         // (no owner)not_found_var / ClassName(no field) / (no owner)method => UndeclaredVar
         // object.not_found_var => NoSuchField
         // (no owner)field_var && cur function is static => RefInStatic
@@ -253,11 +276,11 @@ impl<'a> TypePass<'a> {
 
         if let Some(owner) = &v.owner { // has owner
             self.cur_used = true;
-            let owner = self.expr(owner);   // owner check ? ** recurse **
+            let owner = self.expr(owner).0;   // owner check ? ** recurse **
             self.cur_used = false;
             if v.name == LENGTH && owner.is_arr() {  // arr.length()
-                self.cur_caller = Some(Callable::Length); // todo how to use const item?
-                return Ty::new(TyKind::Func(&TypeCk::NULL_TO_INT));
+                self.cur_caller = Some(Callable::Length);
+                return (Ty::new(TyKind::Func(&TypeCk::VOID_TO_INT)), None);
             }
             match owner {
                 // selecting an object's var or method
@@ -271,7 +294,7 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, PrivateFieldAccess { name: var.name, owner })
                             }
                             self.cur_caller = None;
-                            var.ty.get()
+                            (var.ty.get(), var.owner.get().map(|scope| (sym, scope))) // various types of scope owner
                         }
                         Symbol::Func(f) => {  // methods are always public
                             v.field.set(Some(FieldDef::FuncDef(f)));
@@ -280,7 +303,7 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, PrivateFieldAccess { name: f.name, owner })
                             }*/
                             self.cur_caller = Some(f.into());
-                            Ty::mk_func(f)
+                            (Ty::mk_func(f), Some((sym, ScopeOwner::Class(c))))
                         }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
                     }
@@ -290,10 +313,9 @@ impl<'a> TypePass<'a> {
                 Ty { arr: 0, kind: TyKind::Class(Ref(c)) } => if let Some(sym) = c.lookup(v.name) {
                     match sym {
                         Symbol::Func(f) => if f.static_ {
-//                            println!("got static method {}", f.name);
                             v.field.set(Some(FieldDef::FuncDef(f)));
                             self.cur_caller = Some(f.into());
-                            Ty::mk_func(f)
+                            (Ty::mk_func(f), Some((sym, ScopeOwner::Class(c))))
                         } else { self.issue(loc, BadFieldAccess { name: f.name, owner }) }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }) // no static var etc.
                     }
@@ -314,7 +336,7 @@ impl<'a> TypePass<'a> {
                             }
                         }
                         self.cur_caller = None;
-                        var.ty.get()
+                        (var.ty.get(), var.owner.get().map(|scope| (sym, scope))) // various scope owner types
                     }
                     Symbol::Func(f) => {  // fun
                         v.field.set(Some(FieldDef::FuncDef(f)));
@@ -325,30 +347,19 @@ impl<'a> TypePass<'a> {
                             }
                         }
                         self.cur_caller = Some(f.into());
-                        Ty::mk_func(f)
+                        (Ty::mk_func(f), Some((sym, ScopeOwner::Class(f.class.get().unwrap_or_else(|| unreachable!())))))
                     }
-                    Symbol::Class(c) if self.cur_used => { Ty::mk_class(c) }
+                    Symbol::Class(c) if self.cur_used => { (Ty::mk_class(c), None) }
                     _ => self.issue(loc, UndeclaredVar(v.name)),
                 }
             } else { self.issue(loc, UndeclaredVar(v.name)) }
-        }
-    }
-
-    fn call(&mut self, c: &'a Call<'a>, loc: Loc) -> Ty<'a> {
-//        println!("enter call {}", loc);
-        let lhs_ty = self.expr(&c.func);
-        if lhs_ty == Ty::error() { return Ty::error(); }
-        c.func_ref.set(self.cur_caller);
-        match lhs_ty.kind {
-            TyKind::Func(f) => self.check_arg_param(&c.arg, f, loc),
-            _ => self.issue(loc, NotCallable(lhs_ty))
         }
     }
 }
 
 impl<'a> TypePass<'a> {
     fn check_bool(&mut self, e: &'a Expr<'a>) {
-        let ty = self.expr(e);
+        let ty = self.expr(e).0;
         if ty != Ty::bool() { ty.error_or(|| self.issue(e.loc, TestNotBool)) }
     }
 
@@ -365,7 +376,7 @@ impl<'a> TypePass<'a> {
             };
         }
         for (idx, arg0) in arg.iter().enumerate() {
-            let arg = self.expr(arg0);
+            let arg = self.expr(arg0).0;
             if let Some(&param) = param.get(idx) {
                 if !arg.assignable_to(param) {
                     self.issue(arg0.loc, ArgMismatch { loc: idx as u32 + 1, arg, param })

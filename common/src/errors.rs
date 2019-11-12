@@ -77,6 +77,8 @@ pub enum ErrorKind<'a, Ty> {
     LambdaArgCountMismatch { expect: u32, actual: u32 },
     VoidFuncTypeArg,
     IncompatibleRetTypes,
+    AssignToMemberMethod(&'a str),
+    AssignToCapturedVar,
     DebugError(&'a str),
 }
 
@@ -125,6 +127,8 @@ impl<Ty: fmt::Debug> fmt::Debug for ErrorKind<'_, Ty> {
             LambdaArgCountMismatch { expect, actual } => write!(f, "lambda expression expects {} argument(s) but {} given", expect, actual),
             VoidFuncTypeArg => write!(f, "arguments in function type must be non-void known type"),
             IncompatibleRetTypes => write!(f, "incompatible return types in blocked expression"),
+            AssignToMemberMethod(name) => write!(f, "cannot assign value to class member method '{}'", name),
+            AssignToCapturedVar => write!(f, "cannot assign value to captured variables in lambda expression"),
             DebugError(msg) => write!(f, "debugger: {}", msg)
         }
     }
