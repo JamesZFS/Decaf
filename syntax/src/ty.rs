@@ -2,6 +2,7 @@ use crate::{ClassDef, FuncDef, Lambda};
 use common::{Loc, Ref};
 use std::fmt;
 use std::fmt::{Formatter, Error};
+use typed_arena::Arena;
 
 #[derive(Eq, PartialEq)]
 pub enum SynTyKind<'a> {
@@ -116,7 +117,7 @@ impl<'a> Ty<'a> {
         }
     }
 
-    pub fn sup(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+    pub fn sup(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         if tys.is_empty() { return Ok(Ty::void()); };
 
         debug_assert!(tys.iter().all(|t| !t.is_class()));
@@ -148,31 +149,17 @@ impl<'a> Ty<'a> {
                     TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void =>
                         if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
                     TyKind::Object(c) => {
-//                        println!("==INTO TyKind::Object==");
-//                        tys.iter().for_each(|t| println!("{:?} ", t));
+                        // println!("==INTO TyKind::Object==");
+                        // tys.iter().for_each(|t| println!("{:?} ", t));
                         // reduce and conquer
                         let mut p = tk.clone();
                         loop {
-//                            dbg!(p);
-                            if it.clone().all(|ti| {
-//                                dbg!(ti);
-                                if ti.assignable_to(p) {
-//                                    println!("✅");
-                                    true
-                                } else {
-//                                    println!("❌");
-                                    false
-                                }
-                            }) {
-//                                println!("Ok!\n");
+                            if it.clone().all(|ti| ti.assignable_to(p) ) {
                                 return Ok(p);
                             } else {
                                 p.kind = match p.kind.parent_class_ref() {
                                     Some(c) => TyKind::Object(Ref(c)),
-                                    None => {
-//                                        println!("Fail!\n");
-                                        return Err(FailToDetermineTy);
-                                    }   // p has no parent
+                                    None => return Err(FailToDetermineTy) // p has no parent
                                 }
                             }
                         }
@@ -183,18 +170,20 @@ impl<'a> Ty<'a> {
                         } else { false });  // check function form
                         if !same_form { return Err(FailToDetermineTy); }
                         // r = sup(r1, r2, ..., rn)
-                        let r = Ty::sup(&std::iter::once(tk).chain(it.clone()) // ** recurse **
-                            .map(|tj| tj.to_func()[0]).collect())?;
+                        let r = std::iter::once(tk).chain(it.clone()) // ** recurse **
+                            .map(|tj| tj.to_func()[0]).collect::<Vec<_>>();
+                        let r = Ty::sup(&r, allocator)?;
 
                         let mut res = vec![r];
                         // ti = inf(s1i, s2i, ..., snj)
                         for i in 1..f.len() {
-                            let ti = Ty::inf(&std::iter::once(tk).chain(it.clone()) // ** recurse **
-                                .map(|tj| tj.to_func()[i]/* Sji */).collect())?;
+                            let si = std::iter::once(tk).chain(it.clone())
+                                .map(|tj| tj.to_func()[i]/* Sji */).collect::<Vec<_>>();
+                            let ti = Ty::inf(&si, allocator)?;  // ** recurse **
                             res.push(ti);
                         }
-                        unimplemented!()
-//                        Ty{ arr, kind: TyKind::Func() } // todo we need allocator
+                        let ret_param = allocator.alloc_extend(res.into_iter());
+                        Ok(Ty{ arr, kind: TyKind::Func(ret_param) })
                     }
                     _ => unreachable!(),
                 };
@@ -212,7 +201,7 @@ impl<'a> Ty<'a> {
         }
     }
 
-    pub fn inf(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+    pub fn inf(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         unimplemented!()
     }
 

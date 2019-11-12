@@ -215,7 +215,7 @@ impl<'a> TypePass<'a> {
                             // gather all return types in its body
                             let returned = s.block(b);
                             let can_tys = l.can_tys.replace(Default::default());
-                            match Ty::sup(&can_tys) {
+                            match Ty::sup(&can_tys, &s.alloc.ty) {
                                 Err(_) => {
                                     if !returned { s.issue(b.loc, NoReturn) };
                                     s.issue(b.loc, IncompatibleRetTypes)
