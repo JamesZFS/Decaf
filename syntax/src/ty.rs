@@ -2,6 +2,7 @@ use crate::{ClassDef, FuncDef, Lambda};
 use common::{Loc, Ref};
 use std::fmt;
 use std::fmt::{Formatter, Error};
+use typed_arena::Arena;
 
 #[derive(Eq, PartialEq)]
 pub enum SynTyKind<'a> {
@@ -116,7 +117,7 @@ impl<'a> Ty<'a> {
         }
     }
 
-    pub fn sup(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+    pub fn sup(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         if tys.is_empty() { return Ok(Ty::void()); };
 
         debug_assert!(tys.iter().all(|t| !t.is_class()));
@@ -184,17 +185,20 @@ impl<'a> Ty<'a> {
                         if !same_form { return Err(FailToDetermineTy); }
                         // r = sup(r1, r2, ..., rn)
                         let r = Ty::sup(&std::iter::once(tk).chain(it.clone()) // ** recurse **
-                            .map(|tj| tj.to_func()[0]).collect())?;
+                            .map(|tj| tj.to_func()[0]).collect(), allocator)?;
 
                         let mut res = vec![r];
-                        // ti = inf(s1i, s2i, ..., snj)
+                        // ti = inf(s1i, s2i, ..., snj) for all i
                         for i in 1..f.len() {
-                            let ti = Ty::inf(&std::iter::once(tk).chain(it.clone()) // ** recurse **
-                                .map(|tj| tj.to_func()[i]/* Sji */).collect())?;
-                            res.push(ti);
+                            res.push(Ty::inf(&std::iter::once(tk).chain(it.clone()) // ** recurse **
+                                .map(|tj| tj.to_func()[i]/* Sji */).collect(), allocator)?);
                         }
-                        unimplemented!()
-//                        Ty{ arr, kind: TyKind::Func() } // todo we need allocator
+//                        let mut ti_iter = (1..f.len())
+//                            .map(|i| Ty::inf(&std::iter::once(tk).chain(it.clone()) // ** recurse **
+//                                    .map(|tj| tj.to_func()[i]/* Sji */).collect(), allocator).unwrap_or_else(|a| unimplemented!()));
+//                        let ret_param = allocator.alloc_extend(std::iter::once(r).chain(ti_iter));
+                        let ret_param = allocator.alloc_extend(res.into_iter());
+                        Ok(Ty{ arr, kind: TyKind::Func(ret_param) })
                     }
                     _ => unreachable!(),
                 };
@@ -212,7 +216,7 @@ impl<'a> Ty<'a> {
         }
     }
 
-    pub fn inf(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
+    pub fn inf(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         unimplemented!()
     }
 

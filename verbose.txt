@@ -247,28 +247,40 @@ Tokens:
   116: Id
 
 Program:
+first: _Eps Abstract Class
+follow: _Eof
   _Eof => Program -> ClassList
   Abstract => Program -> ClassList
   Class => Program -> ClassList
 
 ClassList:
+first: _Eps Abstract Class
+follow: _Eof
   _Eof => ClassList ->
   Abstract => ClassList -> ClassDef ClassList
   Class => ClassList -> ClassDef ClassList
 
 ClassDef:
+first: Abstract Class
+follow: _Eof Abstract Class
   Abstract => ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc
   Class => ClassDef -> MaybeAbstract Class Id MaybeExtends LBrc FieldList RBrc
 
 MaybeAbstract:
+first: _Eps Abstract
+follow: Class
   Abstract => MaybeAbstract -> Abstract
   Class => MaybeAbstract ->
 
 MaybeExtends:
+first: _Eps Extends
+follow: LBrc
   Extends => MaybeExtends -> Extends Id
   LBrc => MaybeExtends ->
 
 FieldList:
+first: _Eps Abstract Void Int Bool String Class Static
+follow: RBrc
   Abstract => FieldList -> FieldDef FieldList
   Void => FieldList -> FieldDef FieldList
   Int => FieldList -> FieldDef FieldList
@@ -279,6 +291,8 @@ FieldList:
   RBrc => FieldList ->
 
 FieldDef:
+first: Abstract Void Int Bool String Class Static
+follow: Abstract Void Int Bool String Class Static RBrc
   Abstract => FieldDef -> Abstract Type Id ParenedVarDefList Semi
   Void => FieldDef -> Type Id FuncOrVar
   Int => FieldDef -> Type Id FuncOrVar
@@ -288,13 +302,19 @@ FieldDef:
   Static => FieldDef -> Static Type Id ParenedVarDefList Block
 
 ParenedVarDefList:
+first: LPar
+follow: Semi LBrc
   LPar => ParenedVarDefList -> LPar VarDefListOrEmpty RPar
 
 FuncOrVar:
+first: Semi LPar
+follow: Abstract Void Int Bool String Class Static RBrc
   Semi => FuncOrVar -> Semi
   LPar => FuncOrVar -> LPar VarDefListOrEmpty RPar Block
 
 VarDefListOrEmpty:
+first: _Eps Void Int Bool String Class
+follow: RPar
   Void => VarDefListOrEmpty -> VarDefList
   Int => VarDefListOrEmpty -> VarDefList
   Bool => VarDefListOrEmpty -> VarDefList
@@ -303,6 +323,8 @@ VarDefListOrEmpty:
   RPar => VarDefListOrEmpty ->
 
 VarDefList:
+first: Void Int Bool String Class
+follow: RPar
   Void => VarDefList -> VarDef VarDefListRem
   Int => VarDefList -> VarDef VarDefListRem
   Bool => VarDefList -> VarDef VarDefListRem
@@ -310,10 +332,14 @@ VarDefList:
   Class => VarDefList -> VarDef VarDefListRem
 
 VarDefListRem:
+first: _Eps Comma
+follow: RPar
   Comma => VarDefListRem -> Comma VarDef VarDefListRem
   RPar => VarDefListRem ->
 
 ExprListOrEmpty:
+first: _Eps Fun New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: RPar
   Fun => ExprListOrEmpty -> ExprList
   New => ExprListOrEmpty -> ExprList
   Null => ExprListOrEmpty -> ExprList
@@ -332,6 +358,8 @@ ExprListOrEmpty:
   Id => ExprListOrEmpty -> ExprList
 
 ExprList:
+first: Fun New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: RPar
   Fun => ExprList -> Expr ExprListRem
   New => ExprList -> Expr ExprListRem
   Null => ExprList -> Expr ExprListRem
@@ -349,10 +377,14 @@ ExprList:
   Id => ExprList -> Expr ExprListRem
 
 ExprListRem:
+first: _Eps Comma
+follow: RPar
   Comma => ExprListRem -> Comma Expr ExprListRem
   RPar => ExprListRem ->
 
 VarDef:
+first: Void Int Bool String Class
+follow: Comma RPar
   Void => VarDef -> Type Id
   Int => VarDef -> Type Id
   Bool => VarDef -> Type Id
@@ -360,9 +392,13 @@ VarDef:
   Class => VarDef -> Type Id
 
 Block:
+first: LBrc
+follow: Abstract Var Fun Void Int Bool String New Null True False Class This While For If Else Return Break Print ReadInteger ReadLine Static InstanceOf Sub Assign Comma Semi Not LPar RPar RBrk LBrc RBrc StringLit IntLit Id
   LBrc => Block -> LBrc StmtList RBrc
 
 StmtList:
+first: _Eps Var Fun Void Int Bool String New Null True False Class This While For If Return Break Print ReadInteger ReadLine InstanceOf Sub Semi Not LPar LBrc StringLit IntLit Id
+follow: RBrc
   Var => StmtList -> Stmt StmtList
   Fun => StmtList -> Stmt StmtList
   Void => StmtList -> Stmt StmtList
@@ -395,6 +431,8 @@ StmtList:
   Id => StmtList -> Stmt StmtList
 
 Stmt:
+first: Var Fun Void Int Bool String New Null True False Class This While For If Return Break Print ReadInteger ReadLine InstanceOf Sub Semi Not LPar LBrc StringLit IntLit Id
+follow: Var Fun Void Int Bool String New Null True False Class This While For If Else Return Break Print ReadInteger ReadLine InstanceOf Sub Semi Not LPar LBrc RBrc StringLit IntLit Id
   Var => Stmt -> Simple Semi
   Fun => Stmt -> Simple Semi
   Void => Stmt -> Simple Semi
@@ -426,6 +464,8 @@ Stmt:
   Id => Stmt -> Simple Semi
 
 Simple:
+first: _Eps Var Fun Void Int Bool String New Null True False Class This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Semi RPar
   Var => Simple -> Var Id Assign Expr
   Fun => Simple -> Expr MaybeAssign
   Void => Simple -> Type Id MaybeAssign
@@ -451,11 +491,15 @@ Simple:
   Id => Simple -> Expr MaybeAssign
 
 MaybeAssign:
+first: _Eps Assign
+follow: Semi RPar
   Assign => MaybeAssign -> Assign Expr
   Semi => MaybeAssign ->
   RPar => MaybeAssign ->
 
 Blocked:
+first: Var Fun Void Int Bool String New Null True False Class This While For If Return Break Print ReadInteger ReadLine InstanceOf Sub Semi Not LPar LBrc StringLit IntLit Id
+follow: Var Fun Void Int Bool String New Null True False Class This While For If Else Return Break Print ReadInteger ReadLine InstanceOf Sub Semi Not LPar LBrc RBrc StringLit IntLit Id
   Var => Blocked -> Stmt
   Fun => Blocked -> Stmt
   Void => Blocked -> Stmt
@@ -487,6 +531,8 @@ Blocked:
   Id => Blocked -> Stmt
 
 MaybeElse:
+first: _Eps Else
+follow: Var Fun Void Int Bool String New Null True False Class This While For If Else Return Break Print ReadInteger ReadLine InstanceOf Sub Semi Not LPar LBrc RBrc StringLit IntLit Id
   Var => MaybeElse ->
   Fun => MaybeElse ->
   Void => MaybeElse ->
@@ -520,6 +566,8 @@ MaybeElse:
   Id => MaybeElse ->
 
 MaybeExpr:
+first: _Eps Fun New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Semi
   Fun => MaybeExpr -> Expr
   New => MaybeExpr -> Expr
   Null => MaybeExpr -> Expr
@@ -538,35 +586,51 @@ MaybeExpr:
   Id => MaybeExpr -> Expr
 
 Op1:
+first: Or
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   Or => Op1 -> Or
 
 Op2:
+first: And
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   And => Op2 -> And
 
 Op3:
+first: Eq Ne
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   Eq => Op3 -> Eq
   Ne => Op3 -> Ne
 
 Op4:
+first: Le Ge Lt Gt
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   Le => Op4 -> Le
   Ge => Op4 -> Ge
   Lt => Op4 -> Lt
   Gt => Op4 -> Gt
 
 Op5:
+first: Add Sub
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   Add => Op5 -> Add
   Sub => Op5 -> Sub
 
 Op6:
+first: Mul Div Mod
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   Mul => Op6 -> Mul
   Div => Op6 -> Div
   Mod => Op6 -> Mod
 
 Op7:
+first: Sub Not
+follow: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
   Sub => Op7 -> Sub
   Not => Op7 -> Not
 
 Expr:
+first: Fun New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Assign Comma Semi RPar RBrk
   Fun => Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody
   New => Expr -> Expr1
   Null => Expr -> Expr1
@@ -584,10 +648,14 @@ Expr:
   Id => Expr -> Expr1
 
 LambdaBody:
+first: Arrow LBrc
+follow: Assign Comma Semi RPar RBrk
   Arrow => LambdaBody -> Arrow Expr
   LBrc => LambdaBody -> Block
 
 Expr1:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Assign Comma Semi RPar RBrk
   New => Expr1 -> Expr2 Term1
   Null => Expr1 -> Expr2 Term1
   True => Expr1 -> Expr2 Term1
@@ -604,6 +672,8 @@ Expr1:
   Id => Expr1 -> Expr2 Term1
 
 Term1:
+first: _Eps Or
+follow: Assign Comma Semi RPar RBrk
   Or => Term1 -> Op1 Expr2 Term1
   Assign => Term1 ->
   Comma => Term1 ->
@@ -612,6 +682,8 @@ Term1:
   RBrk => Term1 ->
 
 Expr2:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Or Assign Comma Semi RPar RBrk
   New => Expr2 -> Expr3 Term2
   Null => Expr2 -> Expr3 Term2
   True => Expr2 -> Expr3 Term2
@@ -628,6 +700,8 @@ Expr2:
   Id => Expr2 -> Expr3 Term2
 
 Term2:
+first: _Eps And
+follow: Or Assign Comma Semi RPar RBrk
   And => Term2 -> Op2 Expr3 Term2
   Or => Term2 ->
   Assign => Term2 ->
@@ -637,6 +711,8 @@ Term2:
   RBrk => Term2 ->
 
 Expr3:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: And Or Assign Comma Semi RPar RBrk
   New => Expr3 -> Expr4 Term3
   Null => Expr3 -> Expr4 Term3
   True => Expr3 -> Expr4 Term3
@@ -653,6 +729,8 @@ Expr3:
   Id => Expr3 -> Expr4 Term3
 
 Term3:
+first: _Eps Eq Ne
+follow: And Or Assign Comma Semi RPar RBrk
   Eq => Term3 -> Op3 Expr4 Term3
   Ne => Term3 -> Op3 Expr4 Term3
   And => Term3 ->
@@ -664,6 +742,8 @@ Term3:
   RBrk => Term3 ->
 
 Expr4:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Eq Ne And Or Assign Comma Semi RPar RBrk
   New => Expr4 -> Expr5 Term4
   Null => Expr4 -> Expr5 Term4
   True => Expr4 -> Expr5 Term4
@@ -680,6 +760,8 @@ Expr4:
   Id => Expr4 -> Expr5 Term4
 
 Term4:
+first: _Eps Le Ge Lt Gt
+follow: Eq Ne And Or Assign Comma Semi RPar RBrk
   Le => Term4 -> Op4 Expr5 Term4
   Ge => Term4 -> Op4 Expr5 Term4
   Eq => Term4 ->
@@ -695,6 +777,8 @@ Term4:
   RBrk => Term4 ->
 
 Expr5:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Assign Lt Gt Comma Semi RPar RBrk
   New => Expr5 -> Expr6 Term5
   Null => Expr5 -> Expr6 Term5
   True => Expr5 -> Expr6 Term5
@@ -711,6 +795,8 @@ Expr5:
   Id => Expr5 -> Expr6 Term5
 
 Term5:
+first: _Eps Add Sub
+follow: Le Ge Eq Ne And Or Assign Lt Gt Comma Semi RPar RBrk
   Le => Term5 ->
   Ge => Term5 ->
   Eq => Term5 ->
@@ -728,6 +814,8 @@ Term5:
   RBrk => Term5 ->
 
 Expr6:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Add Sub Assign Lt Gt Comma Semi RPar RBrk
   New => Expr6 -> Expr7 Term6
   Null => Expr6 -> Expr7 Term6
   True => Expr6 -> Expr7 Term6
@@ -744,6 +832,8 @@ Expr6:
   Id => Expr6 -> Expr7 Term6
 
 Term6:
+first: _Eps Mul Div Mod
+follow: Le Ge Eq Ne And Or Add Sub Assign Lt Gt Comma Semi RPar RBrk
   Le => Term6 ->
   Ge => Term6 ->
   Eq => Term6 ->
@@ -764,6 +854,8 @@ Term6:
   RBrk => Term6 ->
 
 Expr7:
+first: New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Comma Semi RPar RBrk
   New => Expr7 -> Expr8
   Null => Expr7 -> Expr8
   True => Expr7 -> Expr8
@@ -780,6 +872,8 @@ Expr7:
   Id => Expr7 -> Expr8
 
 ParenOrCast:
+first: Fun New Null True False Class This ReadInteger ReadLine InstanceOf Sub Not LPar StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Comma Semi RPar RBrk
   Fun => ParenOrCast -> Expr RPar Term8
   New => ParenOrCast -> Expr RPar Term8
   Null => ParenOrCast -> Expr RPar Term8
@@ -798,6 +892,8 @@ ParenOrCast:
   Id => ParenOrCast -> Expr RPar Term8
 
 Expr8:
+first: New Null True False This ReadInteger ReadLine InstanceOf StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Comma Semi RPar RBrk
   New => Expr8 -> Expr9 Term8
   Null => Expr8 -> Expr9 Term8
   True => Expr8 -> Expr9 Term8
@@ -811,6 +907,8 @@ Expr8:
   Id => Expr8 -> Expr9 Term8
 
 Term8:
+first: _Eps Dot LPar LBrk
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Comma Semi RPar RBrk
   Le => Term8 ->
   Ge => Term8 ->
   Eq => Term8 ->
@@ -834,6 +932,8 @@ Term8:
   RBrk => Term8 ->
 
 Expr9:
+first: New Null True False This ReadInteger ReadLine InstanceOf StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Dot Comma Semi LPar RPar LBrk RBrk
   New => Expr9 -> New NewClassOrArray
   Null => Expr9 -> Null
   True => Expr9 -> True
@@ -847,6 +947,8 @@ Expr9:
   Id => Expr9 -> Id
 
 NewClassOrArray:
+first: Void Int Bool String Class Id
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Dot Comma Semi LPar RPar LBrk RBrk
   Void => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
   Int => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
   Bool => NewClassOrArray -> BasicType ParamLists LBrk NewArrayRem
@@ -855,6 +957,8 @@ NewClassOrArray:
   Id => NewClassOrArray -> Id LPar RPar
 
 NewArrayRem:
+first: Fun New Null True False This ReadInteger ReadLine InstanceOf Sub Not LPar RBrk StringLit IntLit Id
+follow: Le Ge Eq Ne And Or Add Sub Mul Div Mod Assign Lt Gt Dot Comma Semi LPar RPar LBrk RBrk
   Fun => NewArrayRem -> Expr RBrk
   New => NewArrayRem -> Expr RBrk
   Null => NewArrayRem -> Expr RBrk
@@ -873,10 +977,14 @@ NewArrayRem:
   Id => NewArrayRem -> Expr RBrk
 
 ParamLists:
+first: _Eps LPar
+follow: LBrk
   LPar => ParamLists -> LPar TypeListOrEmpty RPar ParamLists
   LBrk => ParamLists ->
 
 BasicType:
+first: Void Int Bool String Class
+follow: Comma LPar RPar LBrk Id
   Void => BasicType -> Void
   Int => BasicType -> Int
   Bool => BasicType -> Bool
@@ -884,6 +992,8 @@ BasicType:
   Class => BasicType -> Class Id
 
 Type:
+first: Void Int Bool String Class
+follow: Comma RPar Id
   Void => Type -> BasicType ArrayDimOrTypeList
   Int => Type -> BasicType ArrayDimOrTypeList
   Bool => Type -> BasicType ArrayDimOrTypeList
@@ -891,6 +1001,8 @@ Type:
   Class => Type -> BasicType ArrayDimOrTypeList
 
 ArrayDimOrTypeList:
+first: _Eps LPar LBrk
+follow: Comma RPar Id
   Comma => ArrayDimOrTypeList ->
   LPar => ArrayDimOrTypeList -> LPar TypeListOrEmpty RPar ArrayDimOrTypeList
   RPar => ArrayDimOrTypeList ->
@@ -898,6 +1010,8 @@ ArrayDimOrTypeList:
   Id => ArrayDimOrTypeList ->
 
 TypeListOrEmpty:
+first: _Eps Void Int Bool String Class
+follow: RPar
   Void => TypeListOrEmpty -> Type TypeListRem
   Int => TypeListOrEmpty -> Type TypeListRem
   Bool => TypeListOrEmpty -> Type TypeListRem
@@ -906,10 +1020,14 @@ TypeListOrEmpty:
   RPar => TypeListOrEmpty ->
 
 TypeListRem:
+first: _Eps Comma
+follow: RPar
   Comma => TypeListRem -> Comma Type TypeListRem
   RPar => TypeListRem ->
 
 _Program:
+first: _Eps Abstract Class
+follow: _Eof
   _Eof => _Program -> Program
   Abstract => _Program -> Program
   Class => _Program -> Program
