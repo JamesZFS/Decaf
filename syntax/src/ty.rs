@@ -229,7 +229,7 @@ impl<'a> Ty<'a> {
                 // find highest child class (i.e. one of the given tys!)
                 match it.clone().filter(|&ti|
                     it.clone().all(|tj| tj == ti || ti.assignable_to(*tj))).next() {
-                    None => Ok(Ty { arr, kind: Null }),
+                    None => Err(FailToDetermineTy),
                     Some(t) => {
 //                                println!("\t✅ {:?}", *t);
                         Ok(*t)
