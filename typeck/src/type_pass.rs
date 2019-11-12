@@ -141,7 +141,7 @@ impl<'a> TypePass<'a> {
             }
             IntLit(_) | ReadInt(_) => Ty::int(),
             BoolLit(_) => Ty::bool(),
-            StringLit(s) => { // todo
+            StringLit(_s) => {
 //                if *s == "C.a()" { self.scopes.debug_print() }
                 Ty::string()
             }
