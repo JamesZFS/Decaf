@@ -232,7 +232,8 @@ pub struct Call<'a> {
 #[derive(Copy, Clone, derive_more::From)]
 pub enum Callable<'a> { // type of Call expr's lhs
     FuncDef(&'a FuncDef<'a>),
-    Lambda(&'a Lambda<'a>),
+    LambdaExpr(&'a Lambda<'a>),
+    FuncTy(Option<&'a VarDef<'a>>),
     Length
 }
 

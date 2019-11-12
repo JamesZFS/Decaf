@@ -19,7 +19,7 @@ pub struct TypeCkAlloc<'a> {
 // *** the overall pipeline ***
 pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Errors<'a, Ty<'a>>> {
     // 1st scan, constructing sym tables
-    let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: None, cur_caller: None, alloc });
+    let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: None, cur_caller: vec![], alloc });
     s.program(p);
     if !s.errors.0.is_empty() { return Err(s.0.errors.sorted()); }
     // 2nd scan
@@ -43,7 +43,7 @@ struct TypeCk<'a> {
     // if cur_var_def is Some, will use it's loc to search for symbol in TypePass::var_sel
     // this can reject code like `int a = a;`
     cur_var_def: Option<&'a VarDef<'a>>,
-    cur_caller: Option<Callable<'a>>,
+    cur_caller: Vec<Callable<'a>>,  // caller stack
     // type of current Call expr's lhs
     alloc: &'a TypeCkAlloc<'a>,
 }

@@ -3,7 +3,7 @@ use driver::*;
 fn main() {
     let test_single = false;
     if test_single {
-        let task = "lambda-capture-error-1";
+        let task = "call-error-1";
         println!("{:?}", test_one_caught(
             format!("TestCases/S2-rs/{}.decaf", task),
             format!("TestCases/S2-rs/out/{}.result", task),
