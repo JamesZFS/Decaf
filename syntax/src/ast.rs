@@ -34,6 +34,7 @@ pub struct ClassDef<'a> {
 
 impl<'a> ClassDef<'a> {
     pub fn extends(&self, rhs: &ClassDef<'a>) -> bool {
+//        print!("🤔 checking if {:?} extends {:?} ", self.name, rhs.name);
         let mut c = self;
         loop {
             if Ref(c) == Ref(rhs) { break true; }

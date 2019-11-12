@@ -79,6 +79,16 @@ pub struct Ty<'a> {
 
 pub struct FailToDetermineTy;  // thrown when failing to deduce the sup/inf ty of multiple tys
 
+//#[cfg(debug_print)]
+//macro_rules! debug {
+//    ($($x:expr),*) => { dbg!($x*) }
+//}
+//
+//#[cfg(not(debug_print))]
+//macro_rules! debug {
+//    ($($x:expr),*) => { }
+//}
+
 impl<'a> Ty<'a> {
     // make a type with array dimension = 0
     pub const fn new(kind: TyKind<'a>) -> Ty<'a> { Ty { arr: 0, kind } }
@@ -109,7 +119,7 @@ impl<'a> Ty<'a> {
     pub fn sup(tys: &Vec<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         if tys.is_empty() { return Ok(Ty::void()); };
 
-        assert!(tys.iter().all(|t| !t.is_class()));
+        debug_assert!(tys.iter().all(|t| !t.is_class()));
         let arr = tys[0].arr;
         if tys.iter().skip(1).any(|t| t.arr != arr) { return Err(FailToDetermineTy); } // check arr matching
 
@@ -138,29 +148,31 @@ impl<'a> Ty<'a> {
                     TyKind::Int | TyKind::Bool | TyKind::String | TyKind::Void =>
                         if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
                     TyKind::Object(c) => {
-                        println!("==INTO TyKind::Object==");
-                        tys.iter().for_each(|t| println!("{:?} ", t));
+//                        println!("==INTO TyKind::Object==");
+//                        tys.iter().for_each(|t| println!("{:?} ", t));
                         // reduce and conquer
                         let mut p = tk.clone();
                         loop {
-                            println!("p is {:?}", p);
+//                            dbg!(p);
                             if it.clone().all(|ti| {
-                                print!("\tti is {:?} ", ti);
+//                                dbg!(ti);
                                 if ti.assignable_to(p) {
-                                    println!("ok");
+//                                    println!("✅");
                                     true
-                                }
-                                else {
-                                    println!("bad");
+                                } else {
+//                                    println!("❌");
                                     false
                                 }
                             }) {
-                                println!("Ok!\n");
+//                                println!("Ok!\n");
                                 return Ok(p);
                             } else {
                                 p.kind = match p.kind.parent_class_ref() {
-                                    Some(c) => TyKind::Class(Ref(c)),
-                                    None => { println!("Fail!\n"); return Err(FailToDetermineTy); }   // p has no parent
+                                    Some(c) => TyKind::Object(Ref(c)),
+                                    None => {
+//                                        println!("Fail!\n");
+                                        return Err(FailToDetermineTy);
+                                    }   // p has no parent
                                 }
                             }
                         }

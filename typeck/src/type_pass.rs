@@ -56,9 +56,7 @@ impl<'a> TypePass<'a> {
                     SynTyKind::Var => match &v.init {
                         None => unreachable!("var deduction without init expr should be rejected by syntax parser"),
                         Some((_, e)) => {
-//                            println!("var decl at {:?}", v.loc);
                             let r = self.expr(e);
-//                            println!("{:?}", r);
                             if r.is_void() {
                                 self.issue(v.loc, VoidVar(v.name))
                             } else {
@@ -213,7 +211,7 @@ impl<'a> TypePass<'a> {
                 let ret_ty = self.scoped(ScopeOwner::LambdaParam(l), |s| {
                     match &l.body {
                         LambdaKind::Block(b) => {
-                            assert_eq!(l.can_tys.borrow().len(), 0);
+                            debug_assert_eq!(l.can_tys.borrow().len(), 0);
                             // gather all return types in its body
                             let returned = s.block(b);
                             let can_tys = l.can_tys.replace(Default::default());
@@ -222,9 +220,10 @@ impl<'a> TypePass<'a> {
                                     if !returned { s.issue(b.loc, NoReturn) };
                                     s.issue(b.loc, IncompatibleRetTypes)
                                 },
-                                Ok(ret_ty) => if !returned && !ret_ty.is_void() {
-                                    s.issue(b.loc, NoReturn)
-                                } else { ret_ty }
+                                Ok(ret_ty) => {
+                                    if !returned && !ret_ty.is_void() { s.issue::<()>(b.loc, NoReturn); }
+                                    ret_ty
+                                }
                             }
                         }
                         LambdaKind::Expr(e, inner_s) =>
