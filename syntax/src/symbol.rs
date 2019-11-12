@@ -2,6 +2,7 @@ use crate::{Block, ClassDef, FuncDef, VarDef, Program, Ty, Lambda};
 use common::{Loc, HashMap};
 use std::{cell::{RefMut, Ref}, fmt};
 use std::cell::RefCell;
+use std::fmt::{Formatter, Error};
 
 pub type Scope<'a> = HashMap<&'a str, Symbol<'a>>;  // *** the essence of a scope ***
 
@@ -109,6 +110,12 @@ impl<'a> ScopeOwner<'a> {
             ScopeOwner::Global(_) => format!("Global Classes"),
             ScopeOwner::LambdaParam(l) => l.name.clone()
         }
+    }
+}
+
+impl fmt::Debug for ScopeOwner<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(f, "{}", self.description())
     }
 }
 

@@ -42,26 +42,35 @@ impl<'a> TypePass<'a> {
     }
 
     // return whether this stmt has a return value
+    // ** difficulty: how to pass the sym and scope of lvalue into this
+    // ** difficulty: how to determine if a scope is accessible? using ranks!
     fn stmt(&mut self, s: &'a Stmt<'a>) -> bool {
         match &s.kind {
             StmtKind::Assign(a) => {
                 // todo for lambda scope, check a's assignability
-                let ((l, sym_scope), r) = (self.expr(&a.dst), self.expr(&a.src).0);
+                let ((l, cap_sym_scope), r) = (self.expr(&a.dst), self.expr(&a.src).0);
                 if !r.assignable_to(l) { self.issue(s.loc, IncompatibleBinary { l, op: "=", r }) }
                 match self.scopes.cur_lambda() {
-                    None => if let Some((sym, scope)) = sym_scope { // normal context
+                    None => if let Some((sym, scope)) = cap_sym_scope { // normal context
                         if sym.is_func() && scope.is_class() {
                             self.issue(s.loc, AssignToMemberMethod(sym.name()))
                         }
                     }
-                    Some(lambda) => match sym_scope { // in a lambda context
+                    Some(cur_lambda) => match cap_sym_scope { // in a lambda context
                         None => {}
-                        Some((sym, scope)) => match scope {
-                            ScopeOwner::Class(_) => if sym.is_func() {
-                                self.issue(s.loc, AssignToMemberMethod(sym.name()))
+                        Some((cap_sym, cap_scope)) => match cap_scope {
+                            ScopeOwner::Class(_) => if cap_sym.is_func() {
+                                self.issue(s.loc, AssignToMemberMethod(cap_sym.name()))
                             } else {},  // pass
-                            ScopeOwner::LambdaParam(l_lambda) => if Ref(l_lambda) == Ref(lambda) {}, // pass
-                            _ => self.issue(s.loc, AssignToCapturedVar)
+//                            ScopeOwner::Local(Some(_), _s) =>
+                            _ =>
+                                if self.scopes.rank(&ScopeOwner::LambdaParam(cur_lambda)) < self.scopes.rank(&cap_scope) { // todo can capture scopes outside outmost lambda
+//                                    dbg!(s.loc, cap_sym, cap_scope);
+//                                    eprintln!();
+                                    self.issue(s.loc, AssignToCapturedVar)
+                                } else {}
+//                            ScopeOwner::Local(None, _s) => unreachable!(), // found sym in lambda expr?
+//                            _ => self.issue(s.loc, AssignToCapturedVar)
                         },
                     }
                 }
