@@ -30,15 +30,6 @@ impl<'a> ScopeStack<'a> {
             .next() // yields the first hit
     }
 
-    pub fn rank(&self, scope: &ScopeOwner<'a>) -> u32 {
-        let mut rk = 0;
-        self.stack.iter().rev().chain(iter::once(&self.global)).find(|&s| {
-            rk += 1;
-            s.description() == scope.description() // todo, this code is very ugly and incomplete, try using better approach
-        }).unwrap_or_else(|| unreachable!());
-        rk
-    }
-
     // look for the uppermost lambda param scope
     pub fn cur_lambda(&self) -> Option<&'a Lambda<'a>> {
         self.stack.iter().rev()

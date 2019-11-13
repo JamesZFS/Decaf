@@ -48,7 +48,6 @@ impl<'a> TypePass<'a> {
         self.cur_caller.clear(); // clear caller stack
         match &s.kind {
             StmtKind::Assign(a) => {
-                // todo for lambda scope, check a's assignability
                 let ((l, cap_sym_scope), r) = (self.expr(&a.dst), self.expr(&a.src).0);
                 if !r.assignable_to(l) { self.issue(s.loc, IncompatibleBinary { l, op: "=", r }) }
                 match self.scopes.cur_lambda() {
@@ -63,15 +62,10 @@ impl<'a> TypePass<'a> {
                             ScopeOwner::Class(_) => if cap_sym.is_func() {
                                 self.issue(s.loc, AssignToMemberMethod(cap_sym.name()))
                             } else {},  // pass
-//                            ScopeOwner::Local(Some(_), _s) =>
                             _ =>
-                                if self.scopes.rank(&ScopeOwner::LambdaParam(cur_lambda)) < self.scopes.rank(&cap_scope) { // todo array | member var should pass
-//                                    dbg!(s.loc, cap_sym, cap_scope);
-//                                    eprintln!();
+                                if cap_scope.loc() < cur_lambda.loc {
                                     self.issue(s.loc, AssignToCapturedVar)
                                 } else {}
-//                            ScopeOwner::Local(None, _s) => unreachable!(), // found sym in lambda expr?
-//                            _ => self.issue(s.loc, AssignToCapturedVar)
                         },
                     }
                 }

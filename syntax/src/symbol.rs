@@ -1,5 +1,5 @@
 use crate::{Block, ClassDef, FuncDef, VarDef, Program, Ty, Lambda};
-use common::{Loc, HashMap};
+use common::{Loc, HashMap, NO_LOC};
 use std::{cell::{RefMut, Ref}, fmt};
 use std::cell::RefCell;
 use std::fmt::{Formatter, Error};
@@ -89,6 +89,17 @@ impl<'a> ScopeOwner<'a> {
             Class(x) => x.scope.borrow_mut(),
             Global(x) => x.scope.borrow_mut(),
             LambdaParam(x) => x.scope.borrow_mut()
+        }
+    }
+
+    pub fn loc(&self) -> Loc {
+        use ScopeOwner::*;
+        match self {
+            Local(b, s) => b.map_or(NO_LOC, |b| b.loc),
+            FuncParam(x) => x.loc,
+            Class(x) => x.loc,
+            Global(x) => NO_LOC,
+            LambdaParam(x) => x.loc
         }
     }
 
