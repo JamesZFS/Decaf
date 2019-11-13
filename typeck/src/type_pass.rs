@@ -45,7 +45,6 @@ impl<'a> TypePass<'a> {
     // ** difficulty: how to pass the sym and scope of lvalue into this
     // ** difficulty: how to determine if a scope is accessible? using ranks!
     fn stmt(&mut self, s: &'a Stmt<'a>) -> bool {
-        self.cur_caller.clear(); // clear caller stack
         match &s.kind {
             StmtKind::Assign(a) => {
                 let ((l, cap_sym_scope), r) = (self.expr(&a.dst), self.expr(&a.src).0);
@@ -72,7 +71,7 @@ impl<'a> TypePass<'a> {
                 false
             }
             StmtKind::LocalVarDef(v) => {
-                self.cur_var_def = Some(v);
+                self.cur_var_def.push(v.name);
                 match &v.syn_ty.kind {
                     SynTyKind::Var => match &v.init {
                         None => unreachable!("var deduction without init expr should be rejected by syntax parser"),
@@ -90,7 +89,7 @@ impl<'a> TypePass<'a> {
                         if !r.assignable_to(l) { self.issue(*loc, IncompatibleBinary { l, op: "=", r }) }
                     }
                 }
-                self.cur_var_def = None;
+                self.cur_var_def.pop();
                 false
             }
             StmtKind::ExprEval(e) => {
@@ -167,8 +166,8 @@ impl<'a> TypePass<'a> {
             ReadLine(_) => (Ty::string(), None),
             NullLit(_) => (Ty::null(), None),
             Call(c) => {
+                self.cur_caller.clear(); // clear caller stack before Call
                 let lhs_ty = self.expr(&c.func).0;
-//                dbg!(e.loc, lhs_ty);
                 if lhs_ty == Ty::error() { return (Ty::error(), None); }
                 c.func_ref.set(self.cur_caller.last().map(|c| *c));
                 match lhs_ty.kind {
@@ -332,9 +331,12 @@ impl<'a> TypePass<'a> {
         } else { // no owner
             // a  |  fun  |  A
             // if this stmt is in an VarDef, it cannot access the variable that is being declared
-            if let Some(sym) = self.scopes.lookup_before(v.name, self.cur_var_def.map(|v| v.loc).unwrap_or(loc)) {
+            if let Some(sym) = self.scopes.lookup_before(v.name, loc) {
                 match sym {
                     Symbol::Var(var) => {  // a
+                        if self.cur_var_def.contains(&var.name) {  // check for looping def
+                            return self.issue(loc, UndeclaredVar(var.name))
+                        }
                         v.field.set(Some(FieldDef::VarDef(var)));
                         if var.owner.get().unwrap().is_class() {
                             let cur = self.cur_func.unwrap();
