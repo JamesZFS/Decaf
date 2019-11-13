@@ -31,8 +31,7 @@ pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Er
 
 struct TypeCk<'a> {
     errors: Errors<'a, Ty<'a>>,
-    scopes: ScopeStack<'a>,
-    // the symbol tables
+    scopes: ScopeStack<'a>, // the symbol tables
     loop_cnt: u32,
     // `cur_used` is only used to determine 2 kinds of errors:
     // Class.var (cur_used == true) => BadFieldAssess; Class (cur_used == false) => UndeclaredVar
@@ -43,7 +42,7 @@ struct TypeCk<'a> {
     // if cur_var_def is Some, will use it's loc to search for symbol in TypePass::var_sel
     // this can reject code like `int a = a;`
     cur_var_def: HashSet<&'a str>, // var def stack
-    cur_caller: Vec<Callable<'a>>,  // caller stack
+    cur_caller: Option<Callable<'a>>,
     // type of current Call expr's lhs
     alloc: &'a TypeCkAlloc<'a>,
 }

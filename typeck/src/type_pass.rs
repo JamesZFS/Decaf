@@ -166,10 +166,10 @@ impl<'a> TypePass<'a> {
             ReadLine(_) => (Ty::string(), None),
             NullLit(_) => (Ty::null(), None),
             Call(c) => {
-                self.cur_caller.clear(); // clear caller stack before Call
+                self.cur_caller = None; // clear caller stack before Call
                 let lhs_ty = self.expr(&c.func).0;
                 if lhs_ty == Ty::error() { return (Ty::error(), None); }
-                c.func_ref.set(self.cur_caller.last().map(|c| *c));
+                c.func_ref.set(self.cur_caller.map(|c| c));
                 match lhs_ty.kind {
                     TyKind::Func(f) => (self.check_arg_param(&c.arg, f, e.loc), None),  // this may panic!
                     _ => self.issue(e.loc, NotCallable(lhs_ty))
@@ -264,7 +264,7 @@ impl<'a> TypePass<'a> {
                 let ret_param_ty = self.alloc.ty.alloc_extend(ret_param_ty);
                 l.ret_param_ty.set(Some(ret_param_ty));
                 l.class.set(self.cur_class);
-                self.cur_caller.push(Callable::Lambda);
+                self.cur_caller = Some(Callable::Lambda);
                 (Ty::new(TyKind::Func(ret_param_ty)), None)
             }
         };
@@ -284,7 +284,7 @@ impl<'a> TypePass<'a> {
             let owner = self.expr(owner).0;   // owner check ? ** recurse **
             self.cur_used = false;
             if v.name == LENGTH && owner.is_arr() {  // arr.length()
-                self.cur_caller.push(Callable::Length);
+                self.cur_caller = Some(Callable::Length);
                 return (Ty::new(TyKind::Func(&TypeCk::VOID_TO_INT)), None);
             }
             match owner {
@@ -299,7 +299,7 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, PrivateFieldAccess { name: var.name, owner })
                             }
                             let ty = var.ty.get();
-                            if ty.is_func() { self.cur_caller.push(Callable::FuncTy(var)) }
+                            if ty.is_func() { self.cur_caller = Some(Callable::FuncTy(var)) }
                             (ty, None) // here we exclude assignment checking for member vars
                         }
                         Symbol::Func(f) => {  // methods are always public
@@ -308,7 +308,7 @@ impl<'a> TypePass<'a> {
                             /*if !f.static_ && !self.cur_class.unwrap().extends(c) {
                                 self.issue(loc, PrivateFieldAccess { name: f.name, owner })
                             }*/
-                            self.cur_caller.push(f.into());
+                            self.cur_caller = Some(f.into());
                             (Ty::mk_func(f), Some((sym, ScopeOwner::Class(c))))
                         }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }),
@@ -320,7 +320,7 @@ impl<'a> TypePass<'a> {
                     match sym {
                         Symbol::Func(f) => if f.static_ {
                             v.field.set(Some(FieldDef::FuncDef(f)));
-                            self.cur_caller.push(f.into());
+                            self.cur_caller = Some(f.into());
                             (Ty::mk_func(f), Some((sym, ScopeOwner::Class(c))))
                         } else { self.issue(loc, BadFieldAccess { name: f.name, owner }) }
                         _ => self.issue(loc, BadFieldAccess { name: v.name, owner }) // no static var etc.
@@ -345,7 +345,7 @@ impl<'a> TypePass<'a> {
                             }
                         }
                         let ty = var.ty.get();
-                        if ty.is_func() { self.cur_caller.push(Callable::FuncTy(var)) }
+                        if ty.is_func() { self.cur_caller = Some(Callable::FuncTy(var)) }
                         (ty, var.owner.get().map(|scope| (sym, scope))) // various scope owner types
                     }
                     Symbol::Func(f) => {  // fun
@@ -356,7 +356,7 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
                         }
-                        self.cur_caller.push(f.into());
+                        self.cur_caller = Some(f.into());
                         (Ty::mk_func(f), Some((sym, ScopeOwner::Class(f.class.get().unwrap_or_else(|| unreachable!())))))
                     }
                     Symbol::Class(c) if self.cur_used => { (Ty::mk_class(c), None) }
@@ -375,7 +375,7 @@ impl<'a> TypePass<'a> {
 
     fn check_arg_param(&mut self, arg: &'a [Expr<'a>], ret_param: &[Ty<'a>], loc: Loc) -> Ty<'a> {
         // consume a caller
-        let caller = self.cur_caller.pop().unwrap_or_else(|| unreachable!("in check_arg_param, no cur_caller left!"));
+        let caller = self.cur_caller.unwrap_or_else(|| unreachable!("in check_arg_param, no cur_caller left!"));
         let (ret, param) = (ret_param[0], &ret_param[1..]);
         if param.len() != arg.len() {
             match caller {
@@ -397,7 +397,7 @@ impl<'a> TypePass<'a> {
                 }
             }
         }
-        if ret.is_func() { self.cur_caller.push(Callable::Lambda) }
+        if ret.is_func() { self.cur_caller = Some(Callable::Lambda) }
         ret
     }
 }
