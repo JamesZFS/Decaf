@@ -71,7 +71,7 @@ impl<'a> TypePass<'a> {
                 false
             }
             StmtKind::LocalVarDef(v) => {
-                self.cur_var_def.push(v.name);
+                self.cur_var_def.insert(v.name);
                 match &v.syn_ty.kind {
                     SynTyKind::Var => match &v.init {
                         None => unreachable!("var deduction without init expr should be rejected by syntax parser"),
@@ -89,7 +89,7 @@ impl<'a> TypePass<'a> {
                         if !r.assignable_to(l) { self.issue(*loc, IncompatibleBinary { l, op: "=", r }) }
                     }
                 }
-                self.cur_var_def.pop();
+                self.cur_var_def.remove(v.name);
                 false
             }
             StmtKind::ExprEval(e) => {
@@ -171,7 +171,7 @@ impl<'a> TypePass<'a> {
                 if lhs_ty == Ty::error() { return (Ty::error(), None); }
                 c.func_ref.set(self.cur_caller.last().map(|c| *c));
                 match lhs_ty.kind {
-                    TyKind::Func(f) => (self.check_arg_param(&c.arg, f, e.loc), None),    // todo maybe panic!
+                    TyKind::Func(f) => (self.check_arg_param(&c.arg, f, e.loc), None),  // this may panic!
                     _ => self.issue(e.loc, NotCallable(lhs_ty))
                 }
             }
@@ -264,7 +264,7 @@ impl<'a> TypePass<'a> {
                 let ret_param_ty = self.alloc.ty.alloc_extend(ret_param_ty);
                 l.ret_param_ty.set(Some(ret_param_ty));
                 l.class.set(self.cur_class);
-                self.cur_caller.push(Callable::LambdaExpr(l));
+                self.cur_caller.push(Callable::Lambda);
                 (Ty::new(TyKind::Func(ret_param_ty)), None)
             }
         };
@@ -299,7 +299,7 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, PrivateFieldAccess { name: var.name, owner })
                             }
                             let ty = var.ty.get();
-                            if ty.is_func() { self.cur_caller.push(Callable::FuncTy(Some(var))) }
+                            if ty.is_func() { self.cur_caller.push(Callable::FuncTy(var)) }
                             (ty, None) // here we exclude assignment checking for member vars
                         }
                         Symbol::Func(f) => {  // methods are always public
@@ -335,7 +335,7 @@ impl<'a> TypePass<'a> {
                 match sym {
                     Symbol::Var(var) => {  // a
                         if self.cur_var_def.contains(&var.name) {  // check for looping def
-                            return self.issue(loc, UndeclaredVar(var.name))
+                            return self.issue(loc, UndeclaredVar(var.name));
                         }
                         v.field.set(Some(FieldDef::VarDef(var)));
                         if var.owner.get().unwrap().is_class() {
@@ -345,7 +345,7 @@ impl<'a> TypePass<'a> {
                             }
                         }
                         let ty = var.ty.get();
-                        if ty.is_func() { self.cur_caller.push(Callable::FuncTy(Some(var))) }
+                        if ty.is_func() { self.cur_caller.push(Callable::FuncTy(var)) }
                         (ty, var.owner.get().map(|scope| (sym, scope))) // various scope owner types
                     }
                     Symbol::Func(f) => {  // fun
@@ -375,15 +375,15 @@ impl<'a> TypePass<'a> {
 
     fn check_arg_param(&mut self, arg: &'a [Expr<'a>], ret_param: &[Ty<'a>], loc: Loc) -> Ty<'a> {
         // consume a caller
-        let caller = self.cur_caller.pop().unwrap_or_else(|| unreachable!("got None cur_caller in check_arg_param"));
+        let caller = self.cur_caller.pop().unwrap_or_else(|| unreachable!("in check_arg_param, no cur_caller left!"));
         let (ret, param) = (ret_param[0], &ret_param[1..]);
         if param.len() != arg.len() {
             match caller {
                 Callable::FuncDef(f) =>
                     self.issue::<()>(loc, FuncArgCountMismatch { name: f.name, expect: param.len() as u32, actual: arg.len() as u32 }),
-                Callable::FuncTy(Some(f)) =>
+                Callable::FuncTy(f) =>
                     self.issue(loc, FuncArgCountMismatch { name: f.name, expect: param.len() as u32, actual: arg.len() as u32 }),
-                Callable::LambdaExpr(_) | Callable::FuncTy(_) =>
+                Callable::Lambda =>
                     self.issue(loc, LambdaArgCountMismatch { expect: param.len() as u32, actual: arg.len() as u32 }),
                 Callable::Length =>
                     self.issue(loc, LengthWithArgument(arg.len() as u32)),
@@ -397,7 +397,7 @@ impl<'a> TypePass<'a> {
                 }
             }
         }
-        if ret.is_func() { self.cur_caller.push(Callable::FuncTy(None)) }
+        if ret.is_func() { self.cur_caller.push(Callable::Lambda) }
         ret
     }
 }

@@ -111,11 +111,7 @@ impl<'a> Ty<'a> {
     // find minimal super ty of given types
     pub fn sup(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         use TyKind::*;
-        //        print!("CALL SUP, get returns: ");
-//        tys.iter().for_each(|t| print!("{:?}, ", t));
-//        println!();
         if tys.is_empty() { return Ok(Ty::void()); };
-
         // preprocess: filter out all error tys
         let mut has_error = false;
         let tys = tys.iter().filter(|t| if t.is_err() {
@@ -150,16 +146,12 @@ impl<'a> Ty<'a> {
                     Int | Bool | String | Void =>
                         if has_null { Err(FailToDetermineTy) } else if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
                     Object(_) => {
-//                        println!("\tin Object branch");
                         // pre check
                         if !it.clone().all(|tj| tj.kind.is_object()) { return Err(FailToDetermineTy); }
-                        // println!("==INTO Object==");
-                        // tys.iter().for_each(|t| println!("{:?} ", t));
                         // find lowest common parent class
                         let mut p = tk.clone();
                         loop {
                             if it.clone().all(|ti| ti.assignable_to(p)) {
-//                                println!("\t✅ {:?}", p);
                                 return Ok(p);
                             } else {
                                 p.kind = match p.kind.parent_class_ref() {
@@ -170,7 +162,6 @@ impl<'a> Ty<'a> {
                         }
                     }
                     Func(f) => if has_null { Err(FailToDetermineTy) } else {
-//                        println!("\tin Function branch");
                         // pre check function form
                         let same_form = it.clone().all(|ti| if let Func(fi) = ti.kind {
                             fi.len() == f.len()
@@ -192,7 +183,6 @@ impl<'a> Ty<'a> {
                         }
                         let ret_param = allocator.alloc_extend(res.into_iter());
                         let res = Ty { arr, kind: Func(ret_param) };
-//                        println!("\t✅ {:?}", res);
                         Ok(res)
                     }
                     _ => unreachable!(),
@@ -204,9 +194,6 @@ impl<'a> Ty<'a> {
     // find maximal inferior ty of given types
     pub fn inf(tys: &Vec<Ty<'a>>, allocator: &'a Arena<Ty<'a>>) -> Result<Ty<'a>, FailToDetermineTy> {
         use TyKind::*;
-//        print!("CALL INF, get returns: ");
-//        tys.iter().for_each(|t| print!("{:?}, ", t));
-//        println!();
         if tys.is_empty() { return Ok(Ty::void()); };
         // preprocess: if an error occurs, just return error ty
         if tys.iter().any(|t| t.is_err()) { return Ok(Ty::error()); }
@@ -222,7 +209,6 @@ impl<'a> Ty<'a> {
             Int | Bool | String | Void =>
                 if it.all(|ti| ti.assignable_to(*tk)) { Ok(*tk) } else { Err(FailToDetermineTy) }
             Object(_) | Null => {
-//                        println!("\tin Object branch");
                 // pre check
                 if !it.clone().all(|tj| tj.kind.is_null() || tj.kind.is_object()) { return Err(FailToDetermineTy); }
                 let it = std::iter::once(tk).chain(it); // concat tk
@@ -230,14 +216,10 @@ impl<'a> Ty<'a> {
                 match it.clone().filter(|&ti|
                     it.clone().all(|tj| tj == ti || ti.assignable_to(*tj))).next() {
                     None => Err(FailToDetermineTy),
-                    Some(t) => {
-//                                println!("\t✅ {:?}", *t);
-                        Ok(*t)
-                    }
+                    Some(t) => Ok(*t)
                 }
             }
             Func(f) => {
-//                        println!("\tin Function branch");
                 // pre check function form
                 let same_form = it.clone().all(|ti| if let Func(fi) = ti.kind {
                     fi.len() == f.len()
@@ -259,7 +241,6 @@ impl<'a> Ty<'a> {
                 }
                 let ret_param = allocator.alloc_extend(res.into_iter());
                 let res = Ty { arr, kind: Func(ret_param) };
-//                        println!("\t✅ {:?}", res);
                 Ok(res)
             }
             _ => unreachable!(),

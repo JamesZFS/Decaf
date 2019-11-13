@@ -250,7 +250,6 @@ impl<'a> SymbolPass<'a> {
                     s.scoped(ScopeOwner::Local(None, inner_s), |s| s.expr(e))
             }
         });
-        assert!(l.ret_ty.get() == None);
         // ret_ty of l not yet determined, so we don't create its signature here
         // instead, it should be done in type pass!
         self.scopes.declare(Symbol::Lambda(l));

@@ -95,10 +95,10 @@ impl<'a> ScopeOwner<'a> {
     pub fn loc(&self) -> Loc {
         use ScopeOwner::*;
         match self {
-            Local(b, s) => b.map_or(NO_LOC, |b| b.loc),
+            Local(b, _s) => b.map_or(NO_LOC, |b| b.loc),
             FuncParam(x) => x.loc,
             Class(x) => x.loc,
-            Global(x) => NO_LOC,
+            Global(_) => NO_LOC,
             LambdaParam(x) => x.loc
         }
     }
