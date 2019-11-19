@@ -236,6 +236,8 @@ impl<'a> TypePass<'a> {
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
             Lambda(l) => {
+                let old_loop_cnt = self.loop_cnt;
+                self.loop_cnt = 0;
                 let ret_ty = self.scoped(ScopeOwner::LambdaParam(l), |s| {
                     match &l.body {
                         LambdaKind::Block(b) => {
@@ -265,6 +267,7 @@ impl<'a> TypePass<'a> {
                 l.ret_param_ty.set(Some(ret_param_ty));
                 l.class.set(self.cur_class);
                 self.cur_caller = Some(Callable::Lambda);
+                self.loop_cnt = old_loop_cnt;
                 (Ty::new(TyKind::Func(ret_param_ty)), None)
             }
         };
