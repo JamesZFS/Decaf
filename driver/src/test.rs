@@ -11,8 +11,8 @@ fn main() {
             Pa::Pa2,
         ));
     } else {
-        for &path in ["TestCases/S2-rs"].iter() {
-            for result in test_all(path, Pa::Pa2).unwrap() {
+        for &path in ["TestCases/S3"].iter() {
+            for result in test_all(path, Pa::Pa3).unwrap() {
                 println!("{:?}", result);
             }
         }
