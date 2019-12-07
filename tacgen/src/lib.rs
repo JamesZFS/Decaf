@@ -287,7 +287,7 @@ impl<'a> TacGen<'a> {
                                     hint: MemHint::Immutable,
                                 });
                                 // f.push( LoadFunc { dst: 0, f: 0 }) todo try this?
-                                f.push(Param { src: [Reg(0)] });
+                                f.push(Param { src: [fp] });
                                 for a in args { f.push(Param { src: [a] }); };
                                 let hint = CallHint {
                                     arg_obj: true,
