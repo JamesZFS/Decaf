@@ -32,7 +32,7 @@ impl<'a> TacGen<'a> {
         for (idx, &c) in p.class.iter().enumerate() {
             self.define_str(c.name);
             self.resolve_field(c);
-            self.class_info.get_mut(&Ref(c)).unwrap().idx = idx as u32;
+            self.class_info.get_mut(&Ref(c)).unwrap_or_else(|| unimplemented!()).idx = idx as u32;
             tp.func.push(self.build_new(c, alloc));
         }
         {
@@ -40,7 +40,7 @@ impl<'a> TacGen<'a> {
             for &c in &p.class {
                 for &f in &c.field {
                     if let FieldDef::FuncDef(f) = f {
-                        self.func_info.get_mut(&Ref(f)).unwrap().idx = idx;
+                        self.func_info.get_mut(&Ref(f)).unwrap_or_else(|| unimplemented!()).idx = idx;
                         idx += 1;
                     }
                 }
@@ -49,6 +49,7 @@ impl<'a> TacGen<'a> {
         for &c in &p.class {
             for f in &c.field {
                 if let FieldDef::FuncDef(fu) = f {
+                    // handle function definition:
                     let this = if fu.static_ { 0 } else { 1 };
                     for (idx, p) in fu.param.iter().enumerate() {
                         self.var_info.insert(Ref(p), VarInfo { off: idx as u32 + this });
@@ -58,7 +59,9 @@ impl<'a> TacGen<'a> {
                     self.label_num = 0;
                     let name = if Ref(c) == Ref(p.main.get().unwrap()) && fu.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fu.name) };
                     let mut f = TacFunc::empty(alloc, name, self.reg_num);
-                    self.block(&fu.body.as_ref().unwrap(), &mut f);
+                    if let Some(b) = &fu.body {
+                        self.block(b, &mut f);
+                    } // for abstract method, skip tacgen for its body
                     f.reg_num = self.reg_num;
                     // add an return at the end of return-void function
                     if fu.ret_ty() == Ty::void() { f.push(Tac::Ret { src: None }); }
@@ -167,7 +170,7 @@ impl<'a> TacGen<'a> {
                     t => unreachable!("Shouldn't meet type {:?} in Print in these phase, type checking should have reported error.", t),
                 }
             }
-            Break(_) => { f.push(Jmp { label: *self.loop_stk.last().unwrap() }); }
+            Break(_) => { f.push(Jmp { label: *self.loop_stk.last().unwrap_or_else(|| unimplemented!()) }); }
             Block(b) => self.block(b, f),
         }
     }
@@ -177,12 +180,12 @@ impl<'a> TacGen<'a> {
         let assign = self.cur_assign.take();
         match &e.kind {
             VarSel(v) => {
-                let var = match v.field.get().unwrap() {
+                let var = match v.field.get().unwrap_or_else(|| unimplemented!()) {
                     FieldDef::FuncDef(_) => unimplemented!(),
                     FieldDef::VarDef(vd) => vd,
                 };
                 let off = self.var_info[&Ref(var)].off; // may be register id or offset in class
-                match var.owner.get().unwrap() {
+                match var.owner.get().unwrap_or_else(|| unimplemented!()) {
                     ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) => if let Some(src) = assign { // off is register
                         f.push(Tac::Assign { dst: off, src: [src] });
                         // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
@@ -245,7 +248,7 @@ impl<'a> TacGen<'a> {
                         self.length(arr, f)
                     }
                     _ => {
-                        let fu = match c.func_ref.get().unwrap() {
+                        let fu = match c.func_ref.get().unwrap_or_else(|| unimplemented!()) {
                             Callable::FuncDef(fd) => fd,
                             _ => unimplemented!(),
                         };
@@ -283,7 +286,7 @@ impl<'a> TacGen<'a> {
                 match b.op {
                     Eq | Ne if b.l.ty.get() == Ty::string() => {
                         f.push(Param { src: [l] }).push(Param { src: [r] });
-                        let dst = self.intrinsic(_StringEqual, f).unwrap();
+                        let dst = self.intrinsic(_StringEqual, f).unwrap_or_else(|| unimplemented!());
                         if b.op == Ne {
                             f.push(Un { op: Not, dst, r: [Reg(dst)] });
                         }
@@ -316,7 +319,7 @@ impl<'a> TacGen<'a> {
                 let arr = self.intrinsic(_Alloc, f
                     .push(Bin { op: Mul, dst: ptr, lr: [len, Const(INT_SIZE)] })
                     .push(Bin { op: Add, dst: ptr, lr: [Reg(ptr), Const(INT_SIZE)] }) // now ptr = bytes to allocate
-                    .push(Param { src: [Reg(ptr)] })).unwrap();
+                    .push(Param { src: [Reg(ptr)] })).unwrap_or_else(|| unimplemented!());
                 f.push(Bin { op: Add, dst: ptr, lr: [Reg(arr), Reg(ptr)] }); // now ptr = end of array
                 f.push(Bin { op: Add, dst: arr, lr: [Reg(arr), Const(INT_SIZE)] }); // now arr = begin of array([0])
                 f.push(Jmp { label: before_cond }) // loop(reversely), set all to 0
@@ -456,7 +459,7 @@ impl<'a> TacGen<'a> {
         let ClassInfo { field_num, idx, .. } = self.class_info[&Ref(c)];
         let mut f = TacFunc::empty(alloc, format!("_{}._new", c.name), 0);
         f.push(Param { src: [Const(field_num as i32 * INT_SIZE)] });
-        let ret = self.intrinsic(_Alloc, &mut f).unwrap();
+        let ret = self.intrinsic(_Alloc, &mut f).unwrap_or_else(|| unimplemented!());
         let vtbl = self.reg();
         f.push(LoadVTbl { dst: vtbl, v: idx });
         f.push(Store { src_base: [Reg(vtbl), Reg(ret)], off: 0, hint: MemHint::Immutable });
