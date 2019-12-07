@@ -32,15 +32,15 @@ impl<'a> TacGen<'a> {
         for (idx, &c) in p.class.iter().enumerate() {
             self.define_str(c.name);
             self.resolve_field(c);
-            self.class_info.get_mut(&Ref(c)).unwrap_or_else(|| unimplemented!()).idx = idx as u32;
+            self.class_info.get_mut(&Ref(c)).unwrap().idx = idx as u32;
             tp.func.push(self.build_new(c, alloc));
         }
         {
-            let mut idx = tp.func.len() as u32; // their are already some `_Xxx._new` functions in tp.func, so can't start from 0
+            let mut idx = tp.func.len() as u32; // there are already some `_Xxx._new` functions in tp.func, so can't start from 0
             for &c in &p.class {
                 for &f in &c.field {
                     if let FieldDef::FuncDef(f) = f {
-                        self.func_info.get_mut(&Ref(f)).unwrap_or_else(|| unimplemented!()).idx = idx;
+                        self.func_info.get_mut(&Ref(f)).unwrap().idx = idx;
                         idx += 1;
                     }
                 }
@@ -50,7 +50,7 @@ impl<'a> TacGen<'a> {
             for f in &c.field {
                 if let FieldDef::FuncDef(fu) = f {
                     // handle function definition:
-                    let this = if fu.static_ { 0 } else { 1 };
+                    let this = if fu.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in static method
                     for (idx, p) in fu.param.iter().enumerate() {
                         self.var_info.insert(Ref(p), VarInfo { off: idx as u32 + this });
                     }
@@ -181,7 +181,7 @@ impl<'a> TacGen<'a> {
         match &e.kind {
             VarSel(v) => {
                 let var = match v.field.get().unwrap_or_else(|| unimplemented!()) {
-                    FieldDef::FuncDef(_) => unimplemented!(),
+                    FieldDef::FuncDef(_) => unimplemented!(), // todo
                     FieldDef::VarDef(vd) => vd,
                 };
                 let off = self.var_info[&Ref(var)].off; // may be register id or offset in class
@@ -248,31 +248,56 @@ impl<'a> TacGen<'a> {
                         self.length(arr, f)
                     }
                     _ => {
-                        let fu = match c.func_ref.get().unwrap_or_else(|| unimplemented!()) {
-                            Callable::FuncDef(fd) => fd,
-                            _ => unimplemented!(),
-                        };
-                        let ret = if fu.ret_ty() != Ty::void() { Some(self.reg()) } else { None };
                         let args = c.arg.iter().map(|a| self.expr(a, f)).collect::<Vec<_>>();
-                        let hint = CallHint {
-                            arg_obj: c.arg.iter().any(|a| a.ty.get().is_class()) || !fu.static_,
-                            arg_arr: c.arg.iter().any(|a| a.ty.get().arr > 0),
-                        };
-                        if fu.static_ {
-                            for a in args { f.push(Param { src: [a] }); }
-                            f.push(Tac::Call { dst: ret, kind: CallKind::Static(self.func_info[&Ref(fu)].idx, hint) });
-                        } else {
-                            // Reg(0) is `this`
-                            let owner = v.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
-                            f.push(Param { src: [owner] });
-                            for a in args { f.push(Param { src: [a] }); }
-                            let slot = self.reg();
-                            let off = self.func_info[&Ref(fu)].off;
-                            f.push(Load { dst: slot, base: [owner], off: 0, hint: MemHint::Immutable })
-                                .push(Load { dst: slot, base: [Reg(slot)], off: off as i32 * INT_SIZE, hint: MemHint::Immutable });
-                            f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(slot)], hint) });
+                        match c.func_ref.get().unwrap_or_else(|| unimplemented!()) {
+                            Callable::FuncDef(fu) => {
+                                let ret = if fu.ret_ty() != Ty::void() { Some(self.reg()) } else { None };
+                                let hint = CallHint {
+                                    arg_obj: c.arg.iter().any(|a| a.ty.get().is_class()) || !fu.static_,
+                                    arg_arr: c.arg.iter().any(|a| a.ty.get().arr > 0),
+                                };
+                                if fu.static_ {
+                                    for a in args { f.push(Param { src: [a] }); }
+                                    // self.func_info[&Ref(fu)] will lookup fu's index in vtbl
+                                    f.push(Tac::Call { dst: ret, kind: CallKind::Static(self.func_info[&Ref(fu)].idx, hint) });
+                                } else {
+                                    // Reg(0) is `this`
+                                    let owner = v.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
+                                    f.push(Param { src: [owner] });
+                                    for a in args { f.push(Param { src: [a] }); }
+                                    let slot = self.reg();
+                                    let off = self.func_info[&Ref(fu)].off;
+                                    f.push(Load { dst: slot, base: [owner], off: 0, hint: MemHint::Immutable }) // load vtbl start addr
+                                        .push(Load { dst: slot, base: [Reg(slot)], off: off as i32 * INT_SIZE, hint: MemHint::Immutable }); // load function pointer
+                                    f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(slot)], hint) });
+                                }
+                                Reg(ret.unwrap_or(0)) // if ret is None, the result can't be assigned to others, so 0 will not be used
+                            }
+                            Callable::FuncTy(functor) => { // todo
+                                let ft = functor.ty.get();
+                                dbg!(ft);
+                                let fty = ft.to_func();
+                                let ret = if fty[0].is_void() { None } else { Some(self.reg()) };
+                                let fp = self.expr(&c.func, f); // todo unify two cases
+                                let slot = self.reg();
+                                f.push(Load {
+                                    dst: slot,
+                                    base: [fp],
+                                    off: 0,
+                                    hint: MemHint::Immutable,
+                                });
+                                // f.push( LoadFunc { dst: 0, f: 0 }) todo try this?
+                                f.push(Param { src: [Reg(0)] });
+                                for a in args { f.push(Param { src: [a] }); };
+                                let hint = CallHint {
+                                    arg_obj: true,
+                                    arg_arr: c.arg.iter().any(|a| a.ty.get().arr > 0),
+                                };
+                                f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(slot)], hint) });
+                                Reg(ret.unwrap_or(0))
+                            }
+                            _ => unimplemented!()
                         }
-                        Reg(ret.unwrap_or(0)) // if ret is None, the result can't be assigned to others, so 0 will not be used
                     }
                 }
             }

@@ -1,14 +1,14 @@
 use driver::*;
 
 fn main() {
-    let test_single = false;
+    let test_single = true;
     if test_single {
-        let task = "call-error-1";
+        let task = "test-call";
         println!("{:?}", test_one_caught(
-            format!("TestCases/S2-rs/{}.decaf", task),
-            format!("TestCases/S2-rs/out/{}.result", task),
-            format!("TestCases/S2-rs/result/{}.result", task),
-            Pa::Pa2,
+            format!("TestCases/S3/{}.decaf", task),
+            format!("TestCases/S3/out/{}.result", task),
+            format!("TestCases/S3/result/{}.result", task),
+            Pa::Pa3,
         ));
     } else {
         for &path in ["TestCases/S3"].iter() {

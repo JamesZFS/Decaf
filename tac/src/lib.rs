@@ -83,7 +83,7 @@ pub enum Tac {
   LoadStr { dst: u32, s: u32 },
   // v: the index in TacProgram::vtbl
   LoadVTbl { dst: u32, v: u32 },
-  // v: the index in TacProgram::func
+  // f: the index in TacProgram::func
   LoadFunc { dst: u32, f: u32 },
 }
 
