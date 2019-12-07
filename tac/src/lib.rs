@@ -37,7 +37,7 @@ impl<'a> TacFunc<'a> {
     TacFunc { param_num, reg_num: 0, first: None, last: None, alloc, name }
   }
 
-  pub fn push(&mut self, t: Tac) -> &mut Self {
+  pub fn push(&mut self, t: Tac) -> &mut Self {  // push back to Tac LinkedList
     let tac = self.alloc.alloc(TacNode { tac: t.into(), prev: None.into(), next: None.into() });
     if let Some(last) = &mut self.last {
       tac.prev.set(Some(last));
@@ -51,7 +51,7 @@ impl<'a> TacFunc<'a> {
   }
 }
 
-pub struct TacNode<'a> {
+pub struct TacNode<'a> { // basic elem of Tac LinkedList
   pub tac: Cell<Tac>,
   pub prev: Cell<Option<&'a TacNode<'a>>>,
   pub next: Cell<Option<&'a TacNode<'a>>>,
@@ -168,3 +168,4 @@ pub const NEW_ARR_NEG: &str = r#"Decaf runtime error: Cannot create negative-siz
 pub const BAD_CAST1: &str = r#"Decaf runtime error: "#;
 pub const BAD_CAST2: &str = r#" cannot be cast to "#;
 pub const BAD_CAST3: &str = r#"\n"#;
+pub const DIV_BY_ZERO: &str = r#"Decaf runtime error: Division by zero error"#;

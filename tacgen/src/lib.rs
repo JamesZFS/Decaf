@@ -293,6 +293,25 @@ impl<'a> TacGen<'a> {
                         Reg(dst)
                     }
                     op => {
+                        if let Div | Mod = op {
+                            let div0 = self.reg();
+                            let after = self.label();
+                            f.push(Bin { op: Eq, dst: div0, lr: [r, Const(0)] });
+                            f.push(Jif {
+                                label: after,
+                                z: true,
+                                cond: [Reg(div0)],
+                            });
+                            // raise runtime error:
+                            self.re(DIV_BY_ZERO, f);
+                            // after:
+                            f.push(Label { label: after });
+                            if let Const(0) = r {
+                                // here we are just avoid tacvm's static check for div by zero
+                                return Const(0);
+                            }
+                        }
+                        // execute:
                         let dst = self.reg();
                         f.push(Bin { op, dst, lr: [l, r] });
                         Reg(dst)
