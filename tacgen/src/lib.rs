@@ -19,6 +19,8 @@ struct TacGen<'a> {
     // `*_info` just works like extra fields to those structs, their specific meaning can be found at `struct *Info`
     var_info: HashMap<Ref<'a, VarDef<'a>>, VarInfo>,
     func_info: HashMap<Ref<'a, FuncDef<'a>>, FuncInfo>,
+    // todo untitled function info here
+    // eg: int() f = fun() => 1;
     class_info: HashMap<Ref<'a, ClassDef<'a>>, ClassInfo<'a>>,
 }
 
@@ -241,6 +243,8 @@ impl<'a> TacGen<'a> {
             }
             NullLit(_) => Const(0),
             Call(c) => {
+//                let todo
+
                 let v = if let ExprKind::VarSel(v) = &c.func.kind { v } else { unimplemented!() };
                 match &v.owner {
                     Some(o) if o.ty.get().is_arr() => {
@@ -273,19 +277,12 @@ impl<'a> TacGen<'a> {
                                 }
                                 Reg(ret.unwrap_or(0)) // if ret is None, the result can't be assigned to others, so 0 will not be used
                             }
-                            Callable::FuncTy(functor) => { // todo
-                                let ft = functor.ty.get();
-                                dbg!(ft);
-                                let fty = ft.to_func();
+                            Callable::Functor(fu) => { // todo
+                                let fty = fu.ty.get().to_func();
                                 let ret = if fty[0].is_void() { None } else { Some(self.reg()) };
                                 let fp = self.expr(&c.func, f); // todo unify two cases
                                 let slot = self.reg();
-                                f.push(Load {
-                                    dst: slot,
-                                    base: [fp],
-                                    off: 0,
-                                    hint: MemHint::Immutable,
-                                });
+                                f.push(Load { dst: slot, base: [fp], off: 0, hint: MemHint::Immutable, });
                                 // f.push( LoadFunc { dst: 0, f: 0 }) todo try this?
                                 f.push(Param { src: [fp] });
                                 for a in args { f.push(Param { src: [a] }); };

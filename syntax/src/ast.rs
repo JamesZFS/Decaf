@@ -232,9 +232,20 @@ pub struct Call<'a> {
 #[derive(Copy, Clone, derive_more::From)]
 pub enum Callable<'a> { // type of Call expr's lhs
     FuncDef(&'a FuncDef<'a>),
-    Lambda,
-    FuncTy(&'a VarDef<'a>),
+    Lambda(&'a [Ty<'a>]), // ret_param
+    Functor(&'a VarDef<'a>),
     Length
+}
+
+impl<'a> Callable<'a> {
+    pub fn ret_some(&self) -> bool { // return a non-void type?
+        match self {
+            Callable::FuncDef(fd) => { !fd.ret_ty().is_void() },
+            Callable::Lambda(ret_param) => { !ret_param[0].is_void() },
+            Callable::Functor(ft) => { !ft.ty.get().is_void() },
+            Callable::Length => { true },
+        }
+    }
 }
 
 pub struct Binary<'a> {
