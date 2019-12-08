@@ -20,7 +20,8 @@ struct TacGen<'a> {
     var_info: HashMap<Ref<'a, VarDef<'a>>, VarInfo>,
     func_info: HashMap<Ref<'a, FuncDef<'a>>, FuncInfo>,
     entry_func_info: HashMap<Ref<'a, FuncDef<'a>>, EntryFuncInfo>,
-    len_func_idx: u32, // array length function's index in the tac program
+    len_func_idx: u32,
+    // array length function's index in the tac program
     // eg: int() f = fun() => 1;
     class_info: HashMap<Ref<'a, ClassDef<'a>>, ClassInfo<'a>>,
 }
@@ -32,6 +33,7 @@ pub fn work<'a>(p: &'a Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram
 impl<'a> TacGen<'a> {
     fn program(mut self, p: &Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram<'a> {
         let mut tp = TacProgram::default();
+        let main_func = p.main.get().unwrap();
         // resolve member fields of all classes, and generate constructors for them
         for (idx, &c) in p.class.iter().enumerate() {
             self.define_str(c.name);
@@ -55,60 +57,13 @@ impl<'a> TacGen<'a> {
                     }
                 }
             }
-        }
-        for &c in &p.class {
-            for f in &c.field {
-                if let FieldDef::FuncDef(fd) = f {
-                    // handle function definition:
-                    let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
-                    for (idx, p) in fd.param.iter().enumerate() {
-                        self.var_info.insert(Ref(p), VarInfo { off: idx as u32 + this });
+            for &c in &p.class {
+                for f in &c.field {
+                    if let FieldDef::FuncDef(fd) = f {
+                        tp.func.push(self.build_func(fd, main_func, alloc));
+                        // generate tac of entry function inline:
+                        tp.func.push(self.build_func_entry(fd, main_func, alloc));
                     }
-                    // these regs are occupied by parameters
-                    self.reg_num = fd.param.len() as u32 + this;
-                    self.label_num = 0;
-                    let name = if Ref(c) == Ref(p.main.get().unwrap()) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
-                    let mut f = TacFunc::empty(alloc, name.clone(), self.reg_num);
-                    if let Some(b) = &fd.body {
-                        self.block(b, &mut f);
-                    } // for abstract method, skip tacgen for its body
-                    f.reg_num = self.reg_num;
-                    // add an return at the end of return-void function
-                    if fd.ret_ty().is_void() { f.push(Tac::Ret { src: None }); }
-                    tp.func.push(f);
-
-                    // generate tac of entry function inline:
-                    self.reg_num = fd.param.len() as u32 + this;
-                    let name = format!("{}.entry", name);
-                    let mut f = TacFunc::empty(alloc, name, self.reg_num);
-                    let ret = if fd.ret_ty().is_void() { None } else { Some(self.reg()) };
-                    let hint = CallHint {
-                        arg_obj: !fd.static_ || fd.param.iter().any(|p| p.ty.get().is_class()),
-                        arg_arr: fd.param.iter().any(|p| p.ty.get().arr > 0),
-                    };
-                    if fd.static_ {
-                        for i in 1..=fd.param.len() as u32 { f.push(Param { src: [Reg(i)] }); }
-                        f.push(Tac::Call { dst: ret, kind: CallKind::Static(self.func_info[&Ref(*fd)].idx, hint) });
-                    } else { // non-static
-                        let this = self.reg();
-                        f.push(Load { // load `this` pointer
-                            dst: this,
-                            base: [Reg(0)], // Reg(0) points to the functor
-                            off: 1 * INT_SIZE,
-                            hint: MemHint::Immutable,
-                        });
-                        let fp_target = self.reg();
-                        let off = self.func_info[&Ref(*fd)].off;
-                        f.push(Load { dst: fp_target, base: [Reg(this)], off: 0, hint: MemHint::Immutable }) // load vtbl start addr
-                            // load target virtual function pointer
-                            .push(Load { dst: fp_target, base: [Reg(fp_target)], off: off as i32 * INT_SIZE, hint: MemHint::Immutable })
-                            .push(Param { src: [Reg(this)] });
-                        for i in 1..=fd.param.len() as u32 { f.push(Param { src: [Reg(i)] }); }
-                        f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(fp_target)], hint) });
-                    }
-                    f.push(Ret { src: ret.map(|o| [Reg(o)]) });
-
-                    tp.func.push(f);
                 }
             }
         }
@@ -231,54 +186,59 @@ impl<'a> TacGen<'a> {
                     }
                 }
 
-                match vs.field.get().unwrap_or_else(|| unreachable!()) {
-                    FieldDef::VarDef(vd) => {
-                        let off = self.var_info[&Ref(vd)].off; // may be register id or offset in class
-                        match vd.owner.get().unwrap_or_else(|| unimplemented!()) {
-                            ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) => if let Some(src) = assign { // off is register
-                                f.push(Tac::Assign { dst: off, src: [src] });
-                                // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
-                                Reg(0)
-                            } else { Reg(off) }
-                            ScopeOwner::Class(_) => { // `off` is the member variable offset in the class
-                                // `this` is at argument 0
-                                let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
-                                if let Some(src) = assign {
-                                    f.push(Store { src_base: [src, owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
+                match vs.field.get() {
+                    Some(field_def) => match field_def {
+                        FieldDef::VarDef(vd) => {
+                            let off = self.var_info[&Ref(vd)].off; // may be register id or offset in class
+                            match vd.owner.get().unwrap_or_else(|| unreachable!()) {
+                                ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) => if let Some(src) = assign { // off is register
+                                    f.push(Tac::Assign { dst: off, src: [src] });
+                                    // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
                                     Reg(0)
-                                } else {
-                                    let dst = self.reg();
-                                    f.push(Load { dst, base: [owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
-                                    Reg(dst)
+                                } else { Reg(off) }
+                                ScopeOwner::Class(_) => { // `off` is the member variable offset in the class
+                                    // `this` is at argument 0
+                                    let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
+                                    if let Some(src) = assign {
+                                        f.push(Store { src_base: [src, owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
+                                        Reg(0)
+                                    } else {
+                                        let dst = self.reg();
+                                        f.push(Load { dst, base: [owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
+                                        Reg(dst)
+                                    }
                                 }
+                                ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
+                                ScopeOwner::LambdaParam(_) => unimplemented!()
                             }
-                            ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
-                            ScopeOwner::LambdaParam(_) => unimplemented!()
                         }
-                    }
-                    FieldDef::FuncDef(fd) => {
-                        assert!(fd.class.get().is_some());
-                        assert!(assign.is_none()); // guaranteed by PA2
-                        let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
-                        // construct a functor and return
-                        // get fp to the function entry addr
-                        let fp_entry = self.reg();
-                        f.push(LoadFunc { dst: fp_entry, f: self.entry_func_info[&Ref(fd)].idx });
+                        FieldDef::FuncDef(fd) => {
+                            assert!(fd.class.get().is_some());
+                            assert!(assign.is_none()); // guaranteed by PA2
+                            let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
+                            // construct a functor and return
+                            // get fp to the function entry addr
+                            let fp_entry = self.reg();
+//                        dbg!(self.entry_func_info[&Ref(fd)].idx);
+                            f.push(LoadFunc { dst: fp_entry, f: self.entry_func_info[&Ref(fd)].idx });
 
-                        if fd.static_ {
-                            let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(1 * INT_SIZE)] })).unwrap();
-                            // *(ft + 0) = fp
-                            f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
-                            Reg(ft)
-                        } else { // non-static
-                            let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
-                            // *(ft + 0) = fp
-                            f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
-                            // *(ft + 4) = obj_ptr
-                            f.push(Store { src_base: [owner, Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
-                            Reg(ft)
+                            if fd.static_ {
+                                let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(1 * INT_SIZE)] })).unwrap();
+                                // *(ft + 0) = fp
+                                f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
+                                Reg(ft)
+                            } else { // non-static
+                                let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
+                                // *(ft + 0) = fp
+                                f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
+                                // *(ft + 4) = obj_ptr
+                                f.push(Store { src_base: [owner, Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
+                                Reg(ft)
+                            }
                         }
                     }
+                    None => Reg(0) // current VarSel is class name, the only possibility is trying to access a static method
+                    // hence, we return a meaningless Reg(0) since static method's entry won't use obj_ptr
                 }
             }
             IndexSel(i) => {
@@ -558,6 +518,63 @@ impl<'a> TacGen<'a> {
         f.push(Load { dst: 1, base: [Reg(0)], off: 1 * INT_SIZE, hint: MemHint::Immutable })
             .push(Load { dst: 1, base: [Reg(1)], off: -(INT_SIZE as i32), hint: MemHint::Immutable })
             .push(Ret { src: Some([Reg(1)]) });
+        f
+    }
+
+    fn build_func(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
+        // handle function definition:
+        let c = fd.class.get().unwrap_or_else(|| unreachable!());
+        let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
+        for (idx, p) in fd.param.iter().enumerate() {
+            self.var_info.insert(Ref(p), VarInfo { off: idx as u32 + this });
+        }
+        // these regs are occupied by parameters
+        self.reg_num = fd.param.len() as u32 + this;
+        self.label_num = 0;
+        let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
+        let mut f = TacFunc::empty(alloc, name.clone(), self.reg_num);
+        if let Some(b) = &fd.body {
+            self.block(b, &mut f);
+        } // for abstract method, skip tacgen for its body
+        f.reg_num = self.reg_num;
+        // add an return at the end of return-void function
+        if fd.ret_ty().is_void() { f.push(Tac::Ret { src: None }); }
+        f
+    }
+
+    fn build_func_entry(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
+        let c = fd.class.get().unwrap_or_else(|| unreachable!());
+        let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
+        let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
+        let name = format!("{}._entry", name);
+        self.reg_num = fd.param.len() as u32 + this;
+        let mut f = TacFunc::empty(alloc, name, self.reg_num);
+        let ret = if fd.ret_ty().is_void() { None } else { Some(self.reg()) };
+        let hint = CallHint {
+            arg_obj: !fd.static_ || fd.param.iter().any(|p| p.ty.get().is_class()),
+            arg_arr: fd.param.iter().any(|p| p.ty.get().arr > 0),
+        };
+        if fd.static_ {
+            for i in 1..=fd.param.len() as u32 { f.push(Param { src: [Reg(i)] }); }
+            f.push(Tac::Call { dst: ret, kind: CallKind::Static(self.func_info[&Ref(fd)].idx, hint) });
+        } else { // non-static
+            let this = self.reg();
+            f.push(Load { // load `this` pointer
+                dst: this,
+                base: [Reg(0)], // Reg(0) points to the functor
+                off: 1 * INT_SIZE,
+                hint: MemHint::Immutable,
+            });
+            let fp_target = self.reg();
+            let off = self.func_info[&Ref(fd)].off;
+            f.push(Load { dst: fp_target, base: [Reg(this)], off: 0, hint: MemHint::Immutable }) // load vtbl start addr
+                // load target virtual function pointer
+                .push(Load { dst: fp_target, base: [Reg(fp_target)], off: off as i32 * INT_SIZE, hint: MemHint::Immutable })
+                .push(Param { src: [Reg(this)] });
+            for i in 1..=fd.param.len() as u32 { f.push(Param { src: [Reg(i)] }); }
+            f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(fp_target)], hint) });
+        }
+        f.push(Ret { src: ret.map(|o| [Reg(o)]) });
         f
     }
 }
