@@ -20,6 +20,7 @@ struct TacGen<'a> {
     var_info: HashMap<Ref<'a, VarDef<'a>>, VarInfo>,
     func_info: HashMap<Ref<'a, FuncDef<'a>>, FuncInfo>,
     entry_func_info: HashMap<Ref<'a, FuncDef<'a>>, EntryFuncInfo>,
+    len_func_idx: u32, // array length function's index in the tac program
     // eg: int() f = fun() => 1;
     class_info: HashMap<Ref<'a, ClassDef<'a>>, ClassInfo<'a>>,
 }
@@ -31,21 +32,16 @@ pub fn work<'a>(p: &'a Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram
 impl<'a> TacGen<'a> {
     fn program(mut self, p: &Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram<'a> {
         let mut tp = TacProgram::default();
-        // array's length function:
-        {
-            let mut f = TacFunc::empty(alloc, format!("{}.entry", LENGTH), 0);
-            // load array len and return
-            f.push(Load { dst: 1, base: [Reg(0)], off: 1*INT_SIZE, hint: MemHint::Immutable })
-                .push(Ret { src: Some([Reg(1)]) });
-            tp.func.push(f);
-        }
-
+        // resolve member fields of all classes, and generate constructors for them
         for (idx, &c) in p.class.iter().enumerate() {
             self.define_str(c.name);
             self.resolve_field(c);
             self.class_info.get_mut(&Ref(c)).unwrap().idx = idx as u32;
             tp.func.push(self.build_new(c, alloc));
         }
+        // generate array's length function:
+        self.len_func_idx = tp.func.len() as u32;
+        tp.func.push(self.build_length(alloc));
         {
             let mut idx = tp.func.len() as u32; // there are already some `_Xxx._new` functions in tp.func, so can't start from 0
             for &c in &p.class {
@@ -263,6 +259,7 @@ impl<'a> TacGen<'a> {
                     FieldDef::FuncDef(fd) => {
                         assert!(fd.class.get().is_some());
                         assert!(assign.is_none()); // guaranteed by PA2
+                        let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
                         // construct a functor and return
                         // get fp to the function entry addr
                         let fp_entry = self.reg();
@@ -277,8 +274,8 @@ impl<'a> TacGen<'a> {
                             let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
                             // *(ft + 0) = fp
                             f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
-                            // *(ft + 4) = this
-                            f.push(Store { src_base: [Reg(0), Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
+                            // *(ft + 4) = obj_ptr
+                            f.push(Store { src_base: [owner, Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
                             Reg(ft)
                         }
                     }
@@ -464,13 +461,12 @@ impl<'a> TacGen<'a> {
     fn length(&mut self, arr: Operand, f: &mut TacFunc<'a>) -> Operand {
         // apply for 8 bytes of memory to store the functor
         let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
-        let len = self.reg();
         let fp_entry = self.reg();
-        f.push(Load { dst: len, base: [arr], off: -(INT_SIZE as i32), hint: MemHint::Immutable })
-        // store the length fp in offset 0
-            .push(LoadFunc {dst: fp_entry, f: LENGTH_ENTRY_IDX })
+        f.push(LoadFunc { dst: fp_entry, f: self.len_func_idx })
+            // store the length fp in offset 0
             .push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable })
-        .push(Store { src_base: [Reg(len), Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
+            // store the arr pointer in offset 4
+            .push(Store { src_base: [arr, Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
         Reg(ft)
     }
 
@@ -553,6 +549,15 @@ impl<'a> TacGen<'a> {
         }
         f.push(Ret { src: Some([Reg(ret)]) });
         f.reg_num = self.reg_num;
+        f
+    }
+
+    fn build_length(&mut self, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
+        let mut f = TacFunc::empty(alloc, LENGTH.into(), 0);
+        // load array len and return
+        f.push(Load { dst: 1, base: [Reg(0)], off: 1 * INT_SIZE, hint: MemHint::Immutable })
+            .push(Load { dst: 1, base: [Reg(1)], off: -(INT_SIZE as i32), hint: MemHint::Immutable })
+            .push(Ret { src: Some([Reg(1)]) });
         f
     }
 }

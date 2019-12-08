@@ -3,6 +3,7 @@ use driver::*;
 fn main() {
     let test_single = false;
     if test_single {
+//        let task = "abstract-1";
         let task = "test-call";
         println!("{:?}", test_one_caught(
             format!("TestCases/S3/{}.decaf", task),
