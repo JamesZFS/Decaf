@@ -1,7 +1,7 @@
 use driver::*;
 
 fn main() {
-    let test_single = true;
+    let test_single = false;
     if test_single {
         let task = "test-call";
         println!("{:?}", test_one_caught(

@@ -17,6 +17,10 @@ pub struct FuncInfo {
   pub idx: u32,
 }
 
+pub struct EntryFuncInfo {
+  pub idx: u32
+}
+
 pub struct ClassInfo<'a> {
   pub field_num: u32,
   // which vtbl it's vtbl is in TacProgram (index in TacProgram::vtbl)

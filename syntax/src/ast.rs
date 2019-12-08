@@ -29,7 +29,7 @@ pub struct ClassDef<'a> {
     pub field: Vec<FieldDef<'a>>,
     pub parent_ref: Cell<Option<&'a ClassDef<'a>>>,
     pub scope: RefCell<Scope<'a>>,
-    pub unimpl_mthds: RefCell<HashSet<&'a str>> // unimplemented methods
+    pub unimpl_mthds: RefCell<HashSet<&'a str>>, // unimplemented methods
 }
 
 impl<'a> ClassDef<'a> {
@@ -173,7 +173,8 @@ pub struct Expr<'a> {
 
 #[derive(derive_more::From)]
 pub enum ExprKind<'a> {
-    VarSel(VarSel<'a>), // maybe callable
+    VarSel(VarSel<'a>),
+    // maybe callable
     IndexSel(IndexSel<'a>),
     IntLit(i32),
     BoolLit(bool),
@@ -197,7 +198,8 @@ pub struct Lambda<'a> {
     pub name: String,
     pub params: Vec<&'a VarDef<'a>>,
     pub ret_ty: Cell<Option<Ty<'a>>>,
-    pub can_tys: RefCell<Vec<Ty<'a>>>,  // candidate types
+    pub can_tys: RefCell<Vec<Ty<'a>>>,
+    // candidate types
     pub body: LambdaKind<'a>,
     // [0] is ret_ty, [1..] is parm_ty
     pub ret_param_ty: Cell<Option<&'a [Ty<'a>]>>,
@@ -230,20 +232,31 @@ pub struct Call<'a> {
 }
 
 #[derive(Copy, Clone, derive_more::From)]
-pub enum Callable<'a> { // type of Call expr's lhs
+pub enum Callable<'a> {
+    // type of Call expr's lhs
     FuncDef(&'a FuncDef<'a>),
-    Lambda(&'a [Ty<'a>]), // ret_param
+    Lambda(&'a [Ty<'a>]),
+    // ret_param
     Functor(&'a VarDef<'a>),
-    Length
+    Length,
 }
 
 impl<'a> Callable<'a> {
     pub fn ret_some(&self) -> bool { // return a non-void type?
         match self {
-            Callable::FuncDef(fd) => { !fd.ret_ty().is_void() },
-            Callable::Lambda(ret_param) => { !ret_param[0].is_void() },
-            Callable::Functor(ft) => { !ft.ty.get().is_void() },
-            Callable::Length => { true },
+            Callable::FuncDef(fd) => { !fd.ret_ty().is_void() }
+            Callable::Lambda(ret_param) => { !ret_param[0].is_void() }
+            Callable::Functor(ft) => { !ft.ty.get().is_void() }
+            Callable::Length => { true }
+        }
+    }
+
+    pub fn is_static(&self) -> bool {
+        match self {
+            Callable::FuncDef(fd) => { fd.static_ }
+            Callable::Lambda(_) => { false }
+            Callable::Functor(_) => { false }
+            Callable::Length => { true }
         }
     }
 }
