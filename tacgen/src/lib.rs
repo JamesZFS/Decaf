@@ -32,8 +32,13 @@ impl<'a> TacGen<'a> {
     fn program(mut self, p: &Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram<'a> {
         let mut tp = TacProgram::default();
         // array's length function:
-        self.reg_num = 0;
-//      todo  unimplemented!();
+        {
+            let mut f = TacFunc::empty(alloc, format!("{}.entry", LENGTH), 0);
+            // load array len and return
+            f.push(Load { dst: 1, base: [Reg(0)], off: 1*INT_SIZE, hint: MemHint::Immutable })
+                .push(Ret { src: Some([Reg(1)]) });
+            tp.func.push(f);
+        }
 
         for (idx, &c) in p.class.iter().enumerate() {
             self.define_str(c.name);
@@ -460,10 +465,12 @@ impl<'a> TacGen<'a> {
         // apply for 8 bytes of memory to store the functor
         let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
         let len = self.reg();
-        f.push(Load { dst: len, base: [arr], off: -(INT_SIZE as i32), hint: MemHint::Immutable });
-        // todo store the length fp in offset 0
-        unimplemented!();
-        f.push(Store { src_base: [Reg(len), Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
+        let fp_entry = self.reg();
+        f.push(Load { dst: len, base: [arr], off: -(INT_SIZE as i32), hint: MemHint::Immutable })
+        // store the length fp in offset 0
+            .push(LoadFunc {dst: fp_entry, f: LENGTH_ENTRY_IDX })
+            .push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable })
+        .push(Store { src_base: [Reg(len), Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
         Reg(ft)
     }
 

@@ -163,6 +163,8 @@ pub struct CallHint {
 
 pub const INT_SIZE: i32 = 4;
 
+pub const LENGTH_ENTRY_IDX: u32 = 0; // array length is the first function in the tac program
+
 pub const INDEX_OUT_OF_BOUND: &str = r#"Decaf runtime error: Array subscript out of bounds\n"#;
 pub const NEW_ARR_NEG: &str = r#"Decaf runtime error: Cannot create negative-sized array\n"#;
 pub const BAD_CAST1: &str = r#"Decaf runtime error: "#;
