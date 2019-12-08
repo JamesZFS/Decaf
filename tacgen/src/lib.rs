@@ -6,7 +6,6 @@ use common::{Ref, MAIN_METHOD, BinOp::*, UnOp::*, IndexSet, IndexMap, HashMap, L
 use typed_arena::Arena;
 use crate::info::*;
 
-#[derive(Default)]
 struct TacGen<'a> {
     // `reg_num` and `label_num` are manually set at the beginning of every function
     reg_num: u32,
@@ -15,7 +14,6 @@ struct TacGen<'a> {
     // Id & Index will behave differently when they are the lhs of an assignment
     // cur_assign contains the current assign rhs operand, or None if the current handling expr doesn't involve in assign
     cur_assign: Option<Operand>,
-    str_pool: IndexSet<&'a str>,
     // `*_info` just works like extra fields to those structs, their specific meaning can be found at `struct *Info`
     var_info: HashMap<Ref<'a, VarDef<'a>>, VarInfo>,
     func_info: HashMap<Ref<'a, FuncDef<'a>>, FuncInfo>,
@@ -24,28 +22,52 @@ struct TacGen<'a> {
     // array length function's index in the tac program
     // eg: int() f = fun() => 1;
     class_info: HashMap<Ref<'a, ClassDef<'a>>, ClassInfo<'a>>,
+    cur_lambdas: Vec<&'a Lambda<'a>>,
+    // lambda stack
+    alloc: &'a Arena<TacNode<'a>>,
+    tac_program: TacProgram<'a>
 }
 
 pub fn work<'a>(p: &'a Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram<'a> {
-    TacGen::default().program(p, alloc)
+    let mut tg = TacGen::new(alloc);
+    tg.program(p)
 }
 
 impl<'a> TacGen<'a> {
-    fn program(mut self, p: &Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram<'a> {
-        let mut tp = TacProgram::default();
+    fn new(alloc: &'a Arena<TacNode<'a>>) -> TacGen<'a> {
+        TacGen {
+            reg_num: 0,
+            label_num: 0,
+            loop_stk: vec![],
+            cur_assign: None,
+            var_info: Default::default(),
+            func_info: Default::default(),
+            entry_func_info: Default::default(),
+            len_func_idx: 0,
+            class_info: Default::default(),
+            cur_lambdas: vec![],
+            alloc: alloc,
+            tac_program: Default::default()
+        }
+    }
+
+    fn program(mut self, p: &Program<'a>) -> TacProgram<'a> {
+        self.tac_program = Default::default();
         let main_func = p.main.get().unwrap();
         // resolve member fields of all classes, and generate constructors for them
         for (idx, &c) in p.class.iter().enumerate() {
             self.define_str(c.name);
             self.resolve_field(c);
             self.class_info.get_mut(&Ref(c)).unwrap().idx = idx as u32;
-            tp.func.push(self.build_new(c, alloc));
+            let new = self.build_new(c);
+            self.tac_program.func.push(new);
         }
         // generate array's length function:
-        self.len_func_idx = tp.func.len() as u32;
-        tp.func.push(self.build_length(alloc));
+        self.len_func_idx = self.tac_program.func.len() as u32;
+        let len_tac = self.build_length();
+        self.tac_program.func.push(len_tac);
         {
-            let mut idx = tp.func.len() as u32; // there are already some `_Xxx._new` functions in tp.func, so can't start from 0
+            let mut idx = self.tac_program.func.len() as u32; // there are already some `_Xxx._new` functions in self.tac_program.func, so can't start from 0
             for &c in &p.class {
                 for &f in &c.field {
                     if let FieldDef::FuncDef(f) = f {
@@ -60,30 +82,31 @@ impl<'a> TacGen<'a> {
             for &c in &p.class {
                 for f in &c.field {
                     if let FieldDef::FuncDef(fd) = f {
-                        tp.func.push(self.build_func(fd, main_func, alloc));
+                        let func_tac = self.build_func(fd, main_func);
+                        self.tac_program.func.push(func_tac);
                         // generate tac of entry function inline:
-                        tp.func.push(self.build_func_entry(fd, main_func, alloc));
+                        let entry_tac = self.build_func_entry(fd, main_func);
+                        self.tac_program.func.push(entry_tac);
                     }
                 }
             }
         }
 
         for &c in &p.class {
-            tp.vtbl.push(tac::VTbl {
+            self.tac_program.vtbl.push(tac::VTbl {
                 parent: c.parent_ref.get().map(|p| self.class_info[&Ref(p)].idx),
                 class: c.name,
                 func: self.class_info[&Ref(c)].vtbl.iter().map(|(_, &f)| self.func_info[&Ref(f)].idx).collect(),
             });
         }
-        tp.str_pool = self.str_pool;
-        tp
+        self.tac_program
     }
 
-    fn block(&mut self, b: &Block<'a>, f: &mut TacFunc<'a>) {
+    fn block(&mut self, b: &'a Block<'a>, f: &mut TacFunc<'a>) {
         for s in &b.stmt { self.stmt(s, f); }
     }
 
-    fn stmt(&mut self, s: &Stmt<'a>, f: &mut TacFunc<'a>) {
+    fn stmt(&mut self, s: &'a Stmt<'a>, f: &mut TacFunc<'a>) {
         use StmtKind::*;
         match &s.kind {
             Assign(a) => {
@@ -174,7 +197,7 @@ impl<'a> TacGen<'a> {
         }
     }
 
-    fn expr(&mut self, e: &Expr<'a>, f: &mut TacFunc<'a>) -> Operand {
+    fn expr(&mut self, e: &'a Expr<'a>, f: &mut TacFunc<'a>) -> Operand {
         use ExprKind::*;
         let assign = self.cur_assign.take();
         match &e.kind {
@@ -251,7 +274,7 @@ impl<'a> TacGen<'a> {
                             let div0 = self.reg();
                             let after = self.label();
                             f.push(Bin { op: Eq, dst: div0, lr: [r, Const(0)] });
-                            f.push(Jif { label: after, z: true, cond: [Reg(div0)], });
+                            f.push(Jif { label: after, z: true, cond: [Reg(div0)] });
                             // raise runtime error:
                             self.re(DIV_BY_ZERO, f);
                             // after:
@@ -324,13 +347,24 @@ impl<'a> TacGen<'a> {
                 f.push(Label { label: ok });
                 obj
             }
-            Lambda(_) => { // todo
+            Lambda(l) => { // todo, construct lambda functor and return
+                match self.cur_lambdas.last() {
+                    None => { // normal context
+                    }
+                    Some(&outer_l) => { // in a lambda context
+                    }
+                }
+
+                self.cur_lambdas.push(l);
+                // generate tac for inner lambda:
+                self.build_lambda(l);
+                self.cur_lambdas.pop();
                 unimplemented!()
             }
         }
     }
 
-    fn var_sel(&mut self, vs: &VarSel<'a>, assign: Option<Operand>, f: &mut TacFunc<'a>) -> Operand {
+    fn var_sel(&mut self, vs: &'a VarSel<'a>, assign: Option<Operand>, f: &mut TacFunc<'a>) -> Operand {
         if let Some(o) = &vs.owner {  // arr.length()
             if vs.name == LENGTH && o.ty.get().is_arr() {
                 let arr = self.expr(o, f);
@@ -398,7 +432,7 @@ impl<'a> TacGen<'a> {
 
 impl<'a> TacGen<'a> {
     // define a string in str pool and return its id, this id can be used in Tac::LoadStr
-    fn define_str(&mut self, s: &'a str) -> u32 { self.str_pool.insert_full(s).0 as u32 }
+    fn define_str(&mut self, s: &'a str) -> u32 { self.tac_program.str_pool.insert_full(s).0 as u32 }
 
     fn reg(&mut self) -> u32 { (self.reg_num, self.reg_num += 1).0 }
 
@@ -496,10 +530,10 @@ impl<'a> TacGen<'a> {
         }
     }
 
-    fn build_new(&mut self, c: &'a ClassDef<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
+    fn build_new(&mut self, c: &'a ClassDef<'a>) -> TacFunc<'a> {
         self.reg_num = 0;
         let ClassInfo { field_num, idx, .. } = self.class_info[&Ref(c)];
-        let mut f = TacFunc::empty(alloc, format!("_{}._new", c.name), 0);
+        let mut f = TacFunc::empty(self.alloc, format!("_{}._new", c.name), 0);
         f.push(Param { src: [Const(field_num as i32 * INT_SIZE)] });
         let ret = self.intrinsic(_Alloc, &mut f).unwrap_or_else(|| unimplemented!());
         let vtbl = self.reg();
@@ -513,8 +547,8 @@ impl<'a> TacGen<'a> {
         f
     }
 
-    fn build_length(&mut self, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
-        let mut f = TacFunc::empty(alloc, LENGTH.into(), 0);
+    fn build_length(&mut self) -> TacFunc<'a> {
+        let mut f = TacFunc::empty(self.alloc, LENGTH.into(), 0);
         // load array len and return
         f.push(Load { dst: 1, base: [Reg(0)], off: 1 * INT_SIZE, hint: MemHint::Immutable })
             .push(Load { dst: 1, base: [Reg(1)], off: -(INT_SIZE as i32), hint: MemHint::Immutable })
@@ -522,7 +556,7 @@ impl<'a> TacGen<'a> {
         f
     }
 
-    fn build_func(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
+    fn build_func(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>) -> TacFunc<'a> {
         // handle function definition:
         let c = fd.class.get().unwrap_or_else(|| unreachable!());
         let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
@@ -533,7 +567,7 @@ impl<'a> TacGen<'a> {
         self.reg_num = fd.param.len() as u32 + this;
         self.label_num = 0;
         let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
-        let mut f = TacFunc::empty(alloc, name.clone(), self.reg_num);
+        let mut f = TacFunc::empty(self.alloc, name.clone(), self.reg_num);
         if let Some(b) = &fd.body {
             self.block(b, &mut f);
         } // for abstract method, skip tacgen for its body
@@ -543,13 +577,13 @@ impl<'a> TacGen<'a> {
         f
     }
 
-    fn build_func_entry(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacFunc<'a> {
+    fn build_func_entry(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>) -> TacFunc<'a> {
         let c = fd.class.get().unwrap_or_else(|| unreachable!());
         let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
         let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
         let name = format!("{}._entry", name);
         self.reg_num = fd.param.len() as u32 + this;
-        let mut f = TacFunc::empty(alloc, name, self.reg_num);
+        let mut f = TacFunc::empty(self.alloc, name, self.reg_num);
         let ret = if fd.ret_ty().is_void() { None } else { Some(self.reg()) };
         let hint = CallHint {
             arg_obj: !fd.static_ || fd.param.iter().any(|p| p.ty.get().is_class()),
@@ -577,5 +611,10 @@ impl<'a> TacGen<'a> {
         }
         f.push(Ret { src: ret.map(|o| [Reg(o)]) });
         f
+    }
+
+    fn build_lambda(&mut self, l: &'a Lambda<'a>) -> TacFunc<'a> {
+        // todo
+        unimplemented!()
     }
 }

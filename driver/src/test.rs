@@ -4,7 +4,7 @@ use std::{io, fs};
 use std::fs::File;
 
 fn main() {
-    let test_single = true;
+    let test_single = false;
     let only_run_tacvm = false;
     let task = "lambda-2";
 
@@ -26,8 +26,8 @@ fn main() {
             ));
         }
     } else {
-        for &path in ["TestCases/S2-rs"].iter() {
-            for result in test_all(path, Pa::Pa2).unwrap() {
+        for &path in ["TestCases/S3"].iter() {
+            for result in test_all(path, Pa::Pa3).unwrap() {
                 println!("{:?}", result);
             }
         }
