@@ -178,69 +178,7 @@ impl<'a> TacGen<'a> {
         use ExprKind::*;
         let assign = self.cur_assign.take();
         match &e.kind {
-            VarSel(vs) => {
-                if let Some(o) = &vs.owner {  // arr.length()
-                    if vs.name == LENGTH && o.ty.get().is_arr() {
-                        let arr = self.expr(o, f);
-                        return self.length(arr, f);
-                    }
-                }
-
-                match vs.field.get() {
-                    Some(field_def) => match field_def {
-                        FieldDef::VarDef(vd) => {
-                            let off = self.var_info[&Ref(vd)].off; // may be register id or offset in class
-                            match vd.owner.get().unwrap_or_else(|| unreachable!()) {
-                                ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) => if let Some(src) = assign { // off is register
-                                    f.push(Tac::Assign { dst: off, src: [src] });
-                                    // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
-                                    Reg(0)
-                                } else { Reg(off) }
-                                ScopeOwner::Class(_) => { // `off` is the member variable offset in the class
-                                    // `this` is at argument 0
-                                    let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
-                                    if let Some(src) = assign {
-                                        f.push(Store { src_base: [src, owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
-                                        Reg(0)
-                                    } else {
-                                        let dst = self.reg();
-                                        f.push(Load { dst, base: [owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
-                                        Reg(dst)
-                                    }
-                                }
-                                ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
-                                ScopeOwner::LambdaParam(_) => unimplemented!()
-                            }
-                        }
-                        FieldDef::FuncDef(fd) => {
-                            assert!(fd.class.get().is_some());
-                            assert!(assign.is_none()); // guaranteed by PA2
-                            let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
-                            // construct a functor and return
-                            // get fp to the function entry addr
-                            let fp_entry = self.reg();
-//                        dbg!(self.entry_func_info[&Ref(fd)].idx);
-                            f.push(LoadFunc { dst: fp_entry, f: self.entry_func_info[&Ref(fd)].idx });
-
-                            if fd.static_ {
-                                let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(1 * INT_SIZE)] })).unwrap();
-                                // *(ft + 0) = fp
-                                f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
-                                Reg(ft)
-                            } else { // non-static
-                                let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
-                                // *(ft + 0) = fp
-                                f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
-                                // *(ft + 4) = obj_ptr
-                                f.push(Store { src_base: [owner, Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
-                                Reg(ft)
-                            }
-                        }
-                    }
-                    None => Reg(0) // current VarSel is class name, the only possibility is trying to access a static method
-                    // hence, we return a meaningless Reg(0) since static method's entry won't use obj_ptr
-                }
-            }
+            VarSel(vs) => self.var_sel(vs, assign, f),
             IndexSel(i) => {
                 let (arr, idx) = (self.expr(&i.arr, f), self.expr(&i.idx, f));
                 let (ok, len, cmp) = (self.reg(), self.length(arr, f), self.reg());
@@ -313,11 +251,7 @@ impl<'a> TacGen<'a> {
                             let div0 = self.reg();
                             let after = self.label();
                             f.push(Bin { op: Eq, dst: div0, lr: [r, Const(0)] });
-                            f.push(Jif {
-                                label: after,
-                                z: true,
-                                cond: [Reg(div0)],
-                            });
+                            f.push(Jif { label: after, z: true, cond: [Reg(div0)], });
                             // raise runtime error:
                             self.re(DIV_BY_ZERO, f);
                             // after:
@@ -334,7 +268,7 @@ impl<'a> TacGen<'a> {
                     }
                 }
             }
-            This(_) => Reg(0),
+            This(_) => Reg(0), // todo may not be Reg(0) now
             ReadInt(_) => Reg(self.intrinsic(_ReadInt, f).unwrap()),
             ReadLine(_) => Reg(self.intrinsic(_ReadLine, f).unwrap()),
             NewClass(n) => {
@@ -390,7 +324,74 @@ impl<'a> TacGen<'a> {
                 f.push(Label { label: ok });
                 obj
             }
-            Lambda(_) => unimplemented!()
+            Lambda(_) => { // todo
+                unimplemented!()
+            }
+        }
+    }
+
+    fn var_sel(&mut self, vs: &VarSel<'a>, assign: Option<Operand>, f: &mut TacFunc<'a>) -> Operand {
+        if let Some(o) = &vs.owner {  // arr.length()
+            if vs.name == LENGTH && o.ty.get().is_arr() {
+                let arr = self.expr(o, f);
+                return self.length(arr, f);
+            }
+        }
+        match vs.field.get() {
+            Some(field_def) => match field_def {
+                FieldDef::VarDef(vd) => {
+                    let off = self.var_info[&Ref(vd)].off; // may be register id or offset in class
+                    match vd.owner.get().unwrap_or_else(|| unreachable!()) {
+                        // todo discuss if we are now in a Lambda scope
+                        ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) => if let Some(src) = assign { // off is register
+                            f.push(Tac::Assign { dst: off, src: [src] });
+                            // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
+                            Reg(0)
+                        } else { Reg(off) }
+                        ScopeOwner::Class(_) => { // `off` is the member variable offset in the class
+                            // `this` is at argument 0
+                            let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0)); // todo this can possibly not be Reg(0)
+                            if let Some(src) = assign {
+                                f.push(Store { src_base: [src, owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
+                                Reg(0)
+                            } else {
+                                let dst = self.reg();
+                                f.push(Load { dst, base: [owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
+                                Reg(dst)
+                            }
+                        }
+                        ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
+                        ScopeOwner::LambdaParam(_) => {
+                            unimplemented!()
+                        }
+                    }
+                }
+                FieldDef::FuncDef(fd) => {
+                    assert!(fd.class.get().is_some()); // todo erase
+                    assert!(assign.is_none()); // guaranteed by PA2
+                    let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
+                    // construct a functor and return
+                    // get fp to the function entry addr
+                    let fp_entry = self.reg();
+                    f.push(LoadFunc { dst: fp_entry, f: self.entry_func_info[&Ref(fd)].idx });
+
+                    if fd.static_ {
+                        let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(1 * INT_SIZE)] })).unwrap();
+                        // *(ft + 0) = fp
+                        f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
+                        Reg(ft)
+                    } else { // non-static
+                        let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
+                        // *(ft + 0) = fp
+                        f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
+                        // *(ft + 4) = obj_ptr
+                        f.push(Store { src_base: [owner, Reg(ft)], off: 1 * INT_SIZE, hint: MemHint::Immutable });
+                        Reg(ft)
+                    }
+                }
+            }
+            None => Reg(0) // current VarSel is class name, the only possibility is trying to access a static method
+            // hence, we return a meaningless Reg(0) since static method's entry won't use obj_ptr
         }
     }
 }

@@ -1,5 +1,5 @@
 use crate::{ty::*, symbol::*};
-use common::{Loc, Ref, BinOp, UnOp, HashSet};
+use common::{Loc, Ref, BinOp, UnOp, HashSet, IndexSet};
 use typed_arena::Arena;
 use std::cell::{Cell, RefCell};
 
@@ -198,14 +198,14 @@ pub struct Lambda<'a> {
     pub name: String,
     pub params: Vec<&'a VarDef<'a>>,
     pub ret_ty: Cell<Option<Ty<'a>>>,
-    pub can_tys: RefCell<Vec<Ty<'a>>>,
-    // candidate types
+    pub can_tys: RefCell<Vec<Ty<'a>>>,  // candidate types
     pub body: LambdaKind<'a>,
-    // [0] is ret_ty, [1..] is parm_ty
-    pub ret_param_ty: Cell<Option<&'a [Ty<'a>]>>,
+    pub ret_param_ty: Cell<Option<&'a [Ty<'a>]>>, // [0] is ret_ty, [1..] is parm_ty
     // `class` will always be set during typeck (no matter whether it is static)
     pub class: Cell<Option<&'a ClassDef<'a>>>,
     pub scope: RefCell<Scope<'a>>,
+    pub captured: RefCell<IndexSet<Ref<'a, VarDef<'a>>>>, // captured variables | references
+    pub capture_this: Cell<bool>
 }
 
 pub enum LambdaKind<'a> {

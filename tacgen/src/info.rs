@@ -6,6 +6,7 @@ use common::IndexMap;
 pub struct VarInfo {
   // if the var is a VarDef in class, `off` is the offset in object pointer
   // if the var is a VarDef in function, `off` is a virtual register number
+  // todo `off` can also be offset in captured list
   pub off: u32,
 }
 

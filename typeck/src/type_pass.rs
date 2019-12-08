@@ -49,7 +49,7 @@ impl<'a> TypePass<'a> {
             StmtKind::Assign(a) => {
                 let ((l, cap_sym_scope), r) = (self.expr(&a.dst), self.expr(&a.src).0);
                 if !r.assignable_to(l) { self.issue(s.loc, IncompatibleBinary { l, op: "=", r }) }
-                match self.scopes.cur_lambda() {
+                match self.cur_lambdas.last() {
                     None => if let Some((sym, scope)) = cap_sym_scope { // normal context
                         if sym.is_func() && scope.is_class() {
                             self.issue(s.loc, AssignToMemberMethod(sym.name()))
@@ -119,7 +119,7 @@ impl<'a> TypePass<'a> {
             // return type checking is here
             StmtKind::Return(r) => {
                 let actual = r.as_ref().map(|e| self.expr(e).0).unwrap_or(Ty::void());
-                match self.scopes.cur_lambda() {
+                match self.cur_lambdas.last() {
                     None => {  // in normal method body
                         let expect = self.cur_func.unwrap().ret_ty();
                         if !actual.assignable_to(expect) { self.issue(s.loc, ReturnMismatch { actual, expect }) }
@@ -207,6 +207,10 @@ impl<'a> TypePass<'a> {
             This(_) => {
                 if self.cur_func.unwrap().static_ { self.issue(e.loc, ThisInStatic) }
                 let cur_class = self.cur_class.unwrap();
+                for l in &self.cur_lambdas {
+                    println!("capture this!");
+                    l.capture_this.set(true); // capture this
+                }
                 (Ty::mk_obj(cur_class), None)
             }
             NewClass(n) => if let Some(c) = self.scopes.lookup_class(n.name) {
@@ -236,6 +240,7 @@ impl<'a> TypePass<'a> {
                 } else { self.issue(e.loc, NoSuchClass(c.name)) }
             }
             Lambda(l) => {
+                self.cur_lambdas.push(l);
                 let old_loop_cnt = self.loop_cnt;
                 self.loop_cnt = 0;
                 let ret_ty = self.scoped(ScopeOwner::LambdaParam(l), |s| {
@@ -261,13 +266,14 @@ impl<'a> TypePass<'a> {
                 });
                 l.ret_ty.set(Some(ret_ty));
                 if ret_ty == Ty::error() { return (Ty::error(), None); }
-                // create sinature for l
+                // create signature for l
                 let ret_param_ty = iter::once(ret_ty).chain(l.params.iter().map(|v| v.ty.get()));
                 let ret_param_ty = self.alloc.ty.alloc_extend(ret_param_ty);
                 l.ret_param_ty.set(Some(ret_param_ty));
                 l.class.set(self.cur_class);
                 self.cur_caller = Some(Callable::Lambda(ret_param_ty));
                 self.loop_cnt = old_loop_cnt;
+                self.cur_lambdas.pop();
                 (Ty::new(TyKind::Func(ret_param_ty)), None)
             }
         };
@@ -346,9 +352,21 @@ impl<'a> TypePass<'a> {
                             if cur.static_ {  // static function cannot access class's member var
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
+                            for l in &self.cur_lambdas {
+                                println!("capture this!");
+                                l.capture_this.set(true); // capture this
+                            }
+                        } else {
+                            for l in &self.cur_lambdas {
+                                if var.loc < l.loc {
+                                    println!("capture local {}!", var.name);
+                                    l.captured.borrow_mut().insert(Ref(var)); // capture local var
+                                }
+                            }
                         }
                         let ty = var.ty.get();
                         if ty.is_func() { self.cur_caller = Some(Callable::Functor(var)) }
+
                         (ty, var.owner.get().map(|scope| (sym, scope))) // various scope owner types
                     }
                     Symbol::Func(f) => {  // fun
@@ -357,6 +375,10 @@ impl<'a> TypePass<'a> {
                             let cur = self.cur_func.unwrap();
                             if cur.static_ {
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
+                            }
+                            for l in &self.cur_lambdas {
+                                println!("capture this!");
+                                l.capture_this.set(true);   // capture this
                             }
                         }
                         self.cur_caller = Some(f.into());

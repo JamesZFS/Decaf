@@ -5,7 +5,7 @@ mod symbol_pass;
 mod type_pass;
 
 use common::{Errors, ErrorKind::*, Ref, HashSet};
-use syntax::{FuncDef, ClassDef, SynTy, SynTyKind, ScopeOwner, Ty, TyKind, Program, Callable};
+use syntax::{FuncDef, ClassDef, SynTy, SynTyKind, ScopeOwner, Ty, TyKind, Program, Callable, Lambda};
 use typed_arena::Arena;
 use std::ops::{Deref, DerefMut};
 use crate::{symbol_pass::SymbolPass, type_pass::TypePass, scope_stack::ScopeStack};
@@ -19,7 +19,7 @@ pub struct TypeCkAlloc<'a> {
 // *** the overall pipeline ***
 pub fn work<'a>(p: &'a Program<'a>, alloc: &'a TypeCkAlloc<'a>) -> Result<(), Errors<'a, Ty<'a>>> {
     // 1st scan, constructing sym tables
-    let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: Default::default(), cur_caller: Default::default(), alloc });
+    let mut s = SymbolPass(TypeCk { errors: Errors(vec![]), scopes: ScopeStack::new(p), loop_cnt: 0, cur_used: false, cur_func: None, cur_class: None, cur_var_def: Default::default(), cur_caller: Default::default(), cur_lambdas: vec![], alloc });
     s.program(p);
     if !s.errors.0.is_empty() { return Err(s.0.errors.sorted()); }
     // 2nd scan
@@ -42,8 +42,8 @@ struct TypeCk<'a> {
     // if cur_var_def is Some, will use it's loc to search for symbol in TypePass::var_sel
     // this can reject code like `int a = a;`
     cur_var_def: HashSet<&'a str>, // var def stack
-    cur_caller: Option<Callable<'a>>,
-    // type of current Call expr's lhs
+    cur_caller: Option<Callable<'a>>, // type of current Call expr's lhs
+    cur_lambdas: Vec<&'a Lambda<'a>>, // lambda stack
     alloc: &'a TypeCkAlloc<'a>,
 }
 

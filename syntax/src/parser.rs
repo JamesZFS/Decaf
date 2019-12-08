@@ -1,6 +1,7 @@
 use crate::{ast::*, ty::*, VecExt, dft, check_str, mk_stmt, mk_expr, mk_int_lit, mk_block};
 use parser_macros::lalr1;
 use common::{ErrorKind, Loc, BinOp, UnOp, Errors, NO_LOC};
+use std::cell::Cell;
 
 pub fn work<'p>(code: &'p str, alloc: &'p ASTAlloc<'p>) -> Result<&'p Program<'p>, Errors<'p, Ty<'p>>> {
     let mut parser = Parser { alloc, error: Errors::default() };
@@ -396,12 +397,12 @@ impl<'p> Parser<'p> {
     // lambda expr
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Arrow Expr)]
     fn expr_lambda0(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, _a: Token, e: Expr<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), can_tys: dft(), body: LambdaKind::Expr(Box::new(e), dft()), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
+        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), can_tys: dft(), body: LambdaKind::Expr(Box::new(e), dft()), ret_param_ty: dft(), class: dft(), scope: dft(), captured: dft(), capture_this: Cell::new(false) }.into())
     }
 
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar Block)]
     fn expr_lambda1(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, b: Block<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), can_tys: dft(), body: LambdaKind::Block(Box::new(b)), ret_param_ty: dft(), class: dft(), scope: dft() }.into())
+        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params, ret_ty: dft(), can_tys: dft(), body: LambdaKind::Block(Box::new(b)), ret_param_ty: dft(), class: dft(), scope: dft(), captured: dft(), capture_this: Cell::new(false) }.into())
     }
 
     #[rule(ExprList -> ExprList Comma Expr)]

@@ -3,6 +3,7 @@
 use crate::{ast::*, ty::*, VecExt, dft, check_str, mk_expr, mk_stmt, mk_int_lit, mk_block};
 use parser_macros::ll1;
 use common::{ErrorKind, Loc, NO_LOC, BinOp, UnOp, Errors, HashSet, HashMap};
+use std::cell::Cell;
 
 pub fn work<'p>(code: &'p str, alloc: &'p ASTAlloc<'p>) -> Result<&'p Program<'p>, Errors<'p, Ty<'p>>> {
     let mut parser = Parser { alloc, error: Errors::default() };
@@ -465,7 +466,7 @@ impl<'p> Parser<'p> {
     // 'fun(...)' ???
     #[rule(Expr -> Fun LPar VarDefListOrEmpty RPar LambdaBody)]
     fn expr_lambda(f: Token, _l: Token, params: Vec<&'p VarDef<'p>>, _r: Token, body: LambdaKind<'p>) -> Expr<'p> {
-        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params: params.reversed(), ret_ty: dft(), can_tys: dft(), body, ret_param_ty: dft(), class: dft(), scope: dft() }.into())
+        mk_expr(f.loc(), Lambda { loc: f.loc(), name: format!("lambda@{:?}", f.loc()), params: params.reversed(), ret_ty: dft(), can_tys: dft(), body, ret_param_ty: dft(), class: dft(), scope: dft(), captured: dft(), capture_this: Cell::new(false) }.into())
     }
     // ??? is '=> expr'
     #[rule(LambdaBody -> Arrow Expr)]

@@ -4,9 +4,9 @@ use std::{io, fs};
 use std::fs::File;
 
 fn main() {
-    let test_single = false;
+    let test_single = true;
     let only_run_tacvm = false;
-    let task = "abstract-1";
+    let task = "lambda-2";
 
     if test_single {
         if only_run_tacvm {
@@ -26,8 +26,8 @@ fn main() {
             ));
         }
     } else {
-        for &path in ["TestCases/S3"].iter() {
-            for result in test_all(path, Pa::Pa3).unwrap() {
+        for &path in ["TestCases/S2-rs"].iter() {
+            for result in test_all(path, Pa::Pa2).unwrap() {
                 println!("{:?}", result);
             }
         }
