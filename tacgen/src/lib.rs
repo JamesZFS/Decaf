@@ -726,12 +726,19 @@ impl<'a> TacGen<'a> {
             self.var_info.insert(Ref(p), VarInfo { off: 1 + idx as u32 }); // offset 0 reserved for functor
         }
         self.reg_num = 1 + l.params.len() as u32;
-        let name = format!("lambda_{:?}", l.loc); // be careful not to use `@`
+        let name = format!("lambda_{}_{}", l.loc.0, l.loc.1); // be careful not to use `@`
         let mut lambda_tac = TacFunc::empty(self.alloc, name, self.reg_num);
         self.cur_lambdas.push(l);
         match &l.body {
-            LambdaKind::Block(b) => self.block(b, &mut lambda_tac), // ** recursively generate
-            LambdaKind::Expr(e, _s) => (self.expr(e, &mut lambda_tac), ()).1,
+            // ** recursively generate
+            LambdaKind::Block(b) => {
+                self.block(b, &mut lambda_tac);
+                if l.ret_ty.get().unwrap().is_void() { lambda_tac.push(Ret { src: None }); }
+            },
+            LambdaKind::Expr(e, _s) => {
+                let ret = self.expr(e, &mut lambda_tac);
+                lambda_tac.push(Ret { src: Some([ret]) });
+            },
         }
         self.cur_lambdas.pop();
         self.reg_num = old_reg_num; // recover reg_num so that the outer scope will function normally

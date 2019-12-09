@@ -1,12 +1,12 @@
 use driver::*;
 use std::io::{BufReader, BufWriter};
 use std::{io, fs};
-use std::fs::File;
+use common::IgnoreResult;
 
 fn main() {
-    let test_single = true;
+    let test_single = false;
     let only_run_tacvm = false;
-    let task = "lambda-2";
+    let task = "lambda-0";
 
     if test_single {
         if only_run_tacvm {
@@ -14,8 +14,8 @@ fn main() {
             tacvm::work(&p, 100_000, 1000, true, true,
                         Box::new(BufReader::new(io::stdin())),
                         Box::new(BufWriter::new(io::stdout())),
-                        Box::new(BufWriter::new(File::create(format!("TestCases/S3/out/{}.info", task)).unwrap())),
-            ).unwrap();
+                        Box::new(BufWriter::new(io::stderr())),
+            ).ignore();
         }
         else {
             println!("{:?}", test_one_caught(
