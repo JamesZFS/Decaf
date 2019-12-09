@@ -257,7 +257,7 @@ impl<'a> TacGen<'a> {
                     arg_arr: c.arg.iter().any(|a| a.ty.get().arr > 0),
                 };
                 f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(fp_entry)], hint) });
-                Reg(ret.unwrap_or(0))
+                Reg(ret.unwrap_or(0)) // if ret is None, the result can't be assigned to others, so 0 will not be used
             }
             Unary(u) => {
                 let (r, dst) = (self.expr(&u.r, f), self.reg());
@@ -281,7 +281,7 @@ impl<'a> TacGen<'a> {
                             let after = self.label();
                             f.push(Bin { op: Eq, dst: div0, lr: [r, Const(0)] });
                             f.push(Jif { label: after, z: true, cond: [Reg(div0)] });
-                            // raise runtime error:
+                            // raise div0 runtime error:
                             self.re(DIV_BY_ZERO, f);
                             // after:
                             f.push(Label { label: after });
@@ -483,10 +483,7 @@ impl<'a> TacGen<'a> {
                     }
                 }
                 FieldDef::FuncDef(fd) => {
-                    assert!(fd.class.get().is_some());
                     assert!(cur_assign.is_none()); // guaranteed by PA2
-                    // ** recursively visit the owner
-                    let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
                     // construct a functor and return
                     // get fp to the function entry addr
                     let fp_entry = self.reg();
@@ -498,6 +495,8 @@ impl<'a> TacGen<'a> {
                         f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
                         Reg(ft)
                     } else { // non-static
+                        // ** recursively visit the owner
+                        let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or_else(|| self.this(f));
                         let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
                         // *(ft + 0) = fp
                         f.push(Store { src_base: [Reg(fp_entry), Reg(ft)], off: 0, hint: MemHint::Immutable });
