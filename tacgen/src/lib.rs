@@ -384,10 +384,8 @@ impl<'a> TacGen<'a> {
                         }
                     }
                     Some(outer_l) => { // in a lambda context
-                        dbg!(&outer_l.name, &l.name);
                         let tmp = self.reg();
                         for (idx, rvd) in l.cap_list.borrow().iter().enumerate() {
-                            dbg!(rvd.0.name);
                             match outer_l.cap_list.borrow().get_full(rvd) {
                                 Some((outer_idx, _)) => { // a nested capture
                                     f.push(Load { // from outer to tmp
@@ -456,7 +454,6 @@ impl<'a> TacGen<'a> {
                                     Some(l) =>
                                         if let Some((idx, _)) = l.cap_list.borrow().get_full(&Ref(vd)) { // confirm a captured var
                                             // load captured var from functor and return the reg
-                                            dbg!(&vd.name);
                                             let dst = self.reg();
                                             f.push(Load {
                                                 dst,
@@ -486,7 +483,7 @@ impl<'a> TacGen<'a> {
                     }
                 }
                 FieldDef::FuncDef(fd) => {
-                    assert!(fd.class.get().is_some()); // todo erase
+                    assert!(fd.class.get().is_some());
                     assert!(cur_assign.is_none()); // guaranteed by PA2
                     // ** recursively visit the owner
                     let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
@@ -518,13 +515,12 @@ impl<'a> TacGen<'a> {
     fn this(&mut self, f: &mut TacFunc<'a>) -> Operand { // get `this` pointer
         match self.cur_lambdas.last().cloned() {
             Some(l) => { // in a lambda context
-                dbg!(l.cap_this.get());
                 assert!(l.cap_this.get());
                 let dst = self.reg();
                 f.push(Load { // load `this` pointer
                     dst,
                     base: [Reg(0)],
-                    off: 1 + l.cap_list.borrow().len() as i32,
+                    off: (1 + l.cap_list.borrow().len() as i32) * INT_SIZE,
                     hint: MemHint::Immutable,
                 });
                 Reg(dst)

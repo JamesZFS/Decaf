@@ -208,7 +208,6 @@ impl<'a> TypePass<'a> {
                 if self.cur_func.unwrap().static_ { self.issue(e.loc, ThisInStatic) }
                 let cur_class = self.cur_class.unwrap();
                 for l in &self.cur_lambdas {
-                    println!("capture this!");
                     l.cap_this.set(true); // capture this
                 }
                 (Ty::mk_obj(cur_class), None)
@@ -353,13 +352,11 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
                             for l in &self.cur_lambdas {
-                                println!("capture this!");
                                 l.cap_this.set(true); // capture this
                             }
                         } else {
                             for l in &self.cur_lambdas {
                                 if var.loc < l.loc {
-                                    println!("capture local {}!", var.name);
                                     l.cap_list.borrow_mut().insert(Ref(var)); // capture local var
                                 }
                             }
@@ -377,7 +374,6 @@ impl<'a> TypePass<'a> {
                                 self.issue(loc, RefInStatic { field: v.name, func: cur.name })
                             }
                             for l in &self.cur_lambdas {
-                                println!("capture this!");
                                 l.cap_this.set(true);   // capture this
                             }
                         }
