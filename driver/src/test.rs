@@ -4,7 +4,7 @@ use std::{io, fs};
 use std::fs::File;
 
 fn main() {
-    let test_single = false;
+    let test_single = true;
     let only_run_tacvm = false;
     let task = "lambda-2";
 

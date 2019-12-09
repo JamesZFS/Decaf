@@ -204,8 +204,8 @@ pub struct Lambda<'a> {
     // `class` will always be set during typeck (no matter whether it is static)
     pub class: Cell<Option<&'a ClassDef<'a>>>,
     pub scope: RefCell<Scope<'a>>,
-    pub captured: RefCell<IndexSet<Ref<'a, VarDef<'a>>>>, // captured variables | references
-    pub capture_this: Cell<bool>
+    pub cap_list: RefCell<IndexSet<Ref<'a, VarDef<'a>>>>, // captured variables | references
+    pub cap_this: Cell<bool>
 }
 
 pub enum LambdaKind<'a> {

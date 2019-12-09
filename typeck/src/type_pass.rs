@@ -209,7 +209,7 @@ impl<'a> TypePass<'a> {
                 let cur_class = self.cur_class.unwrap();
                 for l in &self.cur_lambdas {
                     println!("capture this!");
-                    l.capture_this.set(true); // capture this
+                    l.cap_this.set(true); // capture this
                 }
                 (Ty::mk_obj(cur_class), None)
             }
@@ -354,13 +354,13 @@ impl<'a> TypePass<'a> {
                             }
                             for l in &self.cur_lambdas {
                                 println!("capture this!");
-                                l.capture_this.set(true); // capture this
+                                l.cap_this.set(true); // capture this
                             }
                         } else {
                             for l in &self.cur_lambdas {
                                 if var.loc < l.loc {
                                     println!("capture local {}!", var.name);
-                                    l.captured.borrow_mut().insert(Ref(var)); // capture local var
+                                    l.cap_list.borrow_mut().insert(Ref(var)); // capture local var
                                 }
                             }
                         }
@@ -378,7 +378,7 @@ impl<'a> TypePass<'a> {
                             }
                             for l in &self.cur_lambdas {
                                 println!("capture this!");
-                                l.capture_this.set(true);   // capture this
+                                l.cap_this.set(true);   // capture this
                             }
                         }
                         self.cur_caller = Some(f.into());

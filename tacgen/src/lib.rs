@@ -2,7 +2,7 @@ mod info;
 
 use syntax::{ast::*, ty::*, ScopeOwner};
 use ::tac::{self, *, Tac::{self, *}, Operand::*, Intrinsic::*};
-use common::{Ref, MAIN_METHOD, BinOp::*, UnOp::*, IndexSet, IndexMap, HashMap, LENGTH};
+use common::{Ref, MAIN_METHOD, BinOp::*, UnOp::*, IndexMap, HashMap, LENGTH};
 use typed_arena::Arena;
 use crate::info::*;
 
@@ -25,11 +25,13 @@ struct TacGen<'a> {
     cur_lambdas: Vec<&'a Lambda<'a>>,
     // lambda stack
     alloc: &'a Arena<TacNode<'a>>,
-    tac_program: TacProgram<'a>
+    tac_program: TacProgram<'a>,
+    cur_lambda_idx: u32,
+    lambda_tacs: Vec<TacFunc<'a>>, // only for inserting lambdas
 }
 
 pub fn work<'a>(p: &'a Program<'a>, alloc: &'a Arena<TacNode<'a>>) -> TacProgram<'a> {
-    let mut tg = TacGen::new(alloc);
+    let tg = TacGen::new(alloc);
     tg.program(p)
 }
 
@@ -47,12 +49,13 @@ impl<'a> TacGen<'a> {
             class_info: Default::default(),
             cur_lambdas: vec![],
             alloc: alloc,
-            tac_program: Default::default()
+            tac_program: Default::default(),
+            cur_lambda_idx: 0,
+            lambda_tacs: Default::default(),
         }
     }
 
     fn program(mut self, p: &Program<'a>) -> TacProgram<'a> {
-        self.tac_program = Default::default();
         let main_func = p.main.get().unwrap();
         // resolve member fields of all classes, and generate constructors for them
         for (idx, &c) in p.class.iter().enumerate() {
@@ -79,6 +82,7 @@ impl<'a> TacGen<'a> {
                     }
                 }
             }
+            self.cur_lambda_idx = idx; // lambda index starts from here
             for &c in &p.class {
                 for f in &c.field {
                     if let FieldDef::FuncDef(fd) = f {
@@ -91,13 +95,15 @@ impl<'a> TacGen<'a> {
                 }
             }
         }
-
         for &c in &p.class {
             self.tac_program.vtbl.push(tac::VTbl {
                 parent: c.parent_ref.get().map(|p| self.class_info[&Ref(p)].idx),
                 class: c.name,
                 func: self.class_info[&Ref(c)].vtbl.iter().map(|(_, &f)| self.func_info[&Ref(f)].idx).collect(),
             });
+        }
+        for lambda in self.lambda_tacs { // concatenate lambda functions at last
+            self.tac_program.func.push(lambda);
         }
         self.tac_program
     }
@@ -291,7 +297,7 @@ impl<'a> TacGen<'a> {
                     }
                 }
             }
-            This(_) => Reg(0), // todo may not be Reg(0) now
+            This(_) => self.this(f),
             ReadInt(_) => Reg(self.intrinsic(_ReadInt, f).unwrap()),
             ReadLine(_) => Reg(self.intrinsic(_ReadLine, f).unwrap()),
             NewClass(n) => {
@@ -347,24 +353,85 @@ impl<'a> TacGen<'a> {
                 f.push(Label { label: ok });
                 obj
             }
-            Lambda(l) => { // todo, construct lambda functor and return
-                match self.cur_lambdas.last() {
+            Lambda(l) => {
+                // generate tac for inner lambda:
+                let lambda_tac = self.build_lambda(l);
+                self.lambda_tacs.push(lambda_tac);
+                // construct lambda functor and return
+                let num_cap = l.cap_list.borrow().len() as i32 + l.cap_this.get() as i32;
+                let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const((1 + num_cap) * INT_SIZE)] })).unwrap();
+                let fp_lambda = self.reg();
+                // store fp:
+                f.push(LoadFunc { dst: fp_lambda, f: self.cur_lambda_idx })
+                    // *(ft + 0) = fp
+                    .push(Store { src_base: [Reg(fp_lambda), Reg(ft)], off: 0, hint: MemHint::Immutable });
+                // store captured vars:
+                match self.cur_lambdas.last().cloned() { // *(ft + 4*n) = cap_n
                     None => { // normal context
+                        for (idx, rvd) in l.cap_list.borrow().iter().enumerate() {
+                            f.push(Store {
+                                src_base: [Reg(self.var_info[rvd].off), Reg(ft)],
+                                off: (1 + idx as i32) * INT_SIZE,
+                                hint: MemHint::Immutable,
+                            });
+                        };
+                        if l.cap_this.get() { // store `this` as last
+                            f.push(Store {
+                                src_base: [Reg(0), Reg(ft)],
+                                off: num_cap * INT_SIZE,
+                                hint: MemHint::Immutable,
+                            });
+                        }
                     }
-                    Some(&outer_l) => { // in a lambda context
+                    Some(outer_l) => { // in a lambda context
+                        dbg!(&outer_l.name, &l.name);
+                        let tmp = self.reg();
+                        for (idx, rvd) in l.cap_list.borrow().iter().enumerate() {
+                            dbg!(rvd.0.name);
+                            match outer_l.cap_list.borrow().get_full(rvd) {
+                                Some((outer_idx, _)) => { // a nested capture
+                                    f.push(Load { // from outer to tmp
+                                        dst: tmp,
+                                        base: [Reg(0)],
+                                        off: (1 + outer_idx as i32) * INT_SIZE,
+                                        hint: MemHint::Immutable,
+                                    }).push(Store { // from tmp to inner
+                                        src_base: [Reg(tmp), Reg(ft)],
+                                        off: (1 + idx as i32) * INT_SIZE,
+                                        hint: MemHint::Immutable,
+                                    });
+                                }
+                                None => { // a simple capture
+                                    f.push(Store {
+                                        src_base: [Reg(self.var_info[rvd].off), Reg(ft)],
+                                        off: (1 + idx as i32) * INT_SIZE,
+                                        hint: MemHint::Immutable,
+                                    });
+                                }
+                            }
+                        }
+                        if l.cap_this.get() { // store `this` as last
+                            assert!(outer_l.cap_this.get());
+                            f.push(Load { // from outer to tmp
+                                dst: tmp,
+                                base: [Reg(0)],
+                                off: (1 + outer_l.cap_list.borrow().len() as i32) * INT_SIZE,
+                                hint: MemHint::Immutable,
+                            }).push(Store {  // from tmp to inner
+                                src_base: [Reg(tmp), Reg(ft)],
+                                off: num_cap * INT_SIZE,
+                                hint: MemHint::Immutable,
+                            });
+                        }
                     }
                 }
-
-                self.cur_lambdas.push(l);
-                // generate tac for inner lambda:
-                self.build_lambda(l);
-                self.cur_lambdas.pop();
-                unimplemented!()
+                self.cur_lambda_idx += 1;       // register this newly built lambda tac
+                Reg(ft) // return the functor
             }
         }
     }
 
-    fn var_sel(&mut self, vs: &'a VarSel<'a>, assign: Option<Operand>, f: &mut TacFunc<'a>) -> Operand {
+    fn var_sel(&mut self, vs: &'a VarSel<'a>, cur_assign: Option<Operand>, f: &mut TacFunc<'a>) -> Operand {
         if let Some(o) = &vs.owner {  // arr.length()
             if vs.name == LENGTH && o.ty.get().is_arr() {
                 let arr = self.expr(o, f);
@@ -376,16 +443,37 @@ impl<'a> TacGen<'a> {
                 FieldDef::VarDef(vd) => {
                     let off = self.var_info[&Ref(vd)].off; // may be register id or offset in class
                     match vd.owner.get().unwrap_or_else(|| unreachable!()) {
-                        // todo discuss if we are now in a Lambda scope
-                        ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) => if let Some(src) = assign { // off is register
-                            f.push(Tac::Assign { dst: off, src: [src] });
-                            // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
-                            Reg(0)
-                        } else { Reg(off) }
-                        ScopeOwner::Class(_) => { // `off` is the member variable offset in the class
-                            // `this` is at argument 0
-                            let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0)); // todo this can possibly not be Reg(0)
-                            if let Some(src) = assign {
+                        // if we are now in a Lambda scope, the offset is no longer useful
+                        ScopeOwner::Local(_, _) | ScopeOwner::FuncParam(_) | ScopeOwner::LambdaParam(_) =>
+                            if let Some(src) = cur_assign { // `off` is register
+                                // impossible to assign to a captured var
+                                f.push(Tac::Assign { dst: off, src: [src] });
+                                // the return value won't be used, so just return a meaningless Reg(0), the below Reg(0)s are the same
+                                Reg(0)
+                            } else { // load or get
+                                match self.cur_lambdas.last() {
+                                    // in a lambda context, load
+                                    Some(l) =>
+                                        if let Some((idx, _)) = l.cap_list.borrow().get_full(&Ref(vd)) { // confirm a captured var
+                                            // load captured var from functor and return the reg
+                                            dbg!(&vd.name);
+                                            let dst = self.reg();
+                                            f.push(Load {
+                                                dst,
+                                                base: [Reg(0)], // Reg(0) is the functor's base addr in a lambda context
+                                                off: (1 + idx as i32) * INT_SIZE, // offset 0 reserved for ft
+                                                hint: MemHint::Immutable,
+                                            });
+                                            Reg(dst)
+                                        } else { Reg(off) } // not a captured var, get
+                                    // normal context, get
+                                    None => { Reg(off) }
+                                }
+                            }
+                        ScopeOwner::Class(_) => {
+                            let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or_else(|| self.this(f));
+                            // `off` is the member variable offset in the class
+                            if let Some(src) = cur_assign {
                                 f.push(Store { src_base: [src, owner], off: off as i32 * INT_SIZE, hint: MemHint::Obj });
                                 Reg(0)
                             } else {
@@ -394,15 +482,13 @@ impl<'a> TacGen<'a> {
                                 Reg(dst)
                             }
                         }
-                        ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope."),
-                        ScopeOwner::LambdaParam(_) => {
-                            unimplemented!()
-                        }
+                        ScopeOwner::Global(_) => unreachable!("Impossible to declare a variable in global scope.")
                     }
                 }
                 FieldDef::FuncDef(fd) => {
                     assert!(fd.class.get().is_some()); // todo erase
-                    assert!(assign.is_none()); // guaranteed by PA2
+                    assert!(cur_assign.is_none()); // guaranteed by PA2
+                    // ** recursively visit the owner
                     let owner = vs.owner.as_ref().map(|o| self.expr(o, f)).unwrap_or(Reg(0));
                     // construct a functor and return
                     // get fp to the function entry addr
@@ -426,6 +512,24 @@ impl<'a> TacGen<'a> {
             }
             None => Reg(0) // current VarSel is class name, the only possibility is trying to access a static method
             // hence, we return a meaningless Reg(0) since static method's entry won't use obj_ptr
+        }
+    }
+
+    fn this(&mut self, f: &mut TacFunc<'a>) -> Operand { // get `this` pointer
+        match self.cur_lambdas.last().cloned() {
+            Some(l) => { // in a lambda context
+                dbg!(l.cap_this.get());
+                assert!(l.cap_this.get());
+                let dst = self.reg();
+                f.push(Load { // load `this` pointer
+                    dst,
+                    base: [Reg(0)],
+                    off: 1 + l.cap_list.borrow().len() as i32,
+                    hint: MemHint::Immutable,
+                });
+                Reg(dst)
+            }
+            None => Reg(0), // normal context
         }
     }
 }
@@ -578,6 +682,7 @@ impl<'a> TacGen<'a> {
     }
 
     fn build_func_entry(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>) -> TacFunc<'a> {
+        // in the entry function, we lookup in the *VTBL* to determine where we should jump to, instead of making a static call
         let c = fd.class.get().unwrap_or_else(|| unreachable!());
         let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
         let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
@@ -614,7 +719,22 @@ impl<'a> TacGen<'a> {
     }
 
     fn build_lambda(&mut self, l: &'a Lambda<'a>) -> TacFunc<'a> {
-        // todo
-        unimplemented!()
+        // keep in mind that Reg(0) is the functor's base address
+        // add lambda params into var_info
+        let old_reg_num = self.reg_num;
+        for (idx, p) in l.params.iter().enumerate() {
+            self.var_info.insert(Ref(p), VarInfo { off: 1 + idx as u32 }); // offset 0 reserved for functor
+        }
+        self.reg_num = 1 + l.params.len() as u32;
+        let name = format!("lambda_{:?}", l.loc); // be careful not to use `@`
+        let mut lambda_tac = TacFunc::empty(self.alloc, name, self.reg_num);
+        self.cur_lambdas.push(l);
+        match &l.body {
+            LambdaKind::Block(b) => self.block(b, &mut lambda_tac), // ** recursively generate
+            LambdaKind::Expr(e, _s) => (self.expr(e, &mut lambda_tac), ()).1,
+        }
+        self.cur_lambdas.pop();
+        self.reg_num = old_reg_num; // recover reg_num so that the outer scope will function normally
+        lambda_tac
     }
 }
