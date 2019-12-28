@@ -26,16 +26,16 @@ impl Meet<u32> for Or {
 // please forgive me for making code more complex, but I really want to improve performance
 pub struct Flow<M> {
   inner: Vec<u32>,
-  // inner.len() == 4 * n * each for `n` elements each using `each` u32
+  // inner.len() == 4 * n * each for `n` elements each using `each` u32, 4 because [ use | kill | in | out ] for each bitset
   n: usize,
-  each: usize,
+  each: usize, // how many u32 to represent each bitset
   _p: std::marker::PhantomData<M>,
 }
 
 impl<M: Meet<u32>> Flow<M> {
-  // `each` is the number of BITS
+  // `each` is the number of BITS - how many elem in each bitset
   pub fn new(n: usize, each: usize) -> Flow<M> {
-    let each = bitset::traits::bslen(each);
+    let each = bitset::traits::bslen(each); // how many u32 to represent each bitset
     Flow { inner: vec![0; 4 * n * each], n, each, _p: std::marker::PhantomData }
   }
 
@@ -65,7 +65,7 @@ impl<M: Meet<u32>> Flow<M> {
       let FlowElem { gen, kill, in_, out, .. } = self.split();
       for i in 0..(n * each) {
         // I have checked output assembly, unfortunately rustc & llvm currently can NOT optimize these range checks
-        // if this project is not a course exercise, I will not hesitate at all to use unsafe here
+        // if this project is not a course exercise, I will not hesitate to use `unsafe` here
         let ox = out[i];
         out[i] = gen[i] | (in_[i] & !kill[i]);
         changed |= out[i] != ox;
@@ -75,8 +75,9 @@ impl<M: Meet<u32>> Flow<M> {
 
   pub fn get(&mut self, idx: usize) -> FlowElem {
     let each = self.each;
+    let off = idx * each;
     let FlowElem { gen, kill, in_, out } = self.split();
-    FlowElem { gen: &mut gen[idx..idx + each], kill: &mut kill[idx..idx + each], in_: &mut in_[idx..idx + each], out: &mut out[idx..idx + each] }
+    FlowElem { gen: &mut gen[off..off + each], kill: &mut kill[off..off + each], in_: &mut in_[off..off + each], out: &mut out[off..off + each] }
   }
 
   pub fn split(&mut self) -> FlowElem {

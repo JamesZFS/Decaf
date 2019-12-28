@@ -1,0 +1,3 @@
+*** Error at (53,38): incompatible operands: class B(int, int) = class C(int, int)
+*** Error at (53,59): missing return statement: control reaches end of non-void block
+*** Error at (61,39): incompatible operands: class G(int, int) = class C(int, int)

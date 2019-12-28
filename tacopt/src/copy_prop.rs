@@ -13,7 +13,7 @@ pub fn work(f: &mut FuncBB) {
           if dst == src { // just delete it, doesn't even need propagation
             b.del(t);
           } else {
-            let id = copy2id.insert_full((dst, src)).0 as u32;
+            let id = copy2id.insert_full((dst, src)).0 as u32; // returns index in the copy2id set
             reg2copy.entry(dst).or_insert_with(HashSet::new).insert(id);
             reg2copy.entry(src).or_insert_with(HashSet::new).insert(id);
           }
