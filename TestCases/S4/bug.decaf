@@ -1,0 +1,23 @@
+class Main {
+	//int[] x;
+
+	static void main() {
+        var m = new Main();
+        m.f();
+	}
+
+    void f() {
+        var x = new int[10];
+        Print(x[1],"\n");  // 引用 x[1]
+        //g(x);
+        var addx = fun() { // 捕获数组 x
+          	x[1] = 1;
+        };
+        addx();
+        Print(x[1],"\n");  // 再次引用 x[1]
+    }
+
+    void g(int[] x) {
+    	x[1] = 1;
+    }
+}

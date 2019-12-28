@@ -68,7 +68,7 @@ FUNC<main> {
     %40 = (1 && %38)
     if (%40 == 0) branch %6
     %39 = (0 + %4)
-    %41 = *(%39 + 0)
+    %11 = *(%39 + 0)
     branch %7
     %6:
     %12 = "Decaf runtime error: Array subscript out of bounds\n"
@@ -76,7 +76,7 @@ FUNC<main> {
     call _PrintString
     call _Halt
     %7:
-    parm %41
+    parm %11
     call _PrintInt
     %13 = "\n"
     parm %13
@@ -97,6 +97,7 @@ FUNC<main> {
     parm %17
     call %20
     if (%40 == 0) branch %9
+    %25 = *(%39 + 0)
     branch %10
     %9:
     %26 = "Decaf runtime error: Array subscript out of bounds\n"
@@ -104,7 +105,7 @@ FUNC<main> {
     call _PrintString
     call _Halt
     %10:
-    parm %41
+    parm %25
     call _PrintInt
     %27 = "\n"
     parm %27

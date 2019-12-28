@@ -252,9 +252,13 @@ impl<'a> TacGen<'a> {
                 f.push(Load { dst: fp_entry, base: [ft], off: 0, hint: MemHint::Immutable });
                 f.push(Param { src: [ft] });
                 for a in args { f.push(Param { src: [a] }); };
-                let hint = CallHint {
-                    arg_obj: !func_ref.is_static() || c.arg.iter().any(|a| a.ty.get().is_class()),
-                    arg_arr: c.arg.iter().any(|a| a.ty.get().arr > 0),
+                let hint = if let Some(Callable::Lambda(_)) | Some(Callable::Functor(_)) = &c.func_ref.get() { // a conservative approach
+                    CallHint { arg_obj: true, arg_arr: true }
+                } else {
+                    CallHint {
+                        arg_obj: !func_ref.is_static() || c.arg.iter().any(|a| a.ty.get().is_class()),
+                        arg_arr: c.arg.iter().any(|a| a.ty.get().arr > 0),
+                    }
                 };
                 f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(fp_entry)], hint) });
                 Reg(ret.unwrap_or(0)) // if ret is None, the result can't be assigned to others, so 0 will not be used
@@ -691,7 +695,6 @@ impl<'a> TacGen<'a> {
     fn build_func_entry(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>) -> TacFunc<'a> {
         // in the entry function, we lookup in the *VTBL* to determine where we should jump to, instead of making a static call
         let c = fd.class.get().unwrap_or_else(|| unreachable!());
-        let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
         let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
         let name = format!("{}._entry", name);
         self.reg_num = 1 + fd.param.len() as u32; // functor pointer is always present
@@ -742,11 +745,11 @@ impl<'a> TacGen<'a> {
             LambdaKind::Block(b) => {
                 self.block(b, &mut lambda_tac);
                 if l.ret_ty.get().unwrap().is_void() { lambda_tac.push(Ret { src: None }); }
-            },
+            }
             LambdaKind::Expr(e, _s) => {
                 let ret = self.expr(e, &mut lambda_tac);
                 lambda_tac.push(Ret { src: Some([ret]) });
-            },
+            }
         }
         lambda_tac.reg_num = self.reg_num;
         self.cur_lambdas.pop();
