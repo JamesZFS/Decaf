@@ -433,7 +433,7 @@ impl<'a> TacGen<'a> {
         if let Some(o) = &vs.owner {  // arr.length()
             if vs.name == LENGTH && o.ty.get().is_arr() {
                 let arr = self.expr(o, f);
-                return self.length(arr, f);
+                return self.length_func(arr, f);
             }
         }
         match vs.field.get() {
@@ -553,6 +553,13 @@ impl<'a> TacGen<'a> {
 
     // read the length of `arr` (caller should guarantee `arr` is really an array)
     fn length(&mut self, arr: Operand, f: &mut TacFunc<'a>) -> Operand {
+        let dst = self.reg();
+        f.push(Load { dst, base: [arr], off: -(INT_SIZE as i32), hint: MemHint::Immutable });
+        Reg(dst)
+    }
+
+    // make a new length functor
+    fn length_func(&mut self, arr: Operand, f: &mut TacFunc<'a>) -> Operand {
         // apply for 8 bytes of memory to store the functor
         let ft = self.intrinsic(_Alloc, f.push(Param { src: [Const(2 * INT_SIZE)] })).unwrap();
         let fp_entry = self.reg();
@@ -647,7 +654,8 @@ impl<'a> TacGen<'a> {
     }
 
     fn build_length(&mut self) -> TacFunc<'a> {
-        let mut f = TacFunc::empty(self.alloc, LENGTH.into(), 0);
+        let mut f = TacFunc::empty(self.alloc, LENGTH.into(), 2);
+        f.reg_num = 2;
         // load array len and return
         f.push(Load { dst: 1, base: [Reg(0)], off: 1 * INT_SIZE, hint: MemHint::Immutable })
             .push(Load { dst: 1, base: [Reg(1)], off: -(INT_SIZE as i32), hint: MemHint::Immutable })
@@ -669,11 +677,15 @@ impl<'a> TacGen<'a> {
         let mut f = TacFunc::empty(self.alloc, name.clone(), self.reg_num);
         if let Some(b) = &fd.body {
             self.block(b, &mut f);
-        } // for abstract method, skip tacgen for its body
-        f.reg_num = self.reg_num;
-        // add an return at the end of return-void function
-        if fd.ret_ty().is_void() { f.push(Tac::Ret { src: None }); }
-        f
+            // add an return at the end of return-void function
+            if fd.ret_ty().is_void() { f.push(Tac::Ret { src: None }); }
+            f.reg_num = self.reg_num;
+            f
+        } else { // for abstract method, skip tacgen for its body
+            f.push(Tac::Ret { src: None });
+            f.reg_num = self.reg_num;
+            f
+        }
     }
 
     fn build_func_entry(&mut self, fd: &'a FuncDef<'a>, main_func: &'a ClassDef<'a>) -> TacFunc<'a> {
@@ -682,7 +694,7 @@ impl<'a> TacGen<'a> {
         let this = if fd.static_ { 0 } else { 1 }; // Reg(0) stores `this` when in non-static method
         let name = if Ref(c) == Ref(main_func) && fd.name == MAIN_METHOD { MAIN_METHOD.into() } else { format!("_{}.{}", c.name, fd.name) };
         let name = format!("{}._entry", name);
-        self.reg_num = fd.param.len() as u32 + this;
+        self.reg_num = 1 + fd.param.len() as u32; // functor pointer is always present
         let mut f = TacFunc::empty(self.alloc, name, self.reg_num);
         let ret = if fd.ret_ty().is_void() { None } else { Some(self.reg()) };
         let hint = CallHint {
@@ -710,6 +722,7 @@ impl<'a> TacGen<'a> {
             f.push(Tac::Call { dst: ret, kind: CallKind::Virtual([Reg(fp_target)], hint) });
         }
         f.push(Ret { src: ret.map(|o| [Reg(o)]) });
+        f.reg_num = self.reg_num;
         f
     }
 
@@ -735,6 +748,7 @@ impl<'a> TacGen<'a> {
                 lambda_tac.push(Ret { src: Some([ret]) });
             },
         }
+        lambda_tac.reg_num = self.reg_num;
         self.cur_lambdas.pop();
         self.reg_num = old_reg_num; // recover reg_num so that the outer scope will function normally
         lambda_tac

@@ -58,15 +58,12 @@ pub enum AsmTemplate {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Imm {
   Int(i32),
-  // undetermined
+  // `Tag` is used as a placeholder for undecided immediate value
   Tag(u32),
 }
 
 impl AsmTemplate {
-  pub fn is_mv(&self) -> bool {
-    match self { AsmTemplate::Mv(_, _) => true, _ => false, }
-  }
-
+  // clear `r` and `w`, put all registers it reads into `r`, put all registers it writes into `w`
   pub fn rw(&self, r: &mut Vec<Reg>, w: &mut Vec<Reg>) {
     use AsmTemplate::*;
     r.clear();
@@ -134,9 +131,8 @@ impl AsmTemplate {
   // filter useless asm using some simple rules
   pub fn useless(&self) -> bool {
     match *self {
-      // it is a little inconvenient here because we already translate op into str
       AsmTemplate::BinI(op, d, l, r) if d.id() == l.id() => match op {
-        // And can only be applied to bool in decaf, so And 1 is nop, otherwise it may not be
+        // And is bitwise and, but it can only be applied to bool in decaf, so And 1 is nop
         BinOp::Add | BinOp::Sub | BinOp::Or if r == Imm::Int(0) => true,
         BinOp::Mul | BinOp::Div | BinOp::And if r == Imm::Int(1) => true,
         _ => false
@@ -169,7 +165,6 @@ impl fmt::Debug for AsmTemplate {
     match self {
       Bin(op, w1, r1, r2) => write!(f, "{} {:?}, {:?}, {:?}", bin_str(*op), w1, r1, r2),
       BinI(op, w1, r1, i) => write!(f, "{} {:?}, {:?}, {:?}", bin_str(*op), w1, r1, i),
-      // by coincidence, mips asm have uses the same words as we used previously in ast printing
       Un(op, w1, r1) => write!(f, "{} {:?}, {:?}", un_str(*op), w1, r1),
       Mv(w1, r1) => write!(f, "move {:?}, {:?}", w1, r1),
       Jal(l) => write!(f, "jal {}", l),
@@ -190,6 +185,7 @@ impl fmt::Debug for AsmTemplate {
   }
 }
 
+// we will output a lot of pseudo mips instructions, and depend on assembler or simulator to translate these pseudo instructions
 pub fn bin_str(op: BinOp) -> &'static str {
   use BinOp::*;
   match op { Add => "addu", Sub => "subu", Mul => "mul", Div => "div", Mod => "rem", And => "and", Or => "or", Eq => "seq", Ne => "sne", Lt => "slt", Le => "sle", Gt => "sgt", Ge => "sge" }

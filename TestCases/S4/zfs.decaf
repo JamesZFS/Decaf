@@ -1,0 +1,11 @@
+class Main {
+
+    static void main() {
+        int a = 1;
+        int b = a;
+        int c = a + b;
+        Print(c);
+        int d = c + a;
+        int e = d;
+    }
+}

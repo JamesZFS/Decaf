@@ -55,28 +55,27 @@ impl AllocCtx for FuncGen<'_, '_> {
           }
         }
         t.rw(&mut r, &mut w);
-        for w in w.iter().cloned().map(Reg::id) {
+        for w in w.iter().copied().map(Reg::id) {
           for l in live.bsones() {
             if Self::involved_in_alloc(w) && Self::involved_in_alloc(l) {
               allocator.add_edge(w, l);
             }
           }
         }
-        w.iter().cloned().map(Reg::id).for_each(|w| live.bsdel(w));
-        r.iter().cloned().map(Reg::id).for_each(|r| live.bsset(r));
+        w.iter().copied().map(Reg::id).for_each(|w| live.bsdel(w));
+        r.iter().copied().map(Reg::id).for_each(|r| live.bsset(r));
       }
     }
   }
 
-  // rust std's LinkedList is so hard to use...
   fn rewrite(&mut self, spilled_nodes: &HashSet<u32>) {
     for idx in 0..self.bb.len() {
       let old = std::mem::replace(&mut self.bb[idx].0, Vec::new());
       let mut new = Vec::with_capacity(old.len() * 2);
       for t in old {
         match t {
+          // if this inst is move, rewriting it can be simplified if at least one of the operands is not spilled
           AsmTemplate::Mv(w1, r1) => {
-            // if this inst is move, rewriting it can be simplified if not both operand are in memory
             let (w1, r1) = (w1.id(), r1.id());
             match (spilled_nodes.contains(&w1), spilled_nodes.contains(&r1)) {
               (true, true) => self.do_rewrite(t, spilled_nodes, &mut new),
@@ -133,7 +132,7 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
       .collect()
   }
 
-  // for all virtual register in f, inc it by REG_N before adding to self
+  // for all virtual registers in f, inc it by REG_N before adding to self
   fn populate(&mut self, f: &FuncBB<'a>) {
     let (pro, epi) = self.build_prologue_epilogue();
     self.bb = vec![(pro, [Some(1), None])];
@@ -153,6 +152,14 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
     self.bb.push((epi, [None, None]));
   }
 
+  // prologue:
+  //   1. adjust $sp to leave enough space for spilling
+  //   2. move function arguments to virtual registers representing function arguments
+  //   3. save all callee-saved registers ($sp is not included)
+  // epilogue:
+  //   1. restore all callee-saved registers ($sp is not included)
+  //   2. adjust $sp back
+  //   3. do return (jr $ra)
   fn build_prologue_epilogue(&mut self) -> (Vec<AsmTemplate>, Vec<AsmTemplate>) {
     use AsmTemplate::*;
     let (mut pro, mut epi) = (Vec::new(), Vec::new());
@@ -178,15 +185,20 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
 }
 
 impl<'a: 'b, 'b> FuncGen<'a, 'b> {
+  // 0..Self::K : physical allocable registers
+  // Self::K..REG_N : physical unallocable registers, though they are unallocable, they may still be used in some insts
+  // REG_N : virtual registers
   fn involved_in_alloc(r: u32) -> bool {
     r < Self::K /* an allocatable machine register */ || r >= REG_N /* an virtual register */
   }
 
   fn new_reg(&mut self) -> u32 { (self.reg_num, self.reg_num += 1).0 }
 
+  // find a unique slot on the stack for `vreg` to spill
+  // assume `vreg` >= REG_N, i.e., it is a legal virtual register id
   pub(crate) fn find_spill_slot(&mut self, vreg: u32) -> Imm {
     let vreg = vreg - REG_N;
-    if vreg < self.param_num.max(ARG_N) { // function arguments already have places to spill
+    if vreg < self.param_num { // function arguments already have places to spill
       Imm::Tag(vreg)
     } else {
       let new_slot = (self.spill2slot.len() as i32 + self.ch_param_num as i32) * WORD_SIZE;
@@ -211,6 +223,8 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
     }
   }
 
+  // do register spilling
+  // add memory read before inst, add memory write after inst, if necessary
   fn do_rewrite(&mut self, mut t: AsmTemplate, spilled_nodes: &HashSet<u32>, new: &mut Vec<AsmTemplate>) {
     let (mut r, w) = t.rw_mut();
     for r in r.iter_mut() {
@@ -236,8 +250,7 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
 }
 
 impl FuncGen<'_, '_> {
-  // the logic is almost the same as `aliveness.rs`
-  pub fn analyze(&self) -> Flow<Or> {
+  fn analyze(&self) -> Flow<Or> {
     let mut aliveness_flow = Flow::<Or>::new(self.bb.len(), (self.reg_num + REG_N) as usize);
     let each = aliveness_flow.each();
     let FlowElem { gen: use_, kill: def, .. } = aliveness_flow.split();
@@ -253,11 +266,11 @@ impl FuncGen<'_, '_> {
     let (mut r, mut w) = (Vec::new(), Vec::new());
     for t in b.iter().rev() {
       t.rw(&mut r, &mut w);
-      w.iter().cloned().map(Reg::id).for_each(|w| {
+      w.iter().copied().map(Reg::id).for_each(|w| {
         def.bsset(w);
         use_.bsdel(w);
       });
-      r.iter().cloned().map(Reg::id).for_each(|r| {
+      r.iter().copied().map(Reg::id).for_each(|r| {
         use_.bsset(r);
         def.bsdel(r);
       });
@@ -284,7 +297,6 @@ impl FuncGen<'_, '_> {
       }
       Tac::Un { op, dst, r } => match r[0] {
         Operand::Const(r) => b.push(Li(vreg(dst), Imm::Int(op.eval(r)))),
-        // luckily(?) the name used in printing ast is just the mips asm name
         Operand::Reg(r) => b.push(Un(op, vreg(dst), vreg(r))),
       }
       Tac::Assign { dst, src } => self.build_mv(vreg(dst), src[0], b),
@@ -332,7 +344,7 @@ impl FuncGen<'_, '_> {
     }
   }
 
-  // note that the returned reg can only be used for read(because we use ZERO to represent 0, instead of `li new_reg, 0`)
+  // the returned reg can only be used for read
   fn build_operand(&mut self, src: Operand, b: &mut Vec<AsmTemplate>) -> Reg {
     match src {
       Operand::Reg(r) => vreg(r),
@@ -351,6 +363,7 @@ impl FuncGen<'_, '_> {
     }
   }
 
+  // some intrinsic functions can be translated to syscall directly (of course it is not efficient, but it is easy to implement)
   // return true if a real function call is generated
   fn build_intrinsic(&self, i: Intrinsic, b: &mut Vec<AsmTemplate>) -> bool {
     use Intrinsic::*;
@@ -361,14 +374,14 @@ impl FuncGen<'_, '_> {
       _PrintString => b.push(AsmTemplate::SysCall(SysCall::PrintString)),
       _Halt => b.push(AsmTemplate::SysCall(SysCall::Exit)),
       _ReadLine | _StringEqual | _PrintBool => {
-        b.push(AsmTemplate::Jal(i.name().to_owned()));
+        b.push(AsmTemplate::Jal(format!("{:?}", i)));
         return true;
       }
     }
     false
   }
 
-  // epilogue is the index of epilogue bb
+  // `epilogue` is the index of epilogue bb
   // note that all jump target should inc by 1, because prologue takes index 0
   fn build_next(&mut self, idx: u32, epilogue: u32, next: NextKind, b: &mut Vec<AsmTemplate>) -> [Option<u32>; 2] {
     match next {
@@ -390,6 +403,11 @@ impl FuncGen<'_, '_> {
       }
       NextKind::Jif { cond, z, fail, jump } => {
         b.push(AsmTemplate::B(format!("{}_L{}", self.name, jump + 1), vreg(cond), z));
+        // if we don't do any optimization on cfg, then `idx + 1 == fail` will always be true
+        // because this is the situation when cfg is initially constructed
+        if idx + 1 != fail {
+          b.push(AsmTemplate::J(format!("{}_L{}", self.name, fail + 1)));
+        }
         [Some(fail + 1), Some(jump + 1)]
       }
       NextKind::Halt => {
