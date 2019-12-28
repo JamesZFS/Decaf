@@ -5,15 +5,15 @@ use tac::Operand::Reg;
 use bitset::traits::*;
 
 pub fn work(f: &mut FuncBB) {
-//    dbg!(f.reg_num, f.param_num);
     assert!(f.param_num <= f.reg_num);
     // flow through all BBs, compute LiveOut(B)s
     let mut flow_solver = Flow::<flow::Or>::new(f.bb.len(), f.reg_num as usize);
     // init bitset
     // for each BB: def, live_use, live_out =init= {}, live_in =init= live_use
     for (i, bb) in f.bb.iter().enumerate() {
-        let FlowElem { gen: luse, kill: def, in_: _lout, out: _lin } = flow_solver.get(i);
+        let FlowElem { gen: luse, kill: def, in_: _lout, out: lin } = flow_solver.get(i);
         compute_def_use(bb, def, luse);
+        lin.bsor(luse);
     }
     // solve flow equation
     flow_solver.solve(f.bb.iter().enumerate().map(|(idx, bb)| bb.next_with_entry(idx)));
