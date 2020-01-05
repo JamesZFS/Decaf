@@ -120,7 +120,7 @@ pub enum ResultKind {
 
 impl ResultKind {
   pub fn new(out: &str, ans: &str, ignore_line: usize) -> ResultKind {
-    let (mut out_lines, mut ans_lines) = (out.lines().skip(ignore_line), ans.lines().skip(ignore_line));
+    let (mut out_lines, mut ans_lines) = (out.lines().skip(ignore_line), ans.lines());
     let mut first_diff = ignore_line + 1;
     // it seems there is no builtin iter function that implement "zip and pad the shorter one"
     loop {
