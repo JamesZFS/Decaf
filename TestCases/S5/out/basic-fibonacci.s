@@ -19,539 +19,144 @@ _STRING2:
 .text
 .globl _Main._new
 _Main._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Main
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Main
+    sw $t8, 0($v0)
     _Main._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Fibonacci._new
 _Fibonacci._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Fibonacci
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Fibonacci
+    sw $t8, 0($v0)
     _Fibonacci._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl length
 length:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 40($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    lw $t2, -4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    lw $a1, 4($a0)
+    lw $a1, -4($a1)
+    move $v0, $a1
     length_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl main
 main:
-    subu $sp, $sp, 96
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    li $t2, 0
-    sw $t2, 56($sp)
+    subu $sp, $sp, 28
+    sw $s3, 16($sp)
+    sw $ra, 20($sp)
+    li $v0, 0
+    sw $v0, 24($sp)
     jal _Fibonacci._new
-    move $t2, $v0
-    sw $t2, 60($sp)
+    move $s3, $v0
     j main_L3
     main_L2:
-    la $t2, _Fibonacci.get._entry
-    sw $t2, 64($sp)
-    li $t2, 8
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
+    la $t8, _Fibonacci.get._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 72($sp)
-    lw $t0, 64($sp)
-    lw $t1, 72($sp)
-    sw $t0, 0($t1)
-    lw $t0, 60($sp)
-    lw $t1, 72($sp)
-    sw $t0, 4($t1)
-    lw $t0, 72($sp)
-    lw $t2, 0($t0)
-    sw $t2, 76($sp)
-    lw $t0, 72($sp)
-    move $a0, $t0
-    lw $t0, 56($sp)
-    move $a1, $t0
-    lw $t0, 76($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s3, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    lw $a1, 24($sp)
+    jalr $t8
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING2
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
+    la $a0, _STRING2
     li $v0, 4
     syscall
-    lw $t0, 56($sp)
-    addu $t2, $t0, 1
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    move $t2, $t0
-    sw $t2, 56($sp)
+    lw $t8, 24($sp)
+    addu $t8, $t8, 1
+    sw $t8, 24($sp)
     main_L3:
-    lw $t0, 56($sp)
-    slt $t2, $t0, 10
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    bnez $t0, main_L2
+    lw $t8, 24($sp)
+    slt $t8, $t8, 10
+    bnez $t8, main_L2
     main_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 96
+    lw $s3, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 28
     jr $ra
 
 .text
 .globl main._entry
 main._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal main
     main._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Fibonacci.get
 _Fibonacci.get:
-    subu $sp, $sp, 112
-    move $t2, $a0
-    sw $t2, 112($sp)
-    move $t2, $a1
-    sw $t2, 116($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 116($sp)
-    slt $t2, $t0, 2
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    beqz $t0, _Fibonacci.get_L3
+    subu $sp, $sp, 24
+    sw $a0, 24($sp)
+    sw $a1, 28($sp)
+    sw $fp, 16($sp)
+    sw $ra, 20($sp)
+    lw $t8, 28($sp)
+    slt $t8, $t8, 2
+    beqz $t8, _Fibonacci.get_L3
     li $v0, 1
     j _Fibonacci.get_Ret
     _Fibonacci.get_L3:
-    la $t2, _Fibonacci.get._entry
-    sw $t2, 60($sp)
-    li $t2, 8
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    la $t8, _Fibonacci.get._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 68($sp)
-    lw $t0, 60($sp)
-    lw $t1, 68($sp)
-    sw $t0, 0($t1)
-    lw $t0, 112($sp)
-    lw $t1, 68($sp)
-    sw $t0, 4($t1)
-    lw $t0, 116($sp)
-    subu $t2, $t0, 1
-    sw $t2, 72($sp)
-    lw $t0, 68($sp)
-    lw $t2, 0($t0)
-    sw $t2, 76($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    move $a1, $t0
-    lw $t0, 76($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 80($sp)
-    la $t2, _Fibonacci.get._entry
-    sw $t2, 84($sp)
-    li $t2, 8
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    lw $t8, 24($sp)
+    sw $t8, 4($v0)
+    lw $t8, 28($sp)
+    subu $a1, $t8, 1
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    move $fp, $v0
+    la $t8, _Fibonacci.get._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 92($sp)
-    lw $t0, 84($sp)
-    lw $t1, 92($sp)
-    sw $t0, 0($t1)
-    lw $t0, 112($sp)
-    lw $t1, 92($sp)
-    sw $t0, 4($t1)
-    lw $t0, 116($sp)
-    subu $t2, $t0, 2
-    sw $t2, 96($sp)
-    lw $t0, 92($sp)
-    lw $t2, 0($t0)
-    sw $t2, 100($sp)
-    lw $t0, 92($sp)
-    move $a0, $t0
-    lw $t0, 96($sp)
-    move $a1, $t0
-    lw $t0, 100($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 104($sp)
-    lw $t0, 80($sp)
-    lw $t1, 104($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 108($sp)
-    lw $t0, 108($sp)
-    move $v0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 24($sp)
+    sw $v0, 4($a0)
+    lw $v0, 28($sp)
+    subu $a1, $v0, 2
+    lw $v0, 0($a0)
+    jalr $v0
+    addu $v0, $fp, $v0
     _Fibonacci.get_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 112
+    lw $fp, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 24
     jr $ra
 
 .text
 .globl _Fibonacci.get._entry
 _Fibonacci.get._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $a1
-    sw $t2, 72($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _Fibonacci.get._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 # below are the runtime libary function for decaf

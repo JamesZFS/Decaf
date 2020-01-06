@@ -7,10 +7,6 @@ _Main:
 .data
 _STRING0:
     .asciiz "Main"
-_STRING1:
-    .asciiz "Hello THU"
-_STRING2:
-    .asciiz "\n"
 
 .text
 .globl _Main._new
@@ -35,49 +31,10 @@ length:
 .text
 .globl main
 main:
-    subu $sp, $sp, 24
-    sw $s3, 16($sp)
-    sw $ra, 20($sp)
-    la $s3, _STRING1
     li $a0, 2
     li $v0, 1
     syscall
-    la $a0, _STRING2
-    li $v0, 4
-    syscall
-    li $a0, 3
-    li $v0, 1
-    syscall
-    la $a0, _STRING2
-    li $v0, 4
-    syscall
-    li $a0, 5
-    li $v0, 1
-    syscall
-    la $a0, _STRING2
-    li $v0, 4
-    syscall
-    li $a0, 6
-    li $v0, 1
-    syscall
-    la $a0, _STRING2
-    li $v0, 4
-    syscall
-    li $a0, 1
-    jal _PrintBool
-    la $a0, _STRING2
-    li $v0, 4
-    syscall
-    move $a0, $s3
-    li $v0, 4
-    syscall
-    la $a0, _STRING2
-    li $v0, 4
-    syscall
     main_Ret:
-    lw $s3, 16($sp)
-    lw $ra, 20($sp)
-    addu $sp, $sp, 24
     jr $ra
 
 .text

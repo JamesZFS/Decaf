@@ -37,1263 +37,393 @@ _STRING8:
 .text
 .globl _Main._new
 _Main._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Main
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Main
+    sw $t8, 0($v0)
     _Main._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Rng._new
 _Rng._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 8
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Rng
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Rng
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
     _Rng._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _QuickSort._new
 _QuickSort._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _QuickSort
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _QuickSort
+    sw $t8, 0($v0)
     _QuickSort._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _MergeSort._new
 _MergeSort._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _MergeSort
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _MergeSort
+    sw $t8, 0($v0)
     _MergeSort._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl length
 length:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 40($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    lw $t2, -4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    lw $a1, 4($a0)
+    lw $a1, -4($a1)
+    move $v0, $a1
     length_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl main
 main:
-    subu $sp, $sp, 416
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    la $t2, _Rng.make._entry
-    sw $t2, 56($sp)
-    li $t2, 4
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
+    subu $sp, $sp, 36
+    sw $s0, 16($sp)
+    sw $fp, 20($sp)
+    sw $ra, 24($sp)
+    la $t8, _Rng.make._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 56($sp)
-    lw $t1, 64($sp)
-    sw $t0, 0($t1)
-    lw $t0, 64($sp)
-    lw $t2, 0($t0)
-    sw $t2, 68($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
-    li $t2, 19260817
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    move $a1, $t0
-    lw $t0, 68($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 76($sp)
-    li $t2, 2004
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 0($a0)
+    li $a1, 19260817
+    jalr $v0
+    sw $v0, 28($sp)
+    li $a0, 2004
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    addu $t2, $t0, 2004
-    sw $t2, 88($sp)
-    lw $t0, 84($sp)
-    addu $t2, $t0, 4
-    sw $t2, 84($sp)
+    move $fp, $v0
+    addu $t8, $fp, 2004
+    addu $fp, $fp, 4
     j main_L4
     main_L3:
-    lw $t0, 88($sp)
-    subu $t2, $t0, 4
-    sw $t2, 88($sp)
-    lw $t1, 88($sp)
-    sw $zero, 0($t1)
+    subu $t8, $t8, 4
+    sw $zero, 0($t8)
     main_L4:
-    lw $t0, 88($sp)
-    lw $t1, 84($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    beqz $t0, main_L3
-    li $t2, 500
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    lw $t1, 84($sp)
-    sw $t0, -4($t1)
-    li $t2, 2004
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    move $a0, $t0
+    seq $t5, $t8, $fp
+    beqz $t5, main_L3
+    li $t8, 500
+    sw $t8, -4($fp)
+    li $a0, 2004
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 104($sp)
-    lw $t0, 104($sp)
-    addu $t2, $t0, 2004
-    sw $t2, 108($sp)
-    lw $t0, 104($sp)
-    addu $t2, $t0, 4
-    sw $t2, 104($sp)
+    sw $v0, 32($sp)
+    lw $t8, 32($sp)
+    addu $t5, $t8, 2004
+    lw $t8, 32($sp)
+    addu $t8, $t8, 4
+    sw $t8, 32($sp)
     j main_L8
     main_L7:
-    lw $t0, 108($sp)
-    subu $t2, $t0, 4
-    sw $t2, 108($sp)
-    lw $t1, 108($sp)
-    sw $zero, 0($t1)
+    subu $t5, $t5, 4
+    sw $zero, 0($t5)
     main_L8:
-    lw $t0, 108($sp)
-    lw $t1, 104($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    beqz $t0, main_L7
-    li $t2, 500
-    sw $t2, 116($sp)
-    lw $t0, 116($sp)
-    lw $t1, 104($sp)
-    sw $t0, -4($t1)
-    li $t2, 0
-    sw $t2, 120($sp)
+    lw $t8, 32($sp)
+    seq $t8, $t5, $t8
+    beqz $t8, main_L7
+    li $t8, 500
+    lw $t5, 32($sp)
+    sw $t8, -4($t5)
+    li $s0, 0
     j main_L21
     main_L10:
-    la $t2, _Rng.next._entry
-    sw $t2, 124($sp)
-    li $t2, 8
-    sw $t2, 128($sp)
-    lw $t0, 128($sp)
-    move $a0, $t0
+    la $t8, _Rng.next._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 132($sp)
-    lw $t0, 124($sp)
-    lw $t1, 132($sp)
-    sw $t0, 0($t1)
-    lw $t0, 76($sp)
-    lw $t1, 132($sp)
-    sw $t0, 4($t1)
-    lw $t0, 132($sp)
-    lw $t2, 0($t0)
-    sw $t2, 136($sp)
-    lw $t0, 132($sp)
-    move $a0, $t0
-    lw $t0, 136($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 140($sp)
-    lw $t0, 140($sp)
-    rem $t2, $t0, 500
-    sw $t2, 144($sp)
-    lw $t0, 84($sp)
-    lw $t2, -4($t0)
-    sw $t2, 148($sp)
-    lw $t0, 120($sp)
-    sge $t2, $t0, 0
-    sw $t2, 152($sp)
-    lw $t0, 120($sp)
-    lw $t1, 148($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 156($sp)
-    lw $t0, 152($sp)
-    lw $t1, 156($sp)
-    and $t2, $t0, $t1
-    sw $t2, 160($sp)
-    lw $t0, 160($sp)
-    beqz $t0, main_L13
-    lw $t0, 120($sp)
-    mul $t2, $t0, 4
-    sw $t2, 164($sp)
-    lw $t0, 164($sp)
-    lw $t1, 84($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 168($sp)
-    lw $t0, 144($sp)
-    lw $t1, 168($sp)
-    sw $t0, 0($t1)
+    sw $t8, 0($v0)
+    lw $t8, 28($sp)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    rem $t8, $v0, 500
+    lw $t2, -4($fp)
+    sge $t5, $s0, 0
+    slt $t2, $s0, $t2
+    and $t2, $t5, $t2
+    beqz $t2, main_L13
+    mul $ra, $s0, 4
+    addu $a0, $ra, $fp
+    sw $t8, 0($a0)
     j main_L14
     main_L13:
-    la $t2, _STRING6
-    sw $t2, 172($sp)
-    lw $t0, 172($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     main_L14:
-    lw $t0, 160($sp)
-    beqz $t0, main_L16
-    lw $t0, 168($sp)
-    lw $t2, 0($t0)
-    sw $t2, 176($sp)
+    beqz $t2, main_L16
+    lw $t2, 0($a0)
     j main_L17
     main_L16:
-    la $t2, _STRING6
-    sw $t2, 180($sp)
-    lw $t0, 180($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     main_L17:
-    lw $t0, 104($sp)
-    lw $t2, -4($t0)
-    sw $t2, 184($sp)
-    lw $t0, 120($sp)
-    lw $t1, 184($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 188($sp)
-    lw $t0, 152($sp)
-    lw $t1, 188($sp)
-    and $t2, $t0, $t1
-    sw $t2, 192($sp)
-    lw $t0, 192($sp)
-    beqz $t0, main_L19
-    lw $t0, 164($sp)
-    lw $t1, 104($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 196($sp)
-    lw $t0, 176($sp)
-    lw $t1, 196($sp)
-    sw $t0, 0($t1)
+    lw $t8, 32($sp)
+    lw $t8, -4($t8)
+    slt $t8, $s0, $t8
+    and $t8, $t5, $t8
+    beqz $t8, main_L19
+    lw $t8, 32($sp)
+    addu $t8, $ra, $t8
+    sw $t2, 0($t8)
     j main_L20
     main_L19:
-    la $t2, _STRING6
-    sw $t2, 200($sp)
-    lw $t0, 200($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     main_L20:
-    lw $t0, 120($sp)
-    addu $t2, $t0, 1
-    sw $t2, 204($sp)
-    lw $t0, 204($sp)
-    move $t2, $t0
-    sw $t2, 120($sp)
+    addu $t8, $s0, 1
+    move $s0, $t8
     main_L21:
-    li $t2, 8
-    sw $t2, 208($sp)
-    lw $t0, 208($sp)
-    move $a0, $t0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 212($sp)
-    la $t2, length
-    sw $t2, 216($sp)
-    lw $t0, 216($sp)
-    lw $t1, 212($sp)
-    sw $t0, 0($t1)
-    lw $t0, 84($sp)
-    lw $t1, 212($sp)
-    sw $t0, 4($t1)
-    lw $t0, 212($sp)
-    lw $t2, 0($t0)
-    sw $t2, 220($sp)
-    lw $t0, 212($sp)
-    move $a0, $t0
-    lw $t0, 220($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 224($sp)
-    lw $t0, 120($sp)
-    lw $t1, 224($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 228($sp)
-    lw $t0, 228($sp)
-    bnez $t0, main_L10
-    la $t2, _QuickSort.sort._entry
-    sw $t2, 232($sp)
-    li $t2, 4
-    sw $t2, 236($sp)
-    lw $t0, 236($sp)
-    move $a0, $t0
+    move $a0, $v0
+    la $v0, length
+    sw $v0, 0($a0)
+    sw $fp, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    slt $t8, $s0, $v0
+    bnez $t8, main_L10
+    la $t8, _QuickSort.sort._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 240($sp)
-    lw $t0, 232($sp)
-    lw $t1, 240($sp)
-    sw $t0, 0($t1)
-    li $t2, 8
-    sw $t2, 244($sp)
-    lw $t0, 244($sp)
-    move $a0, $t0
+    move $s0, $v0
+    sw $t8, 0($s0)
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 248($sp)
-    la $t2, length
-    sw $t2, 252($sp)
-    lw $t0, 252($sp)
-    lw $t1, 248($sp)
-    sw $t0, 0($t1)
-    lw $t0, 84($sp)
-    lw $t1, 248($sp)
-    sw $t0, 4($t1)
-    lw $t0, 248($sp)
-    lw $t2, 0($t0)
-    sw $t2, 256($sp)
-    lw $t0, 248($sp)
-    move $a0, $t0
-    lw $t0, 256($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 260($sp)
-    lw $t0, 260($sp)
-    subu $t2, $t0, 1
-    sw $t2, 264($sp)
-    lw $t0, 240($sp)
-    lw $t2, 0($t0)
-    sw $t2, 268($sp)
-    lw $t0, 240($sp)
-    move $a0, $t0
-    lw $t0, 84($sp)
-    move $a1, $t0
+    la $t8, length
+    sw $t8, 0($v0)
+    sw $fp, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    subu $a3, $v0, 1
+    lw $v0, 0($s0)
+    move $a0, $s0
+    move $a1, $fp
     move $a2, $zero
-    lw $t0, 264($sp)
-    move $a3, $t0
-    lw $t0, 268($sp)
-    jalr $t0
-    li $t2, 0
-    sw $t2, 272($sp)
+    jalr $v0
+    li $s0, 0
     j main_L27
     main_L23:
-    lw $t0, 84($sp)
-    lw $t2, -4($t0)
-    sw $t2, 276($sp)
-    lw $t0, 272($sp)
-    sge $t2, $t0, 0
-    sw $t2, 280($sp)
-    lw $t0, 272($sp)
-    lw $t1, 276($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 284($sp)
-    lw $t0, 280($sp)
-    lw $t1, 284($sp)
-    and $t2, $t0, $t1
-    sw $t2, 280($sp)
-    lw $t0, 280($sp)
-    beqz $t0, main_L25
-    lw $t0, 272($sp)
-    mul $t2, $t0, 4
-    sw $t2, 288($sp)
-    lw $t0, 288($sp)
-    lw $t1, 84($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 288($sp)
-    lw $t0, 288($sp)
-    lw $t2, 0($t0)
-    sw $t2, 292($sp)
+    lw $t8, -4($fp)
+    sge $t5, $s0, 0
+    slt $t8, $s0, $t8
+    and $t5, $t5, $t8
+    beqz $t5, main_L25
+    mul $t8, $s0, 4
+    addu $t8, $t8, $fp
+    lw $a0, 0($t8)
     j main_L26
     main_L25:
-    la $t2, _STRING6
-    sw $t2, 296($sp)
-    lw $t0, 296($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     main_L26:
-    lw $t0, 292($sp)
-    move $a0, $t0
     li $v0, 1
     syscall
-    la $t2, _STRING7
-    sw $t2, 300($sp)
-    lw $t0, 300($sp)
-    move $a0, $t0
+    la $a0, _STRING7
     li $v0, 4
     syscall
-    lw $t0, 272($sp)
-    addu $t2, $t0, 1
-    sw $t2, 304($sp)
-    lw $t0, 304($sp)
-    move $t2, $t0
-    sw $t2, 272($sp)
+    addu $t8, $s0, 1
+    move $s0, $t8
     main_L27:
-    li $t2, 8
-    sw $t2, 308($sp)
-    lw $t0, 308($sp)
-    move $a0, $t0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 312($sp)
-    la $t2, length
-    sw $t2, 316($sp)
-    lw $t0, 316($sp)
-    lw $t1, 312($sp)
-    sw $t0, 0($t1)
-    lw $t0, 84($sp)
-    lw $t1, 312($sp)
-    sw $t0, 4($t1)
-    lw $t0, 312($sp)
-    lw $t2, 0($t0)
-    sw $t2, 320($sp)
-    lw $t0, 312($sp)
-    move $a0, $t0
-    lw $t0, 320($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 324($sp)
-    lw $t0, 272($sp)
-    lw $t1, 324($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 328($sp)
-    lw $t0, 328($sp)
-    bnez $t0, main_L23
-    la $t2, _STRING8
-    sw $t2, 332($sp)
-    lw $t0, 332($sp)
-    move $a0, $t0
+    la $t8, length
+    sw $t8, 0($v0)
+    sw $fp, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    slt $t8, $s0, $v0
+    bnez $t8, main_L23
+    la $a0, _STRING8
     li $v0, 4
     syscall
-    la $t2, _MergeSort.sort._entry
-    sw $t2, 336($sp)
-    li $t2, 4
-    sw $t2, 340($sp)
-    lw $t0, 340($sp)
-    move $a0, $t0
+    la $t8, _MergeSort.sort._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 344($sp)
-    lw $t0, 336($sp)
-    lw $t1, 344($sp)
-    sw $t0, 0($t1)
-    lw $t0, 344($sp)
-    lw $t2, 0($t0)
-    sw $t2, 348($sp)
-    lw $t0, 344($sp)
-    move $a0, $t0
-    lw $t0, 104($sp)
-    move $a1, $t0
-    lw $t0, 348($sp)
-    jalr $t0
-    li $t2, 0
-    sw $t2, 352($sp)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 0($a0)
+    lw $a1, 32($sp)
+    jalr $v0
+    li $s0, 0
     j main_L33
     main_L29:
-    lw $t0, 104($sp)
-    lw $t2, -4($t0)
-    sw $t2, 356($sp)
-    lw $t0, 352($sp)
-    sge $t2, $t0, 0
-    sw $t2, 360($sp)
-    lw $t0, 352($sp)
-    lw $t1, 356($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 364($sp)
-    lw $t0, 360($sp)
-    lw $t1, 364($sp)
-    and $t2, $t0, $t1
-    sw $t2, 360($sp)
-    lw $t0, 360($sp)
-    beqz $t0, main_L31
-    lw $t0, 352($sp)
-    mul $t2, $t0, 4
-    sw $t2, 368($sp)
-    lw $t0, 368($sp)
-    lw $t1, 104($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 368($sp)
-    lw $t0, 368($sp)
-    lw $t2, 0($t0)
-    sw $t2, 372($sp)
+    lw $t8, 32($sp)
+    lw $t8, -4($t8)
+    sge $t5, $s0, 0
+    slt $t8, $s0, $t8
+    and $t5, $t5, $t8
+    beqz $t5, main_L31
+    mul $t8, $s0, 4
+    lw $t5, 32($sp)
+    addu $t8, $t8, $t5
+    lw $a0, 0($t8)
     j main_L32
     main_L31:
-    la $t2, _STRING6
-    sw $t2, 376($sp)
-    lw $t0, 376($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     main_L32:
-    lw $t0, 372($sp)
-    move $a0, $t0
     li $v0, 1
     syscall
-    la $t2, _STRING7
-    sw $t2, 380($sp)
-    lw $t0, 380($sp)
-    move $a0, $t0
+    la $a0, _STRING7
     li $v0, 4
     syscall
-    lw $t0, 352($sp)
-    addu $t2, $t0, 1
-    sw $t2, 384($sp)
-    lw $t0, 384($sp)
-    move $t2, $t0
-    sw $t2, 352($sp)
+    addu $t8, $s0, 1
+    move $s0, $t8
     main_L33:
-    li $t2, 8
-    sw $t2, 388($sp)
-    lw $t0, 388($sp)
-    move $a0, $t0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 392($sp)
-    la $t2, length
-    sw $t2, 396($sp)
-    lw $t0, 396($sp)
-    lw $t1, 392($sp)
-    sw $t0, 0($t1)
-    lw $t0, 104($sp)
-    lw $t1, 392($sp)
-    sw $t0, 4($t1)
-    lw $t0, 392($sp)
-    lw $t2, 0($t0)
-    sw $t2, 400($sp)
-    lw $t0, 392($sp)
-    move $a0, $t0
-    lw $t0, 400($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 404($sp)
-    lw $t0, 352($sp)
-    lw $t1, 404($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 408($sp)
-    lw $t0, 408($sp)
-    bnez $t0, main_L29
-    la $t2, _STRING8
-    sw $t2, 412($sp)
-    lw $t0, 412($sp)
-    move $a0, $t0
+    la $t8, length
+    sw $t8, 0($v0)
+    lw $t8, 32($sp)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    slt $t8, $s0, $v0
+    bnez $t8, main_L29
+    la $a0, _STRING8
     li $v0, 4
     syscall
     main_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 416
+    lw $s0, 16($sp)
+    lw $fp, 20($sp)
+    lw $ra, 24($sp)
+    addu $sp, $sp, 36
     jr $ra
 
 .text
 .globl main._entry
 main._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal main
     main._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Rng.make
 _Rng.make:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $a0, 20($sp)
+    sw $ra, 16($sp)
     jal _Rng._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 60($sp)
-    lw $t1, 56($sp)
-    sw $t0, 4($t1)
-    lw $t0, 56($sp)
-    move $v0, $t0
+    lw $t8, 20($sp)
+    sw $t8, 4($v0)
     _Rng.make_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Rng.make._entry
 _Rng.make._entry:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $a1
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    move $a0, $a1
     jal _Rng.make
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $v0, $t0
     _Rng.make._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Rng.next
 _Rng.next:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    rem $t2, $t0, 10000
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    mul $t2, $t0, 15625
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    addu $t2, $t0, 22221
-    sw $t2, 52($sp)
-    lw $t0, 52($sp)
-    rem $t2, $t0, 65536
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t1, 64($sp)
-    sw $t0, 4($t1)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    move $v0, $t0
+    lw $v0, 4($a0)
+    rem $v0, $v0, 10000
+    mul $v0, $v0, 15625
+    addu $v0, $v0, 22221
+    rem $v0, $v0, 65536
+    sw $v0, 4($a0)
+    lw $v0, 4($a0)
     _Rng.next_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
     jr $ra
 
 .text
 .globl _Rng.next._entry
 _Rng.next._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _Rng.next._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _QuickSort.sort
 _QuickSort.sort:
-    subu $sp, $sp, 256
-    move $t2, $a0
-    sw $t2, 256($sp)
-    move $t2, $a1
-    sw $t2, 260($sp)
-    move $t2, $a2
-    sw $t2, 264($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 260($sp)
-    move $t2, $t0
-    sw $t2, 56($sp)
-    lw $t0, 264($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
-    lw $t0, 264($sp)
-    lw $t1, 260($sp)
-    subu $t2, $t0, $t1
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    div $t2, $t0, 2
-    sw $t2, 68($sp)
-    lw $t0, 260($sp)
-    lw $t1, 68($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 72($sp)
-    lw $t0, 256($sp)
-    lw $t2, -4($t0)
-    sw $t2, 76($sp)
-    lw $t0, 72($sp)
-    sge $t2, $t0, 0
-    sw $t2, 80($sp)
-    lw $t0, 72($sp)
-    lw $t1, 76($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 84($sp)
-    lw $t0, 80($sp)
-    lw $t1, 84($sp)
-    and $t2, $t0, $t1
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    beqz $t0, _QuickSort.sort_L4
-    lw $t0, 72($sp)
-    mul $t2, $t0, 4
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    lw $t1, 256($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    lw $t2, 0($t0)
-    sw $t2, 92($sp)
+    subu $sp, $sp, 24
+    sw $a0, 24($sp)
+    move $t8, $a1
+    sw $a2, 32($sp)
+    sw $s5, 16($sp)
+    sw $ra, 20($sp)
+    move $s5, $t8
+    lw $a3, 32($sp)
+    lw $t5, 32($sp)
+    subu $t5, $t5, $t8
+    div $t5, $t5, 2
+    addu $t5, $t8, $t5
+    lw $t2, 24($sp)
+    lw $t2, -4($t2)
+    sge $ra, $t5, 0
+    slt $a0, $t5, $t2
+    and $ra, $ra, $a0
+    beqz $ra, _QuickSort.sort_L4
+    mul $a0, $t5, 4
+    lw $t5, 24($sp)
+    addu $a0, $a0, $t5
+    lw $t7, 0($a0)
     j _QuickSort.sort_L5
     _QuickSort.sort_L4:
-    la $t2, _STRING6
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
@@ -1303,1194 +433,491 @@ _QuickSort.sort:
     _QuickSort.sort_L6:
     j _QuickSort.sort_L8
     _QuickSort.sort_L7:
-    lw $t0, 56($sp)
-    addu $t2, $t0, 1
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    move $t2, $t0
-    sw $t2, 56($sp)
+    addu $t5, $s5, 1
+    move $s5, $t5
     _QuickSort.sort_L8:
-    lw $t0, 76($sp)
-    move $t2, $t0
-    sw $t2, 104($sp)
-    lw $t0, 56($sp)
-    sge $t2, $t0, 0
-    sw $t2, 108($sp)
-    lw $t0, 56($sp)
-    lw $t1, 76($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 112($sp)
-    lw $t0, 108($sp)
-    lw $t1, 112($sp)
-    and $t2, $t0, $t1
-    sw $t2, 116($sp)
-    lw $t0, 116($sp)
-    beqz $t0, _QuickSort.sort_L10
-    lw $t0, 56($sp)
-    mul $t2, $t0, 4
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    lw $t1, 256($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 124($sp)
-    lw $t0, 124($sp)
-    lw $t2, 0($t0)
-    sw $t2, 128($sp)
+    sge $a0, $s5, 0
+    slt $t5, $s5, $t2
+    and $t5, $a0, $t5
+    beqz $t5, _QuickSort.sort_L10
+    mul $ra, $s5, 4
+    lw $t5, 24($sp)
+    addu $t4, $ra, $t5
+    lw $ra, 0($t4)
     j _QuickSort.sort_L11
     _QuickSort.sort_L10:
-    la $t2, _STRING6
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _QuickSort.sort_L11:
-    lw $t0, 128($sp)
-    lw $t1, 92($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 136($sp)
-    lw $t0, 136($sp)
-    bnez $t0, _QuickSort.sort_L7
+    slt $t5, $ra, $t7
+    bnez $t5, _QuickSort.sort_L7
     j _QuickSort.sort_L14
     _QuickSort.sort_L13:
-    lw $t0, 60($sp)
-    subu $t2, $t0, 1
-    sw $t2, 140($sp)
-    lw $t0, 140($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    subu $t5, $a3, 1
+    move $a3, $t5
     _QuickSort.sort_L14:
-    lw $t0, 104($sp)
-    move $t2, $t0
-    sw $t2, 76($sp)
-    lw $t0, 60($sp)
-    sge $t2, $t0, 0
-    sw $t2, 144($sp)
-    lw $t0, 60($sp)
-    lw $t1, 104($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 148($sp)
-    lw $t0, 144($sp)
-    lw $t1, 148($sp)
-    and $t2, $t0, $t1
-    sw $t2, 152($sp)
-    lw $t0, 152($sp)
-    beqz $t0, _QuickSort.sort_L16
-    lw $t0, 60($sp)
-    mul $t2, $t0, 4
-    sw $t2, 156($sp)
-    lw $t0, 156($sp)
-    lw $t1, 256($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 160($sp)
-    lw $t0, 160($sp)
-    lw $t2, 0($t0)
-    sw $t2, 164($sp)
+    sge $t1, $a3, 0
+    slt $t5, $a3, $t2
+    and $a2, $t1, $t5
+    beqz $a2, _QuickSort.sort_L16
+    mul $t5, $a3, 4
+    lw $t1, 24($sp)
+    addu $t9, $t5, $t1
+    lw $t1, 0($t9)
     j _QuickSort.sort_L17
     _QuickSort.sort_L16:
-    la $t2, _STRING6
-    sw $t2, 168($sp)
-    lw $t0, 168($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _QuickSort.sort_L17:
-    lw $t0, 164($sp)
-    lw $t1, 92($sp)
-    sgt $t2, $t0, $t1
-    sw $t2, 172($sp)
-    lw $t0, 172($sp)
-    bnez $t0, _QuickSort.sort_L13
-    lw $t0, 56($sp)
-    lw $t1, 60($sp)
-    sle $t2, $t0, $t1
-    sw $t2, 176($sp)
-    lw $t0, 176($sp)
-    beqz $t0, _QuickSort.sort_L32
-    lw $t0, 56($sp)
-    lw $t1, 104($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 180($sp)
-    lw $t0, 108($sp)
-    lw $t1, 180($sp)
-    and $t2, $t0, $t1
-    sw $t2, 184($sp)
-    lw $t0, 184($sp)
-    beqz $t0, _QuickSort.sort_L21
+    sgt $t5, $t1, $t7
+    bnez $t5, _QuickSort.sort_L13
+    sle $t5, $s5, $a3
+    beqz $t5, _QuickSort.sort_L32
+    slt $t5, $s5, $t2
+    and $t5, $a0, $t5
+    beqz $t5, _QuickSort.sort_L21
     j _QuickSort.sort_L22
     _QuickSort.sort_L21:
-    la $t2, _STRING6
-    sw $t2, 188($sp)
-    lw $t0, 188($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _QuickSort.sort_L22:
-    lw $t0, 152($sp)
-    beqz $t0, _QuickSort.sort_L24
+    beqz $a2, _QuickSort.sort_L24
     j _QuickSort.sort_L25
     _QuickSort.sort_L24:
-    la $t2, _STRING6
-    sw $t2, 192($sp)
-    lw $t0, 192($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _QuickSort.sort_L25:
-    lw $t0, 184($sp)
-    beqz $t0, _QuickSort.sort_L27
-    lw $t0, 164($sp)
-    lw $t1, 124($sp)
-    sw $t0, 0($t1)
+    beqz $t5, _QuickSort.sort_L27
+    sw $t1, 0($t4)
     j _QuickSort.sort_L28
     _QuickSort.sort_L27:
-    la $t2, _STRING6
-    sw $t2, 196($sp)
-    lw $t0, 196($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _QuickSort.sort_L28:
-    lw $t0, 104($sp)
-    move $t2, $t0
-    sw $t2, 76($sp)
-    lw $t0, 152($sp)
-    beqz $t0, _QuickSort.sort_L30
-    lw $t0, 128($sp)
-    lw $t1, 160($sp)
-    sw $t0, 0($t1)
+    beqz $a2, _QuickSort.sort_L30
+    sw $ra, 0($t9)
     j _QuickSort.sort_L31
     _QuickSort.sort_L30:
-    la $t2, _STRING6
-    sw $t2, 200($sp)
-    lw $t0, 200($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _QuickSort.sort_L31:
-    lw $t0, 56($sp)
-    addu $t2, $t0, 1
-    sw $t2, 204($sp)
-    lw $t0, 204($sp)
-    move $t2, $t0
-    sw $t2, 56($sp)
-    lw $t0, 60($sp)
-    subu $t2, $t0, 1
-    sw $t2, 208($sp)
-    lw $t0, 208($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    addu $t5, $s5, 1
+    move $s5, $t5
+    subu $t5, $a3, 1
+    move $a3, $t5
     _QuickSort.sort_L32:
-    lw $t0, 56($sp)
-    lw $t1, 60($sp)
-    sle $t2, $t0, $t1
-    sw $t2, 212($sp)
-    lw $t0, 212($sp)
-    bnez $t0, _QuickSort.sort_L6
-    lw $t0, 260($sp)
-    lw $t1, 60($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 216($sp)
-    lw $t0, 216($sp)
-    beqz $t0, _QuickSort.sort_L35
-    la $t2, _QuickSort.sort._entry
-    sw $t2, 220($sp)
-    li $t2, 4
-    sw $t2, 224($sp)
-    lw $t0, 224($sp)
-    move $a0, $t0
+    sle $t5, $s5, $a3
+    bnez $t5, _QuickSort.sort_L6
+    slt $t5, $t8, $a3
+    beqz $t5, _QuickSort.sort_L35
+    la $t5, _QuickSort.sort._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 228($sp)
-    lw $t0, 220($sp)
-    lw $t1, 228($sp)
-    sw $t0, 0($t1)
-    lw $t0, 228($sp)
-    lw $t2, 0($t0)
-    sw $t2, 232($sp)
-    lw $t0, 228($sp)
-    move $a0, $t0
-    lw $t0, 256($sp)
-    move $a1, $t0
-    lw $t0, 260($sp)
-    move $a2, $t0
-    lw $t0, 60($sp)
-    move $a3, $t0
-    lw $t0, 232($sp)
-    jalr $t0
+    move $a0, $v0
+    sw $t5, 0($a0)
+    lw $v0, 0($a0)
+    lw $a1, 24($sp)
+    move $a2, $t8
+    jalr $v0
     _QuickSort.sort_L35:
-    lw $t0, 56($sp)
-    lw $t1, 264($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 236($sp)
-    lw $t0, 236($sp)
-    beqz $t0, _QuickSort.sort_L37
-    la $t2, _QuickSort.sort._entry
-    sw $t2, 240($sp)
-    li $t2, 4
-    sw $t2, 244($sp)
-    lw $t0, 244($sp)
-    move $a0, $t0
+    lw $t8, 32($sp)
+    slt $t8, $s5, $t8
+    beqz $t8, _QuickSort.sort_L37
+    la $t8, _QuickSort.sort._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 248($sp)
-    lw $t0, 240($sp)
-    lw $t1, 248($sp)
-    sw $t0, 0($t1)
-    lw $t0, 248($sp)
-    lw $t2, 0($t0)
-    sw $t2, 252($sp)
-    lw $t0, 248($sp)
-    move $a0, $t0
-    lw $t0, 256($sp)
-    move $a1, $t0
-    lw $t0, 56($sp)
-    move $a2, $t0
-    lw $t0, 264($sp)
-    move $a3, $t0
-    lw $t0, 252($sp)
-    jalr $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 0($a0)
+    lw $a1, 24($sp)
+    move $a2, $s5
+    lw $a3, 32($sp)
+    jalr $v0
     _QuickSort.sort_L37:
     _QuickSort.sort_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 256
+    lw $s5, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 24
     jr $ra
 
 .text
 .globl _QuickSort.sort._entry
 _QuickSort.sort._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $a1
-    sw $t2, 60($sp)
-    move $t2, $a2
-    sw $t2, 64($sp)
-    move $t2, $a3
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
-    lw $t0, 64($sp)
-    move $a1, $t0
-    lw $t0, 68($sp)
-    move $a2, $t0
+    subu $sp, $sp, 20
+    move $a0, $a1
+    move $a1, $a2
+    move $a2, $a3
+    sw $ra, 16($sp)
     jal _QuickSort.sort
     _QuickSort.sort._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _MergeSort.sort
 _MergeSort.sort:
-    subu $sp, $sp, 132
-    move $t2, $a0
-    sw $t2, 132($sp)
-    move $t2, $s0
-    sw $t2, 20($sp)
-    move $t2, $s1
-    sw $t2, 24($sp)
-    move $t2, $s2
-    sw $t2, 28($sp)
-    move $t2, $s3
-    sw $t2, 32($sp)
-    move $t2, $s4
-    sw $t2, 36($sp)
-    move $t2, $s5
-    sw $t2, 40($sp)
-    move $t2, $s6
-    sw $t2, 44($sp)
-    move $t2, $s7
-    sw $t2, 48($sp)
-    move $t2, $fp
-    sw $t2, 52($sp)
-    move $t2, $ra
-    sw $t2, 56($sp)
-    la $t2, _MergeSort.sort_impl._entry
-    sw $t2, 60($sp)
-    li $t2, 4
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    subu $sp, $sp, 32
+    sw $a0, 32($sp)
+    sw $s4, 20($sp)
+    sw $s7, 24($sp)
+    sw $ra, 28($sp)
+    la $s4, _MergeSort.sort_impl._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 68($sp)
-    lw $t0, 60($sp)
-    lw $t1, 68($sp)
-    sw $t0, 0($t1)
-    li $t2, 8
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    move $a0, $t0
+    move $s7, $v0
+    sw $s4, 0($s7)
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 76($sp)
-    la $t2, length
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    lw $t1, 76($sp)
-    sw $t0, 0($t1)
-    lw $t0, 132($sp)
-    lw $t1, 76($sp)
-    sw $t0, 4($t1)
-    lw $t0, 76($sp)
-    lw $t2, 0($t0)
-    sw $t2, 84($sp)
-    lw $t0, 76($sp)
-    move $a0, $t0
-    lw $t0, 84($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 88($sp)
-    li $t2, 8
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    move $a0, $t0
+    move $a0, $v0
+    la $v0, length
+    sw $v0, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $s4, $v0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 96($sp)
-    la $t2, length
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    lw $t1, 96($sp)
-    sw $t0, 0($t1)
-    lw $t0, 132($sp)
-    lw $t1, 96($sp)
-    sw $t0, 4($t1)
-    lw $t0, 96($sp)
-    lw $t2, 0($t0)
-    sw $t2, 104($sp)
-    lw $t0, 96($sp)
-    move $a0, $t0
-    lw $t0, 104($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 108($sp)
-    lw $t0, 108($sp)
-    slt $t2, $t0, 0
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    beqz $t0, _MergeSort.sort_L3
-    la $t2, _STRING4
-    sw $t2, 116($sp)
-    lw $t0, 116($sp)
-    move $a0, $t0
+    move $a0, $v0
+    la $v0, length
+    sw $v0, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $t8, $v0
+    slt $t5, $t8, 0
+    beqz $t5, _MergeSort.sort_L3
+    la $a0, _STRING4
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_L3:
-    lw $t0, 108($sp)
-    mul $t2, $t0, 4
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    addu $t2, $t0, 4
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    move $a0, $t0
+    mul $a0, $t8, 4
+    addu $a0, $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 124($sp)
-    lw $t0, 124($sp)
-    lw $t1, 120($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 120($sp)
-    lw $t0, 124($sp)
-    addu $t2, $t0, 4
-    sw $t2, 124($sp)
+    addu $a0, $v0, $a0
+    addu $v0, $v0, 4
     j _MergeSort.sort_L5
     _MergeSort.sort_L4:
-    lw $t0, 120($sp)
-    subu $t2, $t0, 4
-    sw $t2, 120($sp)
-    lw $t1, 120($sp)
-    sw $zero, 0($t1)
+    subu $a0, $a0, 4
+    sw $zero, 0($a0)
     _MergeSort.sort_L5:
-    lw $t0, 120($sp)
-    lw $t1, 124($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    beqz $t0, _MergeSort.sort_L4
-    lw $t0, 108($sp)
-    lw $t1, 124($sp)
-    sw $t0, -4($t1)
-    lw $t0, 68($sp)
-    lw $t2, 0($t0)
-    sw $t2, 128($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
-    lw $t0, 132($sp)
-    move $a1, $t0
+    seq $t5, $a0, $v0
+    beqz $t5, _MergeSort.sort_L4
+    sw $t8, -4($v0)
+    lw $t8, 0($s7)
+    move $a0, $s7
+    lw $a1, 32($sp)
     move $a2, $zero
-    lw $t0, 88($sp)
-    move $a3, $t0
-    lw $t0, 124($sp)
-    sw $t0, 16($sp)
-    lw $t0, 128($sp)
-    jalr $t0
+    move $a3, $s4
+    sw $v0, 16($sp)
+    jalr $t8
     _MergeSort.sort_Ret:
-    lw $t0, 20($sp)
-    move $s0, $t0
-    lw $t0, 24($sp)
-    move $s1, $t0
-    lw $t0, 28($sp)
-    move $s2, $t0
-    lw $t0, 32($sp)
-    move $s3, $t0
-    lw $t0, 36($sp)
-    move $s4, $t0
-    lw $t0, 40($sp)
-    move $s5, $t0
-    lw $t0, 44($sp)
-    move $s6, $t0
-    lw $t0, 48($sp)
-    move $s7, $t0
-    lw $t0, 52($sp)
-    move $fp, $t0
-    lw $t0, 56($sp)
-    move $ra, $t0
-    addu $sp, $sp, 132
+    lw $s4, 20($sp)
+    lw $s7, 24($sp)
+    lw $ra, 28($sp)
+    addu $sp, $sp, 32
     jr $ra
 
 .text
 .globl _MergeSort.sort._entry
 _MergeSort.sort._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $a1
-    sw $t2, 60($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    move $a0, $a1
     jal _MergeSort.sort
     _MergeSort.sort._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _MergeSort.sort_impl
 _MergeSort.sort_impl:
-    subu $sp, $sp, 368
-    move $t2, $a0
-    sw $t2, 368($sp)
-    move $t2, $a1
-    sw $t2, 372($sp)
-    move $t2, $a2
-    sw $t2, 376($sp)
-    move $t2, $a3
-    sw $t2, 380($sp)
-    move $t2, $s0
-    sw $t2, 20($sp)
-    move $t2, $s1
-    sw $t2, 24($sp)
-    move $t2, $s2
-    sw $t2, 28($sp)
-    move $t2, $s3
-    sw $t2, 32($sp)
-    move $t2, $s4
-    sw $t2, 36($sp)
-    move $t2, $s5
-    sw $t2, 40($sp)
+    subu $sp, $sp, 28
+    sw $a0, 28($sp)
+    sw $a1, 32($sp)
+    sw $a2, 36($sp)
+    sw $a3, 40($sp)
+    sw $s6, 20($sp)
+    sw $ra, 24($sp)
+    lw $t8, 32($sp)
+    addu $t8, $t8, 1
+    lw $t5, 36($sp)
+    slt $t8, $t8, $t5
+    beqz $t8, _MergeSort.sort_impl_L45
+    lw $t5, 32($sp)
+    lw $t8, 36($sp)
+    addu $t8, $t5, $t8
+    div $s6, $t8, 2
+    la $t8, _MergeSort.sort_impl._entry
+    li $a0, 4
+    li $v0, 9
+    syscall
+    sw $t8, 0($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    lw $a1, 28($sp)
+    lw $a2, 32($sp)
+    move $a3, $s6
+    lw $v0, 40($sp)
+    sw $v0, 16($sp)
+    jalr $t8
+    la $t8, _MergeSort.sort_impl._entry
+    li $a0, 4
+    li $v0, 9
+    syscall
+    sw $t8, 0($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    lw $a1, 28($sp)
+    move $a2, $s6
+    lw $a3, 36($sp)
+    lw $v0, 40($sp)
+    sw $v0, 16($sp)
+    jalr $t8
+    lw $t5, 32($sp)
     move $t2, $s6
-    sw $t2, 44($sp)
-    move $t2, $s7
-    sw $t2, 48($sp)
-    move $t2, $fp
-    sw $t2, 52($sp)
-    move $t2, $ra
-    sw $t2, 56($sp)
-    lw $t0, 372($sp)
-    addu $t2, $t0, 1
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t1, 376($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    beqz $t0, _MergeSort.sort_impl_L45
-    lw $t0, 372($sp)
-    lw $t1, 376($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    div $t2, $t0, 2
-    sw $t2, 72($sp)
-    la $t2, _MergeSort.sort_impl._entry
-    sw $t2, 76($sp)
-    li $t2, 4
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $a0, $t0
-    li $v0, 9
-    syscall
-    move $t2, $v0
-    sw $t2, 84($sp)
-    lw $t0, 76($sp)
-    lw $t1, 84($sp)
-    sw $t0, 0($t1)
-    lw $t0, 84($sp)
-    lw $t2, 0($t0)
-    sw $t2, 88($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
-    lw $t0, 368($sp)
-    move $a1, $t0
-    lw $t0, 372($sp)
-    move $a2, $t0
-    lw $t0, 72($sp)
-    move $a3, $t0
-    lw $t0, 380($sp)
-    sw $t0, 16($sp)
-    lw $t0, 88($sp)
-    jalr $t0
-    la $t2, _MergeSort.sort_impl._entry
-    sw $t2, 92($sp)
-    li $t2, 4
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    move $a0, $t0
-    li $v0, 9
-    syscall
-    move $t2, $v0
-    sw $t2, 100($sp)
-    lw $t0, 92($sp)
-    lw $t1, 100($sp)
-    sw $t0, 0($t1)
-    lw $t0, 100($sp)
-    lw $t2, 0($t0)
-    sw $t2, 104($sp)
-    lw $t0, 100($sp)
-    move $a0, $t0
-    lw $t0, 368($sp)
-    move $a1, $t0
-    lw $t0, 72($sp)
-    move $a2, $t0
-    lw $t0, 376($sp)
-    move $a3, $t0
-    lw $t0, 380($sp)
-    sw $t0, 16($sp)
-    lw $t0, 104($sp)
-    jalr $t0
-    lw $t0, 372($sp)
-    move $t2, $t0
-    sw $t2, 108($sp)
-    lw $t0, 72($sp)
-    move $t2, $t0
-    sw $t2, 112($sp)
-    li $t2, 0
-    sw $t2, 116($sp)
+    li $t8, 0
     j _MergeSort.sort_impl_L26
     _MergeSort.sort_impl_L4:
-    lw $t0, 368($sp)
-    lw $t2, -4($t0)
-    sw $t2, 120($sp)
-    lw $t0, 112($sp)
-    sge $t2, $t0, 0
-    sw $t2, 124($sp)
-    lw $t0, 112($sp)
-    lw $t1, 120($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 128($sp)
-    lw $t0, 124($sp)
-    lw $t1, 128($sp)
-    and $t2, $t0, $t1
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    beqz $t0, _MergeSort.sort_impl_L6
-    lw $t0, 112($sp)
-    mul $t2, $t0, 4
-    sw $t2, 136($sp)
-    lw $t0, 136($sp)
-    lw $t1, 368($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 140($sp)
-    lw $t0, 140($sp)
-    lw $t2, 0($t0)
-    sw $t2, 144($sp)
+    lw $a3, 28($sp)
+    lw $a3, -4($a3)
+    sge $a0, $t2, 0
+    slt $ra, $t2, $a3
+    and $t7, $a0, $ra
+    beqz $t7, _MergeSort.sort_impl_L6
+    mul $ra, $t2, 4
+    lw $a0, 28($sp)
+    addu $a0, $ra, $a0
+    lw $a0, 0($a0)
     j _MergeSort.sort_impl_L7
     _MergeSort.sort_impl_L6:
-    la $t2, _STRING6
-    sw $t2, 148($sp)
-    lw $t0, 148($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L7:
-    lw $t0, 108($sp)
-    sge $t2, $t0, 0
-    sw $t2, 152($sp)
-    lw $t0, 108($sp)
-    lw $t1, 120($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 156($sp)
-    lw $t0, 152($sp)
-    lw $t1, 156($sp)
-    and $t2, $t0, $t1
-    sw $t2, 160($sp)
-    lw $t0, 160($sp)
-    beqz $t0, _MergeSort.sort_impl_L9
-    lw $t0, 108($sp)
-    mul $t2, $t0, 4
-    sw $t2, 164($sp)
-    lw $t0, 164($sp)
-    lw $t1, 368($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 168($sp)
-    lw $t0, 168($sp)
-    lw $t2, 0($t0)
-    sw $t2, 172($sp)
+    sge $ra, $t5, 0
+    slt $a3, $t5, $a3
+    and $a3, $ra, $a3
+    beqz $a3, _MergeSort.sort_impl_L9
+    mul $ra, $t5, 4
+    lw $t4, 28($sp)
+    addu $ra, $ra, $t4
+    lw $t4, 0($ra)
     j _MergeSort.sort_impl_L10
     _MergeSort.sort_impl_L9:
-    la $t2, _STRING6
-    sw $t2, 176($sp)
-    lw $t0, 176($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L10:
-    lw $t0, 144($sp)
-    lw $t1, 172($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 180($sp)
-    lw $t0, 180($sp)
-    beqz $t0, _MergeSort.sort_impl_L18
-    lw $t0, 132($sp)
-    beqz $t0, _MergeSort.sort_impl_L13
+    slt $ra, $a0, $t4
+    beqz $ra, _MergeSort.sort_impl_L18
+    beqz $t7, _MergeSort.sort_impl_L13
     j _MergeSort.sort_impl_L14
     _MergeSort.sort_impl_L13:
-    la $t2, _STRING6
-    sw $t2, 184($sp)
-    lw $t0, 184($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L14:
-    lw $t0, 380($sp)
-    lw $t2, -4($t0)
-    sw $t2, 188($sp)
-    lw $t0, 116($sp)
-    sge $t2, $t0, 0
-    sw $t2, 192($sp)
-    lw $t0, 116($sp)
-    lw $t1, 188($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 196($sp)
-    lw $t0, 192($sp)
-    lw $t1, 196($sp)
-    and $t2, $t0, $t1
-    sw $t2, 192($sp)
-    lw $t0, 192($sp)
-    beqz $t0, _MergeSort.sort_impl_L16
-    lw $t0, 116($sp)
-    mul $t2, $t0, 4
-    sw $t2, 200($sp)
-    lw $t0, 200($sp)
-    lw $t1, 380($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 200($sp)
-    lw $t0, 144($sp)
-    lw $t1, 200($sp)
-    sw $t0, 0($t1)
+    lw $a3, 40($sp)
+    lw $a3, -4($a3)
+    sge $ra, $t8, 0
+    slt $a3, $t8, $a3
+    and $ra, $ra, $a3
+    beqz $ra, _MergeSort.sort_impl_L16
+    mul $ra, $t8, 4
+    lw $a3, 40($sp)
+    addu $ra, $ra, $a3
+    sw $a0, 0($ra)
     j _MergeSort.sort_impl_L17
     _MergeSort.sort_impl_L16:
-    la $t2, _STRING6
-    sw $t2, 204($sp)
-    lw $t0, 204($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L17:
-    lw $t0, 112($sp)
-    addu $t2, $t0, 1
-    sw $t2, 208($sp)
-    lw $t0, 208($sp)
-    move $t2, $t0
-    sw $t2, 112($sp)
+    addu $t2, $t2, 1
     j _MergeSort.sort_impl_L25
     _MergeSort.sort_impl_L18:
-    lw $t0, 160($sp)
-    beqz $t0, _MergeSort.sort_impl_L20
+    beqz $a3, _MergeSort.sort_impl_L20
     j _MergeSort.sort_impl_L21
     _MergeSort.sort_impl_L20:
-    la $t2, _STRING6
-    sw $t2, 212($sp)
-    lw $t0, 212($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L21:
-    lw $t0, 380($sp)
-    lw $t2, -4($t0)
-    sw $t2, 216($sp)
-    lw $t0, 116($sp)
-    sge $t2, $t0, 0
-    sw $t2, 220($sp)
-    lw $t0, 116($sp)
-    lw $t1, 216($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 224($sp)
-    lw $t0, 220($sp)
-    lw $t1, 224($sp)
-    and $t2, $t0, $t1
-    sw $t2, 220($sp)
-    lw $t0, 220($sp)
-    beqz $t0, _MergeSort.sort_impl_L23
-    lw $t0, 116($sp)
-    mul $t2, $t0, 4
-    sw $t2, 228($sp)
-    lw $t0, 228($sp)
-    lw $t1, 380($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 228($sp)
-    lw $t0, 172($sp)
-    lw $t1, 228($sp)
-    sw $t0, 0($t1)
+    lw $a3, 40($sp)
+    lw $a3, -4($a3)
+    sge $a0, $t8, 0
+    slt $a3, $t8, $a3
+    and $a0, $a0, $a3
+    beqz $a0, _MergeSort.sort_impl_L23
+    mul $a0, $t8, 4
+    lw $a3, 40($sp)
+    addu $a0, $a0, $a3
+    sw $t4, 0($a0)
     j _MergeSort.sort_impl_L24
     _MergeSort.sort_impl_L23:
-    la $t2, _STRING6
-    sw $t2, 232($sp)
-    lw $t0, 232($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L24:
-    lw $t0, 108($sp)
-    addu $t2, $t0, 1
-    sw $t2, 236($sp)
-    lw $t0, 236($sp)
-    move $t2, $t0
-    sw $t2, 108($sp)
+    addu $t5, $t5, 1
     _MergeSort.sort_impl_L25:
-    lw $t0, 116($sp)
-    addu $t2, $t0, 1
-    sw $t2, 240($sp)
-    lw $t0, 240($sp)
-    move $t2, $t0
-    sw $t2, 116($sp)
+    addu $t8, $t8, 1
     _MergeSort.sort_impl_L26:
-    lw $t0, 108($sp)
-    lw $t1, 72($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 244($sp)
-    lw $t0, 112($sp)
-    lw $t1, 376($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 248($sp)
-    lw $t0, 244($sp)
-    lw $t1, 248($sp)
-    and $t2, $t0, $t1
-    sw $t2, 252($sp)
-    lw $t0, 252($sp)
-    bnez $t0, _MergeSort.sort_impl_L4
+    slt $a0, $t5, $s6
+    lw $a3, 36($sp)
+    slt $a3, $t2, $a3
+    and $a3, $a0, $a3
+    bnez $a3, _MergeSort.sort_impl_L4
     j _MergeSort.sort_impl_L35
     _MergeSort.sort_impl_L28:
-    lw $t0, 368($sp)
-    lw $t2, -4($t0)
-    sw $t2, 256($sp)
-    lw $t0, 108($sp)
-    sge $t2, $t0, 0
-    sw $t2, 260($sp)
-    lw $t0, 108($sp)
-    lw $t1, 256($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 264($sp)
-    lw $t0, 260($sp)
-    lw $t1, 264($sp)
-    and $t2, $t0, $t1
-    sw $t2, 260($sp)
-    lw $t0, 260($sp)
-    beqz $t0, _MergeSort.sort_impl_L30
-    lw $t0, 108($sp)
-    mul $t2, $t0, 4
-    sw $t2, 268($sp)
-    lw $t0, 268($sp)
-    lw $t1, 368($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 268($sp)
-    lw $t0, 268($sp)
-    lw $t2, 0($t0)
-    sw $t2, 272($sp)
+    lw $t2, 28($sp)
+    lw $t2, -4($t2)
+    sge $a3, $t5, 0
+    slt $t2, $t5, $t2
+    and $a3, $a3, $t2
+    beqz $a3, _MergeSort.sort_impl_L30
+    mul $a3, $t5, 4
+    lw $t2, 28($sp)
+    addu $a3, $a3, $t2
+    lw $a3, 0($a3)
     j _MergeSort.sort_impl_L31
     _MergeSort.sort_impl_L30:
-    la $t2, _STRING6
-    sw $t2, 276($sp)
-    lw $t0, 276($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L31:
-    lw $t0, 380($sp)
-    lw $t2, -4($t0)
-    sw $t2, 280($sp)
-    lw $t0, 116($sp)
-    sge $t2, $t0, 0
-    sw $t2, 284($sp)
-    lw $t0, 116($sp)
-    lw $t1, 280($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 288($sp)
-    lw $t0, 284($sp)
-    lw $t1, 288($sp)
-    and $t2, $t0, $t1
-    sw $t2, 284($sp)
-    lw $t0, 284($sp)
-    beqz $t0, _MergeSort.sort_impl_L33
-    lw $t0, 116($sp)
-    mul $t2, $t0, 4
-    sw $t2, 292($sp)
-    lw $t0, 292($sp)
-    lw $t1, 380($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 292($sp)
-    lw $t0, 272($sp)
-    lw $t1, 292($sp)
-    sw $t0, 0($t1)
+    lw $t2, 40($sp)
+    lw $t2, -4($t2)
+    sge $a0, $t8, 0
+    slt $t2, $t8, $t2
+    and $a0, $a0, $t2
+    beqz $a0, _MergeSort.sort_impl_L33
+    mul $t2, $t8, 4
+    lw $a0, 40($sp)
+    addu $t2, $t2, $a0
+    sw $a3, 0($t2)
     j _MergeSort.sort_impl_L34
     _MergeSort.sort_impl_L33:
-    la $t2, _STRING6
-    sw $t2, 296($sp)
-    lw $t0, 296($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L34:
-    lw $t0, 116($sp)
-    addu $t2, $t0, 1
-    sw $t2, 300($sp)
-    lw $t0, 300($sp)
-    move $t2, $t0
-    sw $t2, 116($sp)
-    lw $t0, 108($sp)
-    addu $t2, $t0, 1
-    sw $t2, 304($sp)
-    lw $t0, 304($sp)
-    move $t2, $t0
-    sw $t2, 108($sp)
+    addu $t8, $t8, 1
+    addu $t5, $t5, 1
     _MergeSort.sort_impl_L35:
-    lw $t0, 108($sp)
-    lw $t1, 72($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 308($sp)
-    lw $t0, 308($sp)
-    bnez $t0, _MergeSort.sort_impl_L28
-    li $t2, 0
-    sw $t2, 108($sp)
+    slt $t2, $t5, $s6
+    bnez $t2, _MergeSort.sort_impl_L28
+    li $t5, 0
     j _MergeSort.sort_impl_L44
     _MergeSort.sort_impl_L37:
-    lw $t0, 380($sp)
-    lw $t2, -4($t0)
-    sw $t2, 312($sp)
-    lw $t0, 108($sp)
-    sge $t2, $t0, 0
-    sw $t2, 316($sp)
-    lw $t0, 108($sp)
-    lw $t1, 312($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 320($sp)
-    lw $t0, 316($sp)
-    lw $t1, 320($sp)
-    and $t2, $t0, $t1
-    sw $t2, 316($sp)
-    lw $t0, 316($sp)
-    beqz $t0, _MergeSort.sort_impl_L39
-    lw $t0, 108($sp)
-    mul $t2, $t0, 4
-    sw $t2, 324($sp)
-    lw $t0, 324($sp)
-    lw $t1, 380($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 324($sp)
-    lw $t0, 324($sp)
-    lw $t2, 0($t0)
-    sw $t2, 328($sp)
+    lw $t2, 40($sp)
+    lw $t2, -4($t2)
+    sge $a3, $t5, 0
+    slt $t2, $t5, $t2
+    and $a3, $a3, $t2
+    beqz $a3, _MergeSort.sort_impl_L39
+    mul $a3, $t5, 4
+    lw $t2, 40($sp)
+    addu $a3, $a3, $t2
+    lw $ra, 0($a3)
     j _MergeSort.sort_impl_L40
     _MergeSort.sort_impl_L39:
-    la $t2, _STRING6
-    sw $t2, 332($sp)
-    lw $t0, 332($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L40:
-    lw $t0, 108($sp)
-    lw $t1, 372($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 336($sp)
-    lw $t0, 368($sp)
-    lw $t2, -4($t0)
-    sw $t2, 340($sp)
-    lw $t0, 336($sp)
-    sge $t2, $t0, 0
-    sw $t2, 344($sp)
-    lw $t0, 336($sp)
-    lw $t1, 340($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 348($sp)
-    lw $t0, 344($sp)
-    lw $t1, 348($sp)
-    and $t2, $t0, $t1
-    sw $t2, 344($sp)
-    lw $t0, 344($sp)
-    beqz $t0, _MergeSort.sort_impl_L42
-    lw $t0, 336($sp)
-    mul $t2, $t0, 4
-    sw $t2, 352($sp)
-    lw $t0, 352($sp)
-    lw $t1, 368($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 352($sp)
-    lw $t0, 328($sp)
-    lw $t1, 352($sp)
-    sw $t0, 0($t1)
+    lw $t2, 32($sp)
+    addu $a0, $t5, $t2
+    lw $t2, 28($sp)
+    lw $t2, -4($t2)
+    sge $a3, $a0, 0
+    slt $t2, $a0, $t2
+    and $a3, $a3, $t2
+    beqz $a3, _MergeSort.sort_impl_L42
+    mul $a3, $a0, 4
+    lw $t2, 28($sp)
+    addu $a3, $a3, $t2
+    sw $ra, 0($a3)
     j _MergeSort.sort_impl_L43
     _MergeSort.sort_impl_L42:
-    la $t2, _STRING6
-    sw $t2, 356($sp)
-    lw $t0, 356($sp)
-    move $a0, $t0
+    la $a0, _STRING6
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _MergeSort.sort_impl_L43:
-    lw $t0, 108($sp)
-    addu $t2, $t0, 1
-    sw $t2, 360($sp)
-    lw $t0, 360($sp)
-    move $t2, $t0
-    sw $t2, 108($sp)
+    addu $t5, $t5, 1
     _MergeSort.sort_impl_L44:
-    lw $t0, 108($sp)
-    lw $t1, 116($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 364($sp)
-    lw $t0, 364($sp)
-    bnez $t0, _MergeSort.sort_impl_L37
+    slt $t2, $t5, $t8
+    bnez $t2, _MergeSort.sort_impl_L37
     _MergeSort.sort_impl_L45:
     _MergeSort.sort_impl_Ret:
-    lw $t0, 20($sp)
-    move $s0, $t0
-    lw $t0, 24($sp)
-    move $s1, $t0
-    lw $t0, 28($sp)
-    move $s2, $t0
-    lw $t0, 32($sp)
-    move $s3, $t0
-    lw $t0, 36($sp)
-    move $s4, $t0
-    lw $t0, 40($sp)
-    move $s5, $t0
-    lw $t0, 44($sp)
-    move $s6, $t0
-    lw $t0, 48($sp)
-    move $s7, $t0
-    lw $t0, 52($sp)
-    move $fp, $t0
-    lw $t0, 56($sp)
-    move $ra, $t0
-    addu $sp, $sp, 368
+    lw $s6, 20($sp)
+    lw $ra, 24($sp)
+    addu $sp, $sp, 28
     jr $ra
 
 .text
 .globl _MergeSort.sort_impl._entry
 _MergeSort.sort_impl._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $a1
-    sw $t2, 60($sp)
-    move $t2, $a2
-    sw $t2, 64($sp)
-    move $t2, $a3
-    sw $t2, 68($sp)
-    lw $t2, 72($sp)
-    sw $t2, 72($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
-    lw $t0, 64($sp)
-    move $a1, $t0
-    lw $t0, 68($sp)
-    move $a2, $t0
-    lw $t0, 72($sp)
-    move $a3, $t0
+    subu $sp, $sp, 20
+    move $a0, $a1
+    move $a1, $a2
+    move $a2, $a3
+    lw $a3, 36($sp)
+    sw $ra, 16($sp)
     jal _MergeSort.sort_impl
     _MergeSort.sort_impl._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 # below are the runtime libary function for decaf

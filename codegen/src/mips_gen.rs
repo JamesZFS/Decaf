@@ -97,6 +97,7 @@ impl AllocCtx for FuncGen<'_, '_> {
     }
   }
 
+  // iterate all virtual regs in the bb and allocate physical regs for them with result list
   fn finish(&mut self, result: &[Node]) {
     for (b, _) in &mut self.bb {
       for t in b {

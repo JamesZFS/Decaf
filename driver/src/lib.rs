@@ -61,7 +61,7 @@ pub fn compile<'a>(code: &'a str, alloc: &'a Alloc<'a>, cfg: CompileCfg) -> Resu
     let mut fu = FuncBB::new(f);
     fu.optimizen(10);
     if cfg.stage == Stage::Asm {
-      let asm = FuncGen::work(&fu, &tp, codegen::AllocMethod::Brute);
+      let asm = FuncGen::work(&fu, &tp, codegen::AllocMethod::Graph);
       print::mips::func(&asm, &f.name, &mut p);
     } else { // cfg.stage == Stage::TacOpt
       new_funcs.push(fu.to_tac_func());

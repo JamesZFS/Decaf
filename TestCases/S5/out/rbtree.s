@@ -39,3221 +39,975 @@ _STRING5:
 .text
 .globl _Main._new
 _Main._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Main
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Main
+    sw $t8, 0($v0)
     _Main._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Rng._new
 _Rng._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 8
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Rng
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Rng
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
     _Rng._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Node._new
 _Node._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 24
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 24
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Node
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t1, 44($sp)
-    sw $zero, 8($t1)
-    lw $t1, 44($sp)
-    sw $zero, 12($t1)
-    lw $t1, 44($sp)
-    sw $zero, 16($t1)
-    lw $t1, 44($sp)
-    sw $zero, 20($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Node
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
+    sw $zero, 8($v0)
+    sw $zero, 12($v0)
+    sw $zero, 16($v0)
+    sw $zero, 20($v0)
     _Node._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _RBTree._new
 _RBTree._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 32
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 32
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _RBTree
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t1, 44($sp)
-    sw $zero, 8($t1)
-    lw $t1, 44($sp)
-    sw $zero, 12($t1)
-    lw $t1, 44($sp)
-    sw $zero, 16($t1)
-    lw $t1, 44($sp)
-    sw $zero, 20($t1)
-    lw $t1, 44($sp)
-    sw $zero, 24($t1)
-    lw $t1, 44($sp)
-    sw $zero, 28($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _RBTree
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
+    sw $zero, 8($v0)
+    sw $zero, 12($v0)
+    sw $zero, 16($v0)
+    sw $zero, 20($v0)
+    sw $zero, 24($v0)
+    sw $zero, 28($v0)
     _RBTree._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl length
 length:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 40($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    lw $t2, -4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    lw $a1, 4($a0)
+    lw $a1, -4($a1)
+    move $v0, $a1
     length_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl main
 main:
-    subu $sp, $sp, 232
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    la $t2, _Rng.make._entry
-    sw $t2, 56($sp)
-    li $t2, 4
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
+    subu $sp, $sp, 44
+    sw $s1, 16($sp)
+    sw $s4, 20($sp)
+    sw $s7, 24($sp)
+    sw $ra, 28($sp)
+    la $s7, _Rng.make._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 56($sp)
-    lw $t1, 64($sp)
-    sw $t0, 0($t1)
-    lw $t0, 64($sp)
-    lw $t2, 0($t0)
-    sw $t2, 68($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
-    li $t2, 19260817
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    move $a1, $t0
-    lw $t0, 68($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 76($sp)
-    la $t2, _RBTree.make1._entry
-    sw $t2, 80($sp)
-    li $t2, 4
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
+    sw $s7, 0($v0)
+    lw $s7, 0($v0)
+    move $a0, $v0
+    li $a1, 19260817
+    jalr $s7
+    move $s1, $v0
+    la $s7, _RBTree.make1._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 88($sp)
-    lw $t0, 80($sp)
-    lw $t1, 88($sp)
-    sw $t0, 0($t1)
-    lw $t0, 88($sp)
-    lw $t2, 0($t0)
-    sw $t2, 92($sp)
-    lw $t0, 88($sp)
-    move $a0, $t0
-    lw $t0, 92($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 96($sp)
-    li $t2, 0
-    sw $t2, 100($sp)
+    move $a0, $v0
+    sw $s7, 0($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    sw $v0, 32($sp)
+    li $s4, 0
     j main_L11
     main_L2:
-    li $t2, 0
-    sw $t2, 104($sp)
+    li $s7, 0
+    sw $s7, 36($sp)
     j main_L5
     main_L3:
-    la $t2, _RBTree.insert._entry
-    sw $t2, 108($sp)
-    li $t2, 8
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    move $a0, $t0
+    la $t8, _RBTree.insert._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 116($sp)
-    lw $t0, 108($sp)
-    lw $t1, 116($sp)
-    sw $t0, 0($t1)
-    lw $t0, 96($sp)
-    lw $t1, 116($sp)
-    sw $t0, 4($t1)
-    la $t2, _Rng.next._entry
-    sw $t2, 120($sp)
-    li $t2, 8
-    sw $t2, 124($sp)
-    lw $t0, 124($sp)
-    move $a0, $t0
+    move $s7, $v0
+    sw $t8, 0($s7)
+    lw $t8, 32($sp)
+    sw $t8, 4($s7)
+    la $t8, _Rng.next._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 128($sp)
-    lw $t0, 120($sp)
-    lw $t1, 128($sp)
-    sw $t0, 0($t1)
-    lw $t0, 76($sp)
-    lw $t1, 128($sp)
-    sw $t0, 4($t1)
-    lw $t0, 128($sp)
-    lw $t2, 0($t0)
-    sw $t2, 132($sp)
-    lw $t0, 128($sp)
-    move $a0, $t0
-    lw $t0, 132($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 136($sp)
-    lw $t0, 136($sp)
-    rem $t2, $t0, 500
-    sw $t2, 140($sp)
-    lw $t0, 116($sp)
-    lw $t2, 0($t0)
-    sw $t2, 144($sp)
-    lw $t0, 116($sp)
-    move $a0, $t0
-    lw $t0, 140($sp)
-    move $a1, $t0
-    lw $t0, 144($sp)
-    jalr $t0
-    lw $t0, 104($sp)
-    addu $t2, $t0, 1
-    sw $t2, 148($sp)
-    lw $t0, 148($sp)
-    move $t2, $t0
-    sw $t2, 104($sp)
+    sw $t8, 0($v0)
+    sw $s1, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    rem $a1, $v0, 500
+    lw $v0, 0($s7)
+    move $a0, $s7
+    jalr $v0
+    lw $s7, 36($sp)
+    addu $s7, $s7, 1
+    sw $s7, 36($sp)
     main_L5:
-    lw $t0, 104($sp)
-    slt $t2, $t0, 500
-    sw $t2, 152($sp)
-    lw $t0, 152($sp)
-    bnez $t0, main_L3
-    li $t2, 0
-    sw $t2, 156($sp)
+    lw $s7, 36($sp)
+    slt $s7, $s7, 500
+    bnez $s7, main_L3
+    li $s7, 0
     j main_L9
     main_L7:
-    la $t2, _RBTree.delete._entry
-    sw $t2, 160($sp)
-    li $t2, 8
-    sw $t2, 164($sp)
-    lw $t0, 164($sp)
-    move $a0, $t0
+    la $t8, _RBTree.delete._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 168($sp)
-    lw $t0, 160($sp)
-    lw $t1, 168($sp)
-    sw $t0, 0($t1)
-    lw $t0, 96($sp)
-    lw $t1, 168($sp)
-    sw $t0, 4($t1)
-    la $t2, _Rng.next._entry
-    sw $t2, 172($sp)
-    li $t2, 8
-    sw $t2, 176($sp)
-    lw $t0, 176($sp)
-    move $a0, $t0
+    sw $v0, 40($sp)
+    lw $t5, 40($sp)
+    sw $t8, 0($t5)
+    lw $t8, 32($sp)
+    lw $t5, 40($sp)
+    sw $t8, 4($t5)
+    la $t8, _Rng.next._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 180($sp)
-    lw $t0, 172($sp)
-    lw $t1, 180($sp)
-    sw $t0, 0($t1)
-    lw $t0, 76($sp)
-    lw $t1, 180($sp)
-    sw $t0, 4($t1)
-    lw $t0, 180($sp)
-    lw $t2, 0($t0)
-    sw $t2, 184($sp)
-    lw $t0, 180($sp)
-    move $a0, $t0
-    lw $t0, 184($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 188($sp)
-    lw $t0, 188($sp)
-    rem $t2, $t0, 500
-    sw $t2, 192($sp)
-    lw $t0, 168($sp)
-    lw $t2, 0($t0)
-    sw $t2, 196($sp)
-    lw $t0, 168($sp)
-    move $a0, $t0
-    lw $t0, 192($sp)
-    move $a1, $t0
-    lw $t0, 196($sp)
-    jalr $t0
-    lw $t0, 156($sp)
-    addu $t2, $t0, 1
-    sw $t2, 200($sp)
-    lw $t0, 200($sp)
-    move $t2, $t0
-    sw $t2, 156($sp)
+    sw $t8, 0($v0)
+    sw $s1, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    rem $a1, $v0, 500
+    lw $v0, 40($sp)
+    lw $v0, 0($v0)
+    lw $a0, 40($sp)
+    jalr $v0
+    addu $s7, $s7, 1
     main_L9:
-    lw $t0, 156($sp)
-    slt $t2, $t0, 500
-    sw $t2, 204($sp)
-    lw $t0, 204($sp)
-    bnez $t0, main_L7
-    lw $t0, 100($sp)
-    addu $t2, $t0, 1
-    sw $t2, 208($sp)
-    lw $t0, 208($sp)
-    move $t2, $t0
-    sw $t2, 100($sp)
+    slt $t8, $s7, 500
+    bnez $t8, main_L7
+    addu $s7, $s4, 1
+    move $s4, $s7
     main_L11:
-    lw $t0, 100($sp)
-    slt $t2, $t0, 5
-    sw $t2, 212($sp)
-    lw $t0, 212($sp)
-    bnez $t0, main_L2
-    la $t2, _RBTree.print._entry
-    sw $t2, 216($sp)
-    li $t2, 8
-    sw $t2, 220($sp)
-    lw $t0, 220($sp)
-    move $a0, $t0
+    slt $s7, $s4, 5
+    bnez $s7, main_L2
+    la $s7, _RBTree.print._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 224($sp)
-    lw $t0, 216($sp)
-    lw $t1, 224($sp)
-    sw $t0, 0($t1)
-    lw $t0, 96($sp)
-    lw $t1, 224($sp)
-    sw $t0, 4($t1)
-    lw $t0, 224($sp)
-    lw $t2, 0($t0)
-    sw $t2, 228($sp)
-    lw $t0, 224($sp)
-    move $a0, $t0
-    lw $t0, 228($sp)
-    jalr $t0
+    move $a0, $v0
+    sw $s7, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
     main_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 232
+    lw $s1, 16($sp)
+    lw $s4, 20($sp)
+    lw $s7, 24($sp)
+    lw $ra, 28($sp)
+    addu $sp, $sp, 44
     jr $ra
 
 .text
 .globl main._entry
 main._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal main
     main._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Rng.make
 _Rng.make:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $a0, 20($sp)
+    sw $ra, 16($sp)
     jal _Rng._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 60($sp)
-    lw $t1, 56($sp)
-    sw $t0, 4($t1)
-    lw $t0, 56($sp)
-    move $v0, $t0
+    lw $t8, 20($sp)
+    sw $t8, 4($v0)
     _Rng.make_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Rng.make._entry
 _Rng.make._entry:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $a1
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    move $a0, $a1
     jal _Rng.make
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $v0, $t0
     _Rng.make._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Rng.next
 _Rng.next:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    rem $t2, $t0, 10000
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    mul $t2, $t0, 15625
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    addu $t2, $t0, 22221
-    sw $t2, 52($sp)
-    lw $t0, 52($sp)
-    rem $t2, $t0, 65536
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t1, 64($sp)
-    sw $t0, 4($t1)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    move $v0, $t0
+    lw $v0, 4($a0)
+    rem $v0, $v0, 10000
+    mul $v0, $v0, 15625
+    addu $v0, $v0, 22221
+    rem $v0, $v0, 65536
+    sw $v0, 4($a0)
+    lw $v0, 4($a0)
     _Rng.next_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
     jr $ra
 
 .text
 .globl _Rng.next._entry
 _Rng.next._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _Rng.next._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Node.make
 _Node.make:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $a2
-    sw $t2, 72($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $a0, 20($sp)
+    sw $a1, 24($sp)
+    sw $a2, 28($sp)
+    sw $ra, 16($sp)
     jal _Node._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 72($sp)
-    lw $t1, 56($sp)
-    sw $t0, 4($t1)
-    lw $t0, 64($sp)
-    lw $t1, 56($sp)
-    sw $t0, 16($t1)
-    lw $t0, 68($sp)
-    lw $t1, 56($sp)
-    sw $t0, 8($t1)
-    lw $t0, 68($sp)
-    lw $t1, 56($sp)
-    sw $t0, 12($t1)
-    li $t2, 1
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t1, 56($sp)
-    sw $t0, 20($t1)
-    lw $t0, 56($sp)
-    move $v0, $t0
+    lw $t8, 28($sp)
+    sw $t8, 4($v0)
+    lw $t8, 20($sp)
+    sw $t8, 16($v0)
+    lw $t8, 24($sp)
+    sw $t8, 8($v0)
+    lw $t8, 24($sp)
+    sw $t8, 12($v0)
+    li $t8, 1
+    sw $t8, 20($v0)
     _Node.make_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Node.make._entry
 _Node.make._entry:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $a1
-    sw $t2, 64($sp)
-    move $t2, $a2
-    sw $t2, 68($sp)
-    move $t2, $a3
-    sw $t2, 72($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 72($sp)
-    move $a2, $t0
+    subu $sp, $sp, 20
+    move $a0, $a1
+    move $a1, $a2
+    move $a2, $a3
+    sw $ra, 16($sp)
     jal _Node.make
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $v0, $t0
     _Node.make._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.make1
 _RBTree.make1:
-    subu $sp, $sp, 64
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 24
+    sw $s6, 16($sp)
+    sw $ra, 20($sp)
     jal _RBTree._new
-    move $t2, $v0
-    sw $t2, 56($sp)
+    move $s6, $v0
     jal _Node._new
-    move $t2, $v0
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t1, 60($sp)
-    sw $t0, 16($t1)
-    lw $t0, 60($sp)
-    lw $t1, 60($sp)
-    sw $t0, 8($t1)
-    lw $t0, 60($sp)
-    lw $t1, 60($sp)
-    sw $t0, 12($t1)
-    lw $t0, 60($sp)
-    lw $t1, 56($sp)
-    sw $t0, 24($t1)
-    lw $t0, 60($sp)
-    lw $t1, 56($sp)
-    sw $t0, 28($t1)
-    lw $t0, 56($sp)
-    move $v0, $t0
+    sw $v0, 16($v0)
+    sw $v0, 8($v0)
+    sw $v0, 12($v0)
+    sw $v0, 24($s6)
+    sw $v0, 28($s6)
+    move $v0, $s6
     _RBTree.make1_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $s6, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 24
     jr $ra
 
 .text
 .globl _RBTree.make1._entry
 _RBTree.make1._entry:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal _RBTree.make1
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $v0, $t0
     _RBTree.make1._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.transplant
 _RBTree.transplant:
-    subu $sp, $sp, 60
-    move $t2, $a0
-    sw $t2, 60($sp)
-    move $t2, $a1
-    sw $t2, 64($sp)
-    move $t2, $a2
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 64($sp)
-    lw $t2, 16($t0)
-    sw $t2, 40($sp)
-    lw $t0, 60($sp)
-    lw $t2, 28($t0)
-    sw $t2, 44($sp)
-    lw $t0, 40($sp)
-    lw $t1, 44($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    beqz $t0, _RBTree.transplant_L3
-    lw $t0, 68($sp)
-    lw $t1, 60($sp)
-    sw $t0, 24($t1)
+    lw $t5, 16($a1)
+    lw $t8, 28($a0)
+    seq $t8, $t5, $t8
+    beqz $t8, _RBTree.transplant_L3
+    sw $a2, 24($a0)
     j _RBTree.transplant_L6
     _RBTree.transplant_L3:
-    lw $t0, 40($sp)
-    lw $t2, 12($t0)
-    sw $t2, 52($sp)
-    lw $t0, 52($sp)
-    lw $t1, 64($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    beqz $t0, _RBTree.transplant_L5
-    lw $t0, 68($sp)
-    lw $t1, 40($sp)
-    sw $t0, 12($t1)
+    lw $t8, 12($t5)
+    seq $t8, $t8, $a1
+    beqz $t8, _RBTree.transplant_L5
+    sw $a2, 12($t5)
     j _RBTree.transplant_L6
     _RBTree.transplant_L5:
-    lw $t0, 68($sp)
-    lw $t1, 40($sp)
-    sw $t0, 8($t1)
+    sw $a2, 8($t5)
     _RBTree.transplant_L6:
-    lw $t0, 40($sp)
-    lw $t1, 68($sp)
-    sw $t0, 16($t1)
+    sw $t5, 16($a2)
     _RBTree.transplant_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 60
     jr $ra
 
 .text
 .globl _RBTree.transplant._entry
 _RBTree.transplant._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $a2
-    sw $t2, 72($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 72($sp)
-    move $a2, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _RBTree.transplant._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.rotate
 _RBTree.rotate:
-    subu $sp, $sp, 88
-    move $t2, $a0
-    sw $t2, 88($sp)
-    move $t2, $a1
-    sw $t2, 92($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 92($sp)
-    lw $t2, 16($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    lw $t2, 16($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    lw $t1, 92($sp)
-    sw $t0, 16($t1)
-    lw $t0, 88($sp)
-    lw $t2, 28($t0)
-    sw $t2, 48($sp)
-    lw $t0, 44($sp)
-    lw $t1, 48($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 52($sp)
-    lw $t0, 52($sp)
-    beqz $t0, _RBTree.rotate_L3
-    lw $t0, 92($sp)
-    lw $t1, 88($sp)
-    sw $t0, 24($t1)
+    lw $t8, 16($a1)
+    lw $t2, 16($t8)
+    sw $t2, 16($a1)
+    lw $t5, 28($a0)
+    seq $t5, $t2, $t5
+    beqz $t5, _RBTree.rotate_L3
+    sw $a1, 24($a0)
     j _RBTree.rotate_L6
     _RBTree.rotate_L3:
-    lw $t0, 44($sp)
-    lw $t2, 12($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t1, 40($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    beqz $t0, _RBTree.rotate_L5
-    lw $t0, 92($sp)
-    lw $t1, 44($sp)
-    sw $t0, 12($t1)
+    lw $t5, 12($t2)
+    seq $t5, $t5, $t8
+    beqz $t5, _RBTree.rotate_L5
+    sw $a1, 12($t2)
     j _RBTree.rotate_L6
     _RBTree.rotate_L5:
-    lw $t0, 92($sp)
-    lw $t1, 44($sp)
-    sw $t0, 8($t1)
+    sw $a1, 8($t2)
     _RBTree.rotate_L6:
-    lw $t0, 40($sp)
-    lw $t2, 8($t0)
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    lw $t1, 92($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    beqz $t0, _RBTree.rotate_L8
-    lw $t0, 92($sp)
-    lw $t2, 12($t0)
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    lw $t1, 40($sp)
-    sw $t0, 8($t1)
-    lw $t0, 92($sp)
-    lw $t2, 12($t0)
-    sw $t2, 76($sp)
-    lw $t0, 40($sp)
-    lw $t1, 76($sp)
-    sw $t0, 16($t1)
-    lw $t0, 40($sp)
-    lw $t1, 92($sp)
-    sw $t0, 12($t1)
+    lw $t5, 8($t8)
+    seq $t5, $t5, $a1
+    beqz $t5, _RBTree.rotate_L8
+    lw $t5, 12($a1)
+    sw $t5, 8($t8)
+    lw $t5, 12($a1)
+    sw $t8, 16($t5)
+    sw $t8, 12($a1)
     j _RBTree.rotate_L9
     _RBTree.rotate_L8:
-    lw $t0, 92($sp)
-    lw $t2, 8($t0)
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    lw $t1, 40($sp)
-    sw $t0, 12($t1)
-    lw $t0, 92($sp)
-    lw $t2, 8($t0)
-    sw $t2, 84($sp)
-    lw $t0, 40($sp)
-    lw $t1, 84($sp)
-    sw $t0, 16($t1)
-    lw $t0, 40($sp)
-    lw $t1, 92($sp)
-    sw $t0, 8($t1)
+    lw $t5, 8($a1)
+    sw $t5, 12($t8)
+    lw $t5, 8($a1)
+    sw $t8, 16($t5)
+    sw $t8, 8($a1)
     _RBTree.rotate_L9:
-    lw $t0, 92($sp)
-    lw $t1, 40($sp)
-    sw $t0, 16($t1)
+    sw $a1, 16($t8)
     _RBTree.rotate_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 88
     jr $ra
 
 .text
 .globl _RBTree.rotate._entry
 _RBTree.rotate._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 12($v0)
+    jalr $v0
     _RBTree.rotate._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.insert_fix
 _RBTree.insert_fix:
-    subu $sp, $sp, 160
-    move $t2, $a0
-    sw $t2, 160($sp)
-    move $t2, $a1
-    sw $t2, 164($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 24
+    sw $a0, 24($sp)
+    sw $a1, 28($sp)
+    sw $s3, 16($sp)
+    sw $ra, 20($sp)
     j _RBTree.insert_fix_L10
     _RBTree.insert_fix_L2:
-    lw $t0, 56($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    lw $t2, 16($t0)
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $t2, $t0
-    sw $t2, 68($sp)
-    lw $t0, 64($sp)
-    lw $t2, 8($t0)
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    lw $t1, 56($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 76($sp)
-    lw $t0, 76($sp)
-    beqz $t0, _RBTree.insert_fix_L4
-    lw $t0, 72($sp)
-    move $t2, $t0
-    sw $t2, 80($sp)
+    move $a1, $s3
+    lw $t5, 16($s3)
+    lw $t8, 8($t5)
+    seq $a0, $t8, $s3
+    beqz $a0, _RBTree.insert_fix_L4
     j _RBTree.insert_fix_L5
     _RBTree.insert_fix_L4:
-    lw $t0, 64($sp)
-    lw $t2, 12($t0)
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    move $t2, $t0
-    sw $t2, 80($sp)
+    lw $t8, 12($t5)
     _RBTree.insert_fix_L5:
-    lw $t0, 80($sp)
-    lw $t2, 20($t0)
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    beqz $t0, _RBTree.insert_fix_L7
-    lw $t1, 56($sp)
-    sw $zero, 20($t1)
-    lw $t1, 80($sp)
-    sw $zero, 20($t1)
-    li $t2, 1
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    lw $t1, 64($sp)
-    sw $t0, 20($t1)
-    lw $t0, 64($sp)
-    move $t2, $t0
-    sw $t2, 164($sp)
+    lw $t2, 20($t8)
+    beqz $t2, _RBTree.insert_fix_L7
+    sw $zero, 20($s3)
+    sw $zero, 20($t8)
+    li $t8, 1
+    sw $t8, 20($t5)
+    sw $t5, 28($sp)
     j _RBTree.insert_fix_L10
     _RBTree.insert_fix_L7:
-    lw $t0, 56($sp)
-    lw $t2, 8($t0)
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    lw $t1, 164($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    lw $t1, 76($sp)
-    sne $t2, $t0, $t1
-    sw $t2, 104($sp)
-    lw $t0, 104($sp)
-    beqz $t0, _RBTree.insert_fix_L9
-    la $t2, _RBTree.rotate._entry
-    sw $t2, 108($sp)
-    li $t2, 8
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    move $a0, $t0
+    lw $t8, 8($s3)
+    lw $t2, 28($sp)
+    seq $t8, $t8, $t2
+    sne $t8, $t8, $a0
+    beqz $t8, _RBTree.insert_fix_L9
+    la $t8, _RBTree.rotate._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 116($sp)
-    lw $t0, 108($sp)
-    lw $t1, 116($sp)
-    sw $t0, 0($t1)
-    lw $t0, 160($sp)
-    lw $t1, 116($sp)
-    sw $t0, 4($t1)
-    lw $t0, 116($sp)
-    lw $t2, 0($t0)
-    sw $t2, 120($sp)
-    lw $t0, 116($sp)
-    move $a0, $t0
-    lw $t0, 164($sp)
-    move $a1, $t0
-    lw $t0, 120($sp)
-    jalr $t0
-    lw $t0, 164($sp)
-    move $t2, $t0
-    sw $t2, 124($sp)
-    lw $t0, 56($sp)
-    move $t2, $t0
-    sw $t2, 164($sp)
-    lw $t0, 124($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
-    lw $t0, 124($sp)
-    lw $t2, 16($t0)
-    sw $t2, 128($sp)
-    lw $t0, 128($sp)
-    move $t2, $t0
-    sw $t2, 68($sp)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 24($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    lw $a1, 28($sp)
+    jalr $v0
+    lw $a1, 28($sp)
+    sw $s3, 28($sp)
+    lw $t5, 16($a1)
     _RBTree.insert_fix_L9:
-    lw $t1, 60($sp)
-    sw $zero, 20($t1)
-    li $t2, 1
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    lw $t1, 68($sp)
-    sw $t0, 20($t1)
-    la $t2, _RBTree.rotate._entry
-    sw $t2, 136($sp)
-    li $t2, 8
-    sw $t2, 140($sp)
-    lw $t0, 140($sp)
-    move $a0, $t0
+    sw $zero, 20($a1)
+    li $t8, 1
+    sw $t8, 20($t5)
+    la $t8, _RBTree.rotate._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 144($sp)
-    lw $t0, 136($sp)
-    lw $t1, 144($sp)
-    sw $t0, 0($t1)
-    lw $t0, 160($sp)
-    lw $t1, 144($sp)
-    sw $t0, 4($t1)
-    lw $t0, 144($sp)
-    lw $t2, 0($t0)
-    sw $t2, 148($sp)
-    lw $t0, 144($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    move $a1, $t0
-    lw $t0, 148($sp)
-    jalr $t0
+    sw $t8, 0($v0)
+    lw $t8, 24($sp)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
     _RBTree.insert_fix_L10:
-    lw $t0, 164($sp)
-    lw $t2, 16($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 20($t0)
-    sw $t2, 152($sp)
-    lw $t0, 152($sp)
-    bnez $t0, _RBTree.insert_fix_L2
-    lw $t0, 160($sp)
-    lw $t2, 24($t0)
-    sw $t2, 156($sp)
-    lw $t1, 156($sp)
-    sw $zero, 20($t1)
+    lw $t8, 28($sp)
+    lw $s3, 16($t8)
+    lw $t8, 20($s3)
+    bnez $t8, _RBTree.insert_fix_L2
+    lw $t8, 24($sp)
+    lw $t8, 24($t8)
+    sw $zero, 20($t8)
     _RBTree.insert_fix_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 160
+    lw $s3, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 24
     jr $ra
 
 .text
 .globl _RBTree.insert_fix._entry
 _RBTree.insert_fix._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 16($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 16($v0)
+    jalr $v0
     _RBTree.insert_fix._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.insert
 _RBTree.insert:
-    subu $sp, $sp, 144
-    move $t2, $a0
-    sw $t2, 144($sp)
-    move $t2, $a1
-    sw $t2, 148($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 144($sp)
-    lw $t2, 24($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
-    lw $t0, 144($sp)
-    lw $t2, 28($t0)
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $t2, $t0
-    sw $t2, 68($sp)
+    subu $sp, $sp, 28
+    sw $a0, 28($sp)
+    sw $a1, 32($sp)
+    sw $s1, 16($sp)
+    sw $fp, 20($sp)
+    sw $ra, 24($sp)
+    lw $s1, 28($sp)
+    lw $t8, 24($s1)
+    lw $s1, 28($sp)
+    lw $fp, 28($s1)
+    move $s1, $fp
     j _RBTree.insert_L7
     _RBTree.insert_L2:
-    lw $t0, 60($sp)
-    move $t2, $t0
-    sw $t2, 68($sp)
-    lw $t0, 60($sp)
-    lw $t2, 4($t0)
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    lw $t1, 148($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 76($sp)
-    lw $t0, 76($sp)
-    beqz $t0, _RBTree.insert_L4
+    move $s1, $t8
+    lw $t2, 4($t8)
+    lw $t5, 32($sp)
+    seq $t5, $t2, $t5
+    beqz $t5, _RBTree.insert_L4
     j _RBTree.insert_Ret
     _RBTree.insert_L4:
-    lw $t0, 72($sp)
-    lw $t1, 148($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    beqz $t0, _RBTree.insert_L6
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    lw $t5, 32($sp)
+    slt $t5, $t2, $t5
+    beqz $t5, _RBTree.insert_L6
+    lw $t8, 12($t8)
     j _RBTree.insert_L7
     _RBTree.insert_L6:
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    lw $t8, 8($t8)
     _RBTree.insert_L7:
-    lw $t0, 60($sp)
-    lw $t1, 64($sp)
-    sne $t2, $t0, $t1
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    bnez $t0, _RBTree.insert_L2
-    la $t2, _Node.make._entry
-    sw $t2, 96($sp)
-    li $t2, 4
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    move $a0, $t0
+    sne $t5, $t8, $fp
+    bnez $t5, _RBTree.insert_L2
+    la $t8, _Node.make._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 104($sp)
-    lw $t0, 96($sp)
-    lw $t1, 104($sp)
-    sw $t0, 0($t1)
-    lw $t0, 104($sp)
-    lw $t2, 0($t0)
-    sw $t2, 108($sp)
-    lw $t0, 104($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 64($sp)
-    move $a2, $t0
-    lw $t0, 148($sp)
-    move $a3, $t0
-    lw $t0, 108($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 112($sp)
-    lw $t0, 68($sp)
-    lw $t1, 64($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 116($sp)
-    lw $t0, 116($sp)
-    beqz $t0, _RBTree.insert_L10
-    lw $t0, 112($sp)
-    lw $t1, 144($sp)
-    sw $t0, 24($t1)
+    sw $t8, 0($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    move $a1, $s1
+    move $a2, $fp
+    lw $a3, 32($sp)
+    jalr $t8
+    move $a1, $v0
+    seq $t8, $s1, $fp
+    beqz $t8, _RBTree.insert_L10
+    lw $s1, 28($sp)
+    sw $a1, 24($s1)
     j _RBTree.insert_L13
     _RBTree.insert_L10:
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    lw $t1, 148($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 124($sp)
-    lw $t0, 124($sp)
-    beqz $t0, _RBTree.insert_L12
-    lw $t0, 112($sp)
-    lw $t1, 68($sp)
-    sw $t0, 12($t1)
+    lw $t8, 4($s1)
+    lw $t5, 32($sp)
+    slt $t8, $t8, $t5
+    beqz $t8, _RBTree.insert_L12
+    sw $a1, 12($s1)
     j _RBTree.insert_L13
     _RBTree.insert_L12:
-    lw $t0, 112($sp)
-    lw $t1, 68($sp)
-    sw $t0, 8($t1)
+    sw $a1, 8($s1)
     _RBTree.insert_L13:
-    la $t2, _RBTree.insert_fix._entry
-    sw $t2, 128($sp)
-    li $t2, 8
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    move $a0, $t0
+    la $s1, _RBTree.insert_fix._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 136($sp)
-    lw $t0, 128($sp)
-    lw $t1, 136($sp)
-    sw $t0, 0($t1)
-    lw $t0, 144($sp)
-    lw $t1, 136($sp)
-    sw $t0, 4($t1)
-    lw $t0, 136($sp)
-    lw $t2, 0($t0)
-    sw $t2, 140($sp)
-    lw $t0, 136($sp)
-    move $a0, $t0
-    lw $t0, 112($sp)
-    move $a1, $t0
-    lw $t0, 140($sp)
-    jalr $t0
+    move $a0, $v0
+    sw $s1, 0($a0)
+    lw $v0, 28($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
     _RBTree.insert_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 144
+    lw $s1, 16($sp)
+    lw $fp, 20($sp)
+    lw $ra, 24($sp)
+    addu $sp, $sp, 28
     jr $ra
 
 .text
 .globl _RBTree.insert._entry
 _RBTree.insert._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 20($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 20($v0)
+    jalr $v0
     _RBTree.insert._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.delete_fix
 _RBTree.delete_fix:
-    subu $sp, $sp, 232
-    move $t2, $a0
-    sw $t2, 232($sp)
-    move $t2, $a1
-    sw $t2, 236($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 28
+    sw $a0, 28($sp)
+    sw $s5, 16($sp)
+    sw $fp, 20($sp)
+    sw $ra, 24($sp)
     j _RBTree.delete_fix_L18
     _RBTree.delete_fix_L2:
-    lw $t0, 236($sp)
-    lw $t2, 16($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t1, 236($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    beqz $t0, _RBTree.delete_fix_L4
-    lw $t0, 56($sp)
-    lw $t2, 12($t0)
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    move $t2, $t0
-    sw $t2, 72($sp)
+    lw $s5, 16($a1)
+    lw $t8, 8($s5)
+    seq $fp, $t8, $a1
+    beqz $fp, _RBTree.delete_fix_L4
+    lw $a1, 12($s5)
     j _RBTree.delete_fix_L5
     _RBTree.delete_fix_L4:
-    lw $t0, 60($sp)
-    move $t2, $t0
-    sw $t2, 72($sp)
+    move $a1, $t8
     _RBTree.delete_fix_L5:
-    lw $t0, 72($sp)
-    lw $t2, 20($t0)
-    sw $t2, 76($sp)
-    lw $t0, 76($sp)
-    beqz $t0, _RBTree.delete_fix_L9
-    lw $t1, 72($sp)
-    sw $zero, 20($t1)
-    li $t2, 1
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    lw $t1, 56($sp)
-    sw $t0, 20($t1)
-    la $t2, _RBTree.rotate._entry
-    sw $t2, 84($sp)
-    li $t2, 8
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    move $a0, $t0
+    lw $t8, 20($a1)
+    beqz $t8, _RBTree.delete_fix_L9
+    sw $zero, 20($a1)
+    li $t8, 1
+    sw $t8, 20($s5)
+    la $t8, _RBTree.rotate._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 92($sp)
-    lw $t0, 84($sp)
-    lw $t1, 92($sp)
-    sw $t0, 0($t1)
-    lw $t0, 232($sp)
-    lw $t1, 92($sp)
-    sw $t0, 4($t1)
-    lw $t0, 92($sp)
-    lw $t2, 0($t0)
-    sw $t2, 96($sp)
-    lw $t0, 92($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    move $a1, $t0
-    lw $t0, 96($sp)
-    jalr $t0
-    lw $t0, 64($sp)
-    beqz $t0, _RBTree.delete_fix_L8
-    lw $t0, 56($sp)
-    lw $t2, 12($t0)
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    move $t2, $t0
-    sw $t2, 72($sp)
+    sw $t8, 0($v0)
+    lw $t8, 28($sp)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    beqz $fp, _RBTree.delete_fix_L8
+    lw $a1, 12($s5)
     j _RBTree.delete_fix_L9
     _RBTree.delete_fix_L8:
-    lw $t0, 56($sp)
-    lw $t2, 8($t0)
-    sw $t2, 104($sp)
-    lw $t0, 104($sp)
-    move $t2, $t0
-    sw $t2, 72($sp)
+    lw $a1, 8($s5)
     _RBTree.delete_fix_L9:
-    lw $t0, 72($sp)
-    lw $t2, 8($t0)
-    sw $t2, 108($sp)
-    lw $t0, 108($sp)
-    lw $t2, 20($t0)
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    not $t2, $t0
-    sw $t2, 116($sp)
-    lw $t0, 72($sp)
-    lw $t2, 12($t0)
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    lw $t2, 20($t0)
-    sw $t2, 124($sp)
-    lw $t0, 124($sp)
-    not $t2, $t0
-    sw $t2, 128($sp)
-    lw $t0, 116($sp)
-    lw $t1, 128($sp)
-    and $t2, $t0, $t1
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    beqz $t0, _RBTree.delete_fix_L11
-    lw $t1, 72($sp)
-    sw $zero, 20($t1)
-    lw $t0, 56($sp)
-    move $t2, $t0
-    sw $t2, 236($sp)
+    lw $t5, 8($a1)
+    lw $t8, 20($t5)
+    not $t2, $t8
+    lw $t8, 12($a1)
+    lw $a0, 20($t8)
+    not $a0, $a0
+    and $t2, $t2, $a0
+    beqz $t2, _RBTree.delete_fix_L11
+    sw $zero, 20($a1)
+    move $a1, $s5
     j _RBTree.delete_fix_L18
     _RBTree.delete_fix_L11:
-    lw $t0, 120($sp)
-    move $t2, $t0
-    sw $t2, 136($sp)
-    lw $t0, 108($sp)
-    move $t2, $t0
-    sw $t2, 140($sp)
-    lw $t0, 64($sp)
-    beqz $t0, _RBTree.delete_fix_L13
-    lw $t0, 108($sp)
-    move $t2, $t0
-    sw $t2, 136($sp)
-    lw $t0, 120($sp)
-    move $t2, $t0
-    sw $t2, 140($sp)
+    move $t2, $t8
+    beqz $fp, _RBTree.delete_fix_L13
+    move $t2, $t5
+    move $t5, $t8
     _RBTree.delete_fix_L13:
-    lw $t0, 140($sp)
-    lw $t2, 20($t0)
-    sw $t2, 144($sp)
-    lw $t0, 144($sp)
-    not $t2, $t0
-    sw $t2, 148($sp)
-    lw $t0, 148($sp)
-    beqz $t0, _RBTree.delete_fix_L17
-    lw $t1, 136($sp)
-    sw $zero, 20($t1)
-    li $t2, 1
-    sw $t2, 152($sp)
-    lw $t0, 152($sp)
-    lw $t1, 72($sp)
-    sw $t0, 20($t1)
-    la $t2, _RBTree.rotate._entry
-    sw $t2, 156($sp)
-    li $t2, 8
-    sw $t2, 160($sp)
-    lw $t0, 160($sp)
-    move $a0, $t0
+    lw $t8, 20($t5)
+    not $t8, $t8
+    beqz $t8, _RBTree.delete_fix_L17
+    sw $zero, 20($t2)
+    li $t8, 1
+    sw $t8, 20($a1)
+    la $t8, _RBTree.rotate._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 164($sp)
-    lw $t0, 156($sp)
-    lw $t1, 164($sp)
-    sw $t0, 0($t1)
-    lw $t0, 232($sp)
-    lw $t1, 164($sp)
-    sw $t0, 4($t1)
-    lw $t0, 164($sp)
-    lw $t2, 0($t0)
-    sw $t2, 168($sp)
-    lw $t0, 164($sp)
-    move $a0, $t0
-    lw $t0, 136($sp)
-    move $a1, $t0
-    lw $t0, 168($sp)
-    jalr $t0
-    lw $t0, 64($sp)
-    beqz $t0, _RBTree.delete_fix_L16
-    lw $t0, 56($sp)
-    lw $t2, 12($t0)
-    sw $t2, 172($sp)
-    lw $t0, 172($sp)
-    move $t2, $t0
-    sw $t2, 72($sp)
-    lw $t0, 172($sp)
-    lw $t2, 12($t0)
-    sw $t2, 176($sp)
-    lw $t0, 176($sp)
-    move $t2, $t0
-    sw $t2, 140($sp)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 28($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $t2
+    jalr $v0
+    beqz $fp, _RBTree.delete_fix_L16
+    lw $a1, 12($s5)
+    lw $t5, 12($a1)
     j _RBTree.delete_fix_L17
     _RBTree.delete_fix_L16:
-    lw $t0, 56($sp)
-    lw $t2, 8($t0)
-    sw $t2, 180($sp)
-    lw $t0, 180($sp)
-    move $t2, $t0
-    sw $t2, 72($sp)
-    lw $t0, 180($sp)
-    lw $t2, 8($t0)
-    sw $t2, 184($sp)
-    lw $t0, 184($sp)
-    move $t2, $t0
-    sw $t2, 140($sp)
+    lw $a1, 8($s5)
+    lw $t5, 8($a1)
     _RBTree.delete_fix_L17:
-    lw $t0, 56($sp)
-    lw $t2, 20($t0)
-    sw $t2, 188($sp)
-    lw $t0, 188($sp)
-    lw $t1, 72($sp)
-    sw $t0, 20($t1)
-    lw $t1, 56($sp)
-    sw $zero, 20($t1)
-    lw $t1, 140($sp)
-    sw $zero, 20($t1)
-    la $t2, _RBTree.rotate._entry
-    sw $t2, 192($sp)
-    li $t2, 8
-    sw $t2, 196($sp)
-    lw $t0, 196($sp)
-    move $a0, $t0
+    lw $t8, 20($s5)
+    sw $t8, 20($a1)
+    sw $zero, 20($s5)
+    sw $zero, 20($t5)
+    la $t8, _RBTree.rotate._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 200($sp)
-    lw $t0, 192($sp)
-    lw $t1, 200($sp)
-    sw $t0, 0($t1)
-    lw $t0, 232($sp)
-    lw $t1, 200($sp)
-    sw $t0, 4($t1)
-    lw $t0, 200($sp)
-    lw $t2, 0($t0)
-    sw $t2, 204($sp)
-    lw $t0, 200($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    move $a1, $t0
-    lw $t0, 204($sp)
-    jalr $t0
-    lw $t0, 232($sp)
-    lw $t2, 24($t0)
-    sw $t2, 208($sp)
-    lw $t0, 208($sp)
-    move $t2, $t0
-    sw $t2, 236($sp)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 28($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    lw $t8, 28($sp)
+    lw $t8, 24($t8)
+    move $a1, $t8
     _RBTree.delete_fix_L18:
-    lw $t0, 232($sp)
-    lw $t2, 24($t0)
-    sw $t2, 212($sp)
-    lw $t0, 236($sp)
-    lw $t1, 212($sp)
-    sne $t2, $t0, $t1
-    sw $t2, 216($sp)
-    lw $t0, 236($sp)
-    lw $t2, 20($t0)
-    sw $t2, 220($sp)
-    lw $t0, 220($sp)
-    not $t2, $t0
-    sw $t2, 224($sp)
-    lw $t0, 216($sp)
-    lw $t1, 224($sp)
-    and $t2, $t0, $t1
-    sw $t2, 228($sp)
-    lw $t0, 228($sp)
-    bnez $t0, _RBTree.delete_fix_L2
-    lw $t1, 236($sp)
-    sw $zero, 20($t1)
+    lw $t8, 28($sp)
+    lw $t8, 24($t8)
+    sne $t5, $a1, $t8
+    lw $t8, 20($a1)
+    not $t8, $t8
+    and $t8, $t5, $t8
+    bnez $t8, _RBTree.delete_fix_L2
+    sw $zero, 20($a1)
     _RBTree.delete_fix_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 232
+    lw $s5, 16($sp)
+    lw $fp, 20($sp)
+    lw $ra, 24($sp)
+    addu $sp, $sp, 28
     jr $ra
 
 .text
 .globl _RBTree.delete_fix._entry
 _RBTree.delete_fix._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 24($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 24($v0)
+    jalr $v0
     _RBTree.delete_fix._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.delete
 _RBTree.delete:
-    subu $sp, $sp, 256
-    move $t2, $a0
-    sw $t2, 256($sp)
-    move $t2, $a1
-    sw $t2, 260($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 256($sp)
-    lw $t2, 24($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    subu $sp, $sp, 36
+    sw $a0, 36($sp)
+    sw $s0, 16($sp)
+    sw $s3, 20($sp)
+    sw $fp, 24($sp)
+    sw $ra, 28($sp)
+    lw $t8, 36($sp)
+    lw $t8, 24($t8)
+    move $s3, $t8
     j _RBTree.delete_L7
     _RBTree.delete_L2:
-    lw $t0, 60($sp)
-    lw $t2, 4($t0)
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    lw $t1, 260($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    beqz $t0, _RBTree.delete_L4
+    lw $t8, 4($s3)
+    seq $t5, $t8, $a1
+    beqz $t5, _RBTree.delete_L4
     j _RBTree.delete_L8
     _RBTree.delete_L4:
-    lw $t0, 64($sp)
-    lw $t1, 260($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    beqz $t0, _RBTree.delete_L6
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 76($sp)
-    lw $t0, 76($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    slt $t8, $t8, $a1
+    beqz $t8, _RBTree.delete_L6
+    lw $t8, 12($s3)
+    move $s3, $t8
     j _RBTree.delete_L7
     _RBTree.delete_L6:
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $t2, $t0
-    sw $t2, 60($sp)
+    lw $t8, 8($s3)
+    move $s3, $t8
     _RBTree.delete_L7:
-    lw $t0, 256($sp)
-    lw $t2, 28($t0)
-    sw $t2, 84($sp)
-    lw $t0, 60($sp)
-    lw $t1, 84($sp)
-    sne $t2, $t0, $t1
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    bnez $t0, _RBTree.delete_L2
+    lw $t8, 36($sp)
+    lw $t2, 28($t8)
+    sne $t8, $s3, $t2
+    bnez $t8, _RBTree.delete_L2
     _RBTree.delete_L8:
-    lw $t0, 60($sp)
-    lw $t2, 20($t0)
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    move $t2, $t0
-    sw $t2, 96($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    lw $t1, 84($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 104($sp)
-    lw $t0, 104($sp)
-    beqz $t0, _RBTree.delete_L10
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 108($sp)
-    lw $t0, 108($sp)
-    move $t2, $t0
-    sw $t2, 112($sp)
-    la $t2, _RBTree.transplant._entry
-    sw $t2, 116($sp)
-    li $t2, 8
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    move $a0, $t0
+    lw $t8, 20($s3)
+    sw $t8, 32($sp)
+    lw $a2, 8($s3)
+    seq $t8, $a2, $t2
+    beqz $t8, _RBTree.delete_L10
+    lw $a2, 12($s3)
+    move $s0, $a2
+    la $t8, _RBTree.transplant._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 124($sp)
-    lw $t0, 116($sp)
-    lw $t1, 124($sp)
-    sw $t0, 0($t1)
-    lw $t0, 256($sp)
-    lw $t1, 124($sp)
-    sw $t0, 4($t1)
-    lw $t0, 124($sp)
-    lw $t2, 0($t0)
-    sw $t2, 128($sp)
-    lw $t0, 124($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    move $a1, $t0
-    lw $t0, 108($sp)
-    move $a2, $t0
-    lw $t0, 128($sp)
-    jalr $t0
+    sw $t8, 0($v0)
+    lw $t8, 36($sp)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    move $a1, $s3
+    jalr $t8
     j _RBTree.delete_L19
     _RBTree.delete_L10:
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    lw $t1, 84($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 136($sp)
-    lw $t0, 136($sp)
-    beqz $t0, _RBTree.delete_L12
-    lw $t0, 100($sp)
-    move $t2, $t0
-    sw $t2, 112($sp)
-    la $t2, _RBTree.transplant._entry
-    sw $t2, 140($sp)
-    li $t2, 8
-    sw $t2, 144($sp)
-    lw $t0, 144($sp)
-    move $a0, $t0
+    lw $t8, 12($s3)
+    seq $t5, $t8, $t2
+    beqz $t5, _RBTree.delete_L12
+    move $s0, $a2
+    la $t8, _RBTree.transplant._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 148($sp)
-    lw $t0, 140($sp)
-    lw $t1, 148($sp)
-    sw $t0, 0($t1)
-    lw $t0, 256($sp)
-    lw $t1, 148($sp)
-    sw $t0, 4($t1)
-    lw $t0, 148($sp)
-    lw $t2, 0($t0)
-    sw $t2, 152($sp)
-    lw $t0, 148($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    move $a1, $t0
-    lw $t0, 100($sp)
-    move $a2, $t0
-    lw $t0, 152($sp)
-    jalr $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 36($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $s3
+    jalr $v0
     j _RBTree.delete_L19
     _RBTree.delete_L12:
-    lw $t0, 132($sp)
-    move $t2, $t0
-    sw $t2, 156($sp)
+    move $fp, $t8
     j _RBTree.delete_L14
     _RBTree.delete_L13:
-    lw $t0, 160($sp)
-    move $t2, $t0
-    sw $t2, 156($sp)
+    move $fp, $t8
     _RBTree.delete_L14:
-    lw $t0, 156($sp)
-    lw $t2, 8($t0)
-    sw $t2, 160($sp)
-    lw $t0, 160($sp)
-    lw $t1, 84($sp)
-    sne $t2, $t0, $t1
-    sw $t2, 164($sp)
-    lw $t0, 164($sp)
-    bnez $t0, _RBTree.delete_L13
-    lw $t0, 156($sp)
-    lw $t2, 20($t0)
-    sw $t2, 168($sp)
-    lw $t0, 168($sp)
-    move $t2, $t0
-    sw $t2, 96($sp)
-    lw $t0, 156($sp)
-    lw $t2, 12($t0)
-    sw $t2, 172($sp)
-    lw $t0, 172($sp)
-    move $t2, $t0
-    sw $t2, 112($sp)
-    lw $t0, 156($sp)
-    lw $t2, 16($t0)
-    sw $t2, 176($sp)
-    lw $t0, 176($sp)
-    lw $t1, 60($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 180($sp)
-    lw $t0, 180($sp)
-    beqz $t0, _RBTree.delete_L17
-    lw $t0, 156($sp)
-    lw $t1, 172($sp)
-    sw $t0, 16($t1)
+    lw $t8, 8($fp)
+    sne $t5, $t8, $t2
+    bnez $t5, _RBTree.delete_L13
+    lw $t8, 20($fp)
+    sw $t8, 32($sp)
+    lw $a2, 12($fp)
+    move $s0, $a2
+    lw $t8, 16($fp)
+    seq $t8, $t8, $s3
+    beqz $t8, _RBTree.delete_L17
+    sw $fp, 16($a2)
     j _RBTree.delete_L18
     _RBTree.delete_L17:
-    la $t2, _RBTree.transplant._entry
-    sw $t2, 184($sp)
-    li $t2, 8
-    sw $t2, 188($sp)
-    lw $t0, 188($sp)
-    move $a0, $t0
+    la $t8, _RBTree.transplant._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 192($sp)
-    lw $t0, 184($sp)
-    lw $t1, 192($sp)
-    sw $t0, 0($t1)
-    lw $t0, 256($sp)
-    lw $t1, 192($sp)
-    sw $t0, 4($t1)
-    lw $t0, 192($sp)
-    lw $t2, 0($t0)
-    sw $t2, 196($sp)
-    lw $t0, 192($sp)
-    move $a0, $t0
-    lw $t0, 156($sp)
-    move $a1, $t0
-    lw $t0, 172($sp)
-    move $a2, $t0
-    lw $t0, 196($sp)
-    jalr $t0
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 200($sp)
-    lw $t0, 200($sp)
-    lw $t1, 156($sp)
-    sw $t0, 12($t1)
-    lw $t0, 156($sp)
-    lw $t2, 12($t0)
-    sw $t2, 204($sp)
-    lw $t0, 156($sp)
-    lw $t1, 204($sp)
-    sw $t0, 16($t1)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 36($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $fp
+    jalr $v0
+    lw $t8, 12($s3)
+    sw $t8, 12($fp)
+    lw $t8, 12($fp)
+    sw $fp, 16($t8)
     _RBTree.delete_L18:
-    la $t2, _RBTree.transplant._entry
-    sw $t2, 208($sp)
-    li $t2, 8
-    sw $t2, 212($sp)
-    lw $t0, 212($sp)
-    move $a0, $t0
+    la $t8, _RBTree.transplant._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 216($sp)
-    lw $t0, 208($sp)
-    lw $t1, 216($sp)
-    sw $t0, 0($t1)
-    lw $t0, 256($sp)
-    lw $t1, 216($sp)
-    sw $t0, 4($t1)
-    lw $t0, 216($sp)
-    lw $t2, 0($t0)
-    sw $t2, 220($sp)
-    lw $t0, 216($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    move $a1, $t0
-    lw $t0, 156($sp)
-    move $a2, $t0
-    lw $t0, 220($sp)
-    jalr $t0
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 224($sp)
-    lw $t0, 224($sp)
-    lw $t1, 156($sp)
-    sw $t0, 8($t1)
-    lw $t0, 156($sp)
-    lw $t2, 8($t0)
-    sw $t2, 228($sp)
-    lw $t0, 156($sp)
-    lw $t1, 228($sp)
-    sw $t0, 16($t1)
-    lw $t0, 60($sp)
-    lw $t2, 20($t0)
-    sw $t2, 232($sp)
-    lw $t0, 232($sp)
-    lw $t1, 156($sp)
-    sw $t0, 20($t1)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 36($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $s3
+    move $a2, $fp
+    jalr $v0
+    lw $t8, 8($s3)
+    sw $t8, 8($fp)
+    lw $t8, 8($fp)
+    sw $fp, 16($t8)
+    lw $t8, 20($s3)
+    sw $t8, 20($fp)
     _RBTree.delete_L19:
-    lw $t0, 96($sp)
-    not $t2, $t0
-    sw $t2, 236($sp)
-    lw $t0, 236($sp)
-    beqz $t0, _RBTree.delete_L21
-    la $t2, _RBTree.delete_fix._entry
-    sw $t2, 240($sp)
-    li $t2, 8
-    sw $t2, 244($sp)
-    lw $t0, 244($sp)
-    move $a0, $t0
+    lw $t8, 32($sp)
+    not $t8, $t8
+    beqz $t8, _RBTree.delete_L21
+    la $t8, _RBTree.delete_fix._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 248($sp)
-    lw $t0, 240($sp)
-    lw $t1, 248($sp)
-    sw $t0, 0($t1)
-    lw $t0, 256($sp)
-    lw $t1, 248($sp)
-    sw $t0, 4($t1)
-    lw $t0, 248($sp)
-    lw $t2, 0($t0)
-    sw $t2, 252($sp)
-    lw $t0, 248($sp)
-    move $a0, $t0
-    lw $t0, 112($sp)
-    move $a1, $t0
-    lw $t0, 252($sp)
-    jalr $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 36($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $s0
+    jalr $v0
     _RBTree.delete_L21:
     _RBTree.delete_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 256
+    lw $s0, 16($sp)
+    lw $s3, 20($sp)
+    lw $fp, 24($sp)
+    lw $ra, 28($sp)
+    addu $sp, $sp, 36
     jr $ra
 
 .text
 .globl _RBTree.delete._entry
 _RBTree.delete._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 28($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 28($v0)
+    jalr $v0
     _RBTree.delete._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.print
 _RBTree.print:
-    subu $sp, $sp, 76
-    move $t2, $a0
-    sw $t2, 76($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    la $t2, _RBTree.print_impl._entry
-    sw $t2, 56($sp)
-    li $t2, 8
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
+    subu $sp, $sp, 20
+    move $t8, $a0
+    sw $ra, 16($sp)
+    la $t5, _RBTree.print_impl._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 56($sp)
-    lw $t1, 64($sp)
-    sw $t0, 0($t1)
-    lw $t0, 76($sp)
-    lw $t1, 64($sp)
-    sw $t0, 4($t1)
-    lw $t0, 76($sp)
-    lw $t2, 24($t0)
-    sw $t2, 68($sp)
-    lw $t0, 64($sp)
-    lw $t2, 0($t0)
-    sw $t2, 72($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 72($sp)
-    jalr $t0
+    sw $t5, 0($v0)
+    sw $t8, 4($v0)
+    lw $a1, 24($t8)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
     _RBTree.print_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 76
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.print._entry
 _RBTree.print._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 32($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 32($v0)
+    jalr $v0
     _RBTree.print._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.print_impl
 _RBTree.print_impl:
-    subu $sp, $sp, 112
-    move $t2, $a0
-    sw $t2, 112($sp)
-    move $t2, $a1
-    sw $t2, 116($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 112($sp)
-    lw $t2, 28($t0)
-    sw $t2, 56($sp)
-    lw $t0, 116($sp)
-    lw $t1, 56($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    beqz $t0, _RBTree.print_impl_L3
+    subu $sp, $sp, 20
+    sw $a0, 20($sp)
+    sw $a1, 24($sp)
+    sw $ra, 16($sp)
+    lw $t8, 20($sp)
+    lw $t5, 28($t8)
+    lw $t8, 24($sp)
+    seq $t8, $t8, $t5
+    beqz $t8, _RBTree.print_impl_L3
     j _RBTree.print_impl_Ret
     _RBTree.print_impl_L3:
-    la $t2, _RBTree.print_impl._entry
-    sw $t2, 64($sp)
-    li $t2, 8
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
+    la $t8, _RBTree.print_impl._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 72($sp)
-    lw $t0, 64($sp)
-    lw $t1, 72($sp)
-    sw $t0, 0($t1)
-    lw $t0, 112($sp)
-    lw $t1, 72($sp)
-    sw $t0, 4($t1)
-    lw $t0, 116($sp)
-    lw $t2, 8($t0)
-    sw $t2, 76($sp)
-    lw $t0, 72($sp)
-    lw $t2, 0($t0)
-    sw $t2, 80($sp)
-    lw $t0, 72($sp)
-    move $a0, $t0
-    lw $t0, 76($sp)
-    move $a1, $t0
-    lw $t0, 80($sp)
-    jalr $t0
-    lw $t0, 116($sp)
-    lw $t2, 4($t0)
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 20($sp)
+    sw $v0, 4($a0)
+    lw $v0, 24($sp)
+    lw $a1, 8($v0)
+    lw $v0, 0($a0)
+    jalr $v0
+    lw $t8, 24($sp)
+    lw $a0, 4($t8)
     li $v0, 1
     syscall
-    la $t2, _STRING5
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    move $a0, $t0
+    la $a0, _STRING5
     li $v0, 4
     syscall
-    la $t2, _RBTree.print_impl._entry
-    sw $t2, 92($sp)
-    li $t2, 8
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    move $a0, $t0
+    la $t8, _RBTree.print_impl._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 100($sp)
-    lw $t0, 92($sp)
-    lw $t1, 100($sp)
-    sw $t0, 0($t1)
-    lw $t0, 112($sp)
-    lw $t1, 100($sp)
-    sw $t0, 4($t1)
-    lw $t0, 116($sp)
-    lw $t2, 12($t0)
-    sw $t2, 104($sp)
-    lw $t0, 100($sp)
-    lw $t2, 0($t0)
-    sw $t2, 108($sp)
-    lw $t0, 100($sp)
-    move $a0, $t0
-    lw $t0, 104($sp)
-    move $a1, $t0
-    lw $t0, 108($sp)
-    jalr $t0
+    sw $t8, 0($v0)
+    lw $t8, 20($sp)
+    sw $t8, 4($v0)
+    lw $t8, 24($sp)
+    lw $a1, 12($t8)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
     _RBTree.print_impl_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 112
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _RBTree.print_impl._entry
 _RBTree.print_impl._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 36($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 36($v0)
+    jalr $v0
     _RBTree.print_impl._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 # below are the runtime libary function for decaf

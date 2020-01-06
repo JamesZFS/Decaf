@@ -36,2034 +36,532 @@ _STRING5:
 .text
 .globl _QueueItem._new
 _QueueItem._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 16
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 16
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _QueueItem
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t1, 44($sp)
-    sw $zero, 8($t1)
-    lw $t1, 44($sp)
-    sw $zero, 12($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _QueueItem
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
+    sw $zero, 8($v0)
+    sw $zero, 12($v0)
     _QueueItem._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Queue._new
 _Queue._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 12
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 12
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Queue
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t1, 44($sp)
-    sw $zero, 8($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Queue
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
+    sw $zero, 8($v0)
     _Queue._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Main._new
 _Main._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Main
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Main
+    sw $t8, 0($v0)
     _Main._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl length
 length:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 40($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    lw $t2, -4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    lw $a1, 4($a0)
+    lw $a1, -4($a1)
+    move $v0, $a1
     length_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl _QueueItem.Init
 _QueueItem.Init:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $a2
-    sw $t2, 48($sp)
-    move $t2, $a3
-    sw $t2, 52($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t1, 40($sp)
-    sw $t0, 4($t1)
-    lw $t0, 48($sp)
-    lw $t1, 40($sp)
-    sw $t0, 8($t1)
-    lw $t0, 40($sp)
-    lw $t1, 48($sp)
-    sw $t0, 12($t1)
-    lw $t0, 52($sp)
-    lw $t1, 40($sp)
-    sw $t0, 12($t1)
-    lw $t0, 40($sp)
-    lw $t1, 52($sp)
-    sw $t0, 8($t1)
+    sw $a1, 4($a0)
+    sw $a2, 8($a0)
+    sw $a0, 12($a2)
+    sw $a3, 12($a0)
+    sw $a0, 8($a3)
     _QueueItem.Init_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl _QueueItem.Init._entry
 _QueueItem.Init._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $a2
-    sw $t2, 72($sp)
-    move $t2, $a3
-    sw $t2, 76($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 72($sp)
-    move $a2, $t0
-    lw $t0, 76($sp)
-    move $a3, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _QueueItem.Init._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _QueueItem.GetData
 _QueueItem.GetData:
-    subu $sp, $sp, 44
-    move $t2, $a0
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t2, 4($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $v0, $t0
+    lw $v0, 4($a0)
     _QueueItem.GetData_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 44
     jr $ra
 
 .text
 .globl _QueueItem.GetData._entry
 _QueueItem.GetData._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 12($v0)
+    jalr $v0
     _QueueItem.GetData._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _QueueItem.GetNext
 _QueueItem.GetNext:
-    subu $sp, $sp, 44
-    move $t2, $a0
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t2, 8($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $v0, $t0
+    lw $v0, 8($a0)
     _QueueItem.GetNext_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 44
     jr $ra
 
 .text
 .globl _QueueItem.GetNext._entry
 _QueueItem.GetNext._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 16($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 16($v0)
+    jalr $v0
     _QueueItem.GetNext._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _QueueItem.GetPrev
 _QueueItem.GetPrev:
-    subu $sp, $sp, 44
-    move $t2, $a0
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t2, 12($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $v0, $t0
+    lw $v0, 12($a0)
     _QueueItem.GetPrev_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 44
     jr $ra
 
 .text
 .globl _QueueItem.GetPrev._entry
 _QueueItem.GetPrev._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 20($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 20($v0)
+    jalr $v0
     _QueueItem.GetPrev._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _QueueItem.SetNext
 _QueueItem.SetNext:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t1, 40($sp)
-    sw $t0, 8($t1)
+    sw $a1, 8($a0)
     _QueueItem.SetNext_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl _QueueItem.SetNext._entry
 _QueueItem.SetNext._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 24($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 24($v0)
+    jalr $v0
     _QueueItem.SetNext._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _QueueItem.SetPrev
 _QueueItem.SetPrev:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t1, 40($sp)
-    sw $t0, 12($t1)
+    sw $a1, 12($a0)
     _QueueItem.SetPrev_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl _QueueItem.SetPrev._entry
 _QueueItem.SetPrev._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 28($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 28($v0)
+    jalr $v0
     _QueueItem.SetPrev._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Queue.Init
 _Queue.Init:
-    subu $sp, $sp, 80
-    move $t2, $a0
-    sw $t2, 80($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $a0, 20($sp)
+    sw $ra, 16($sp)
     jal _QueueItem._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t1, 80($sp)
-    sw $t0, 8($t1)
-    la $t2, _QueueItem.Init._entry
-    sw $t2, 60($sp)
-    lw $t0, 80($sp)
-    lw $t2, 8($t0)
-    sw $t2, 64($sp)
-    li $t2, 8
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
+    lw $t8, 20($sp)
+    sw $v0, 8($t8)
+    la $t8, _QueueItem.Init._entry
+    lw $t5, 20($sp)
+    lw $a2, 8($t5)
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 72($sp)
-    lw $t0, 60($sp)
-    lw $t1, 72($sp)
-    sw $t0, 0($t1)
-    lw $t0, 64($sp)
-    lw $t1, 72($sp)
-    sw $t0, 4($t1)
-    lw $t0, 72($sp)
-    lw $t2, 0($t0)
-    sw $t2, 76($sp)
-    lw $t0, 72($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $a2, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
     move $a1, $zero
-    lw $t0, 64($sp)
-    move $a2, $t0
-    lw $t0, 64($sp)
-    move $a3, $t0
-    lw $t0, 76($sp)
-    jalr $t0
+    move $a3, $a2
+    jalr $t8
     _Queue.Init_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 80
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Queue.Init._entry
 _Queue.Init._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _Queue.Init._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Queue.EnQueue
 _Queue.EnQueue:
-    subu $sp, $sp, 104
-    move $t2, $a0
-    sw $t2, 104($sp)
-    move $t2, $a1
-    sw $t2, 108($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 24
+    sw $a0, 24($sp)
+    sw $a1, 28($sp)
+    sw $s7, 16($sp)
+    sw $ra, 20($sp)
     jal _QueueItem._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    la $t2, _QueueItem.Init._entry
-    sw $t2, 60($sp)
-    li $t2, 8
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    move $t8, $v0
+    la $t5, _QueueItem.Init._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 68($sp)
-    lw $t0, 60($sp)
-    lw $t1, 68($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 68($sp)
-    sw $t0, 4($t1)
-    la $t2, _QueueItem.GetNext._entry
-    sw $t2, 72($sp)
-    lw $t0, 104($sp)
-    lw $t2, 8($t0)
-    sw $t2, 76($sp)
-    li $t2, 8
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $a0, $t0
+    move $s7, $v0
+    sw $t5, 0($s7)
+    sw $t8, 4($s7)
+    la $t8, _QueueItem.GetNext._entry
+    lw $t5, 24($sp)
+    lw $t5, 8($t5)
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 84($sp)
-    lw $t0, 72($sp)
-    lw $t1, 84($sp)
-    sw $t0, 0($t1)
-    lw $t0, 76($sp)
-    lw $t1, 84($sp)
-    sw $t0, 4($t1)
-    lw $t0, 84($sp)
-    lw $t2, 0($t0)
-    sw $t2, 88($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
-    lw $t0, 88($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 92($sp)
-    lw $t0, 104($sp)
-    lw $t2, 8($t0)
-    sw $t2, 96($sp)
-    lw $t0, 68($sp)
-    lw $t2, 0($t0)
-    sw $t2, 100($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
-    lw $t0, 108($sp)
-    move $a1, $t0
-    lw $t0, 92($sp)
-    move $a2, $t0
-    lw $t0, 96($sp)
-    move $a3, $t0
-    lw $t0, 100($sp)
-    jalr $t0
+    sw $t8, 0($v0)
+    sw $t5, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    move $a2, $v0
+    lw $v0, 24($sp)
+    lw $a3, 8($v0)
+    lw $v0, 0($s7)
+    move $a0, $s7
+    lw $a1, 28($sp)
+    jalr $v0
     _Queue.EnQueue_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 104
+    lw $s7, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 24
     jr $ra
 
 .text
 .globl _Queue.EnQueue._entry
 _Queue.EnQueue._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 12($v0)
+    jalr $v0
     _Queue.EnQueue._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Queue.DeQueue
 _Queue.DeQueue:
-    subu $sp, $sp, 244
-    move $t2, $a0
-    sw $t2, 244($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    la $t2, _QueueItem.GetPrev._entry
-    sw $t2, 56($sp)
-    lw $t0, 244($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    li $t2, 8
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    subu $sp, $sp, 36
+    sw $a0, 36($sp)
+    sw $s0, 16($sp)
+    sw $s3, 20($sp)
+    sw $s6, 24($sp)
+    sw $ra, 28($sp)
+    la $t5, _QueueItem.GetPrev._entry
+    lw $t8, 36($sp)
+    lw $t8, 8($t8)
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 68($sp)
-    lw $t0, 56($sp)
-    lw $t1, 68($sp)
-    sw $t0, 0($t1)
-    lw $t0, 60($sp)
-    lw $t1, 68($sp)
-    sw $t0, 4($t1)
-    lw $t0, 68($sp)
-    lw $t2, 0($t0)
-    sw $t2, 72($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 76($sp)
-    lw $t0, 244($sp)
-    lw $t2, 8($t0)
-    sw $t2, 80($sp)
-    lw $t0, 76($sp)
-    lw $t1, 80($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    beqz $t0, _Queue.DeQueue_L3
-    la $t2, _STRING3
-    sw $t2, 88($sp)
-    lw $t0, 88($sp)
-    move $a0, $t0
+    sw $t5, 0($v0)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    lw $t8, 36($sp)
+    lw $t8, 8($t8)
+    seq $t5, $v0, $t8
+    beqz $t5, _Queue.DeQueue_L3
+    la $a0, _STRING3
     li $v0, 4
     syscall
     li $v0, 0
     j _Queue.DeQueue_Ret
     _Queue.DeQueue_L3:
-    la $t2, _QueueItem.GetPrev._entry
-    sw $t2, 92($sp)
-    li $t2, 8
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    move $a0, $t0
+    la $t5, _QueueItem.GetPrev._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 100($sp)
-    lw $t0, 92($sp)
-    lw $t1, 100($sp)
-    sw $t0, 0($t1)
-    lw $t0, 80($sp)
-    lw $t1, 100($sp)
-    sw $t0, 4($t1)
-    lw $t0, 100($sp)
-    lw $t2, 0($t0)
-    sw $t2, 104($sp)
-    lw $t0, 100($sp)
-    move $a0, $t0
-    lw $t0, 104($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 108($sp)
-    la $t2, _QueueItem.GetData._entry
-    sw $t2, 112($sp)
-    li $t2, 8
-    sw $t2, 116($sp)
-    lw $t0, 116($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t5, 0($a0)
+    sw $t8, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    sw $v0, 32($sp)
+    la $t8, _QueueItem.GetData._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 120($sp)
-    lw $t0, 112($sp)
-    lw $t1, 120($sp)
-    sw $t0, 0($t1)
-    lw $t0, 108($sp)
-    lw $t1, 120($sp)
-    sw $t0, 4($t1)
-    lw $t0, 120($sp)
-    lw $t2, 0($t0)
-    sw $t2, 124($sp)
-    lw $t0, 120($sp)
-    move $a0, $t0
-    lw $t0, 124($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 128($sp)
-    la $t2, _QueueItem.SetNext._entry
-    sw $t2, 132($sp)
-    la $t2, _QueueItem.GetPrev._entry
-    sw $t2, 136($sp)
-    li $t2, 8
-    sw $t2, 140($sp)
-    lw $t0, 140($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    lw $t8, 32($sp)
+    sw $t8, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    move $s3, $v0
+    la $s0, _QueueItem.SetNext._entry
+    la $t8, _QueueItem.GetPrev._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 144($sp)
-    lw $t0, 136($sp)
-    lw $t1, 144($sp)
-    sw $t0, 0($t1)
-    lw $t0, 108($sp)
-    lw $t1, 144($sp)
-    sw $t0, 4($t1)
-    lw $t0, 144($sp)
-    lw $t2, 0($t0)
-    sw $t2, 148($sp)
-    lw $t0, 144($sp)
-    move $a0, $t0
-    lw $t0, 148($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 152($sp)
-    li $t2, 8
-    sw $t2, 156($sp)
-    lw $t0, 156($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $t8, $v0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 160($sp)
-    lw $t0, 132($sp)
-    lw $t1, 160($sp)
-    sw $t0, 0($t1)
-    lw $t0, 152($sp)
-    lw $t1, 160($sp)
-    sw $t0, 4($t1)
-    la $t2, _QueueItem.GetNext._entry
-    sw $t2, 164($sp)
-    li $t2, 8
-    sw $t2, 168($sp)
-    lw $t0, 168($sp)
-    move $a0, $t0
+    move $s6, $v0
+    sw $s0, 0($s6)
+    sw $t8, 4($s6)
+    la $t8, _QueueItem.GetNext._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 172($sp)
-    lw $t0, 164($sp)
-    lw $t1, 172($sp)
-    sw $t0, 0($t1)
-    lw $t0, 108($sp)
-    lw $t1, 172($sp)
-    sw $t0, 4($t1)
-    lw $t0, 172($sp)
-    lw $t2, 0($t0)
-    sw $t2, 176($sp)
-    lw $t0, 172($sp)
-    move $a0, $t0
-    lw $t0, 176($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 180($sp)
-    lw $t0, 160($sp)
-    lw $t2, 0($t0)
-    sw $t2, 184($sp)
-    lw $t0, 160($sp)
-    move $a0, $t0
-    lw $t0, 180($sp)
-    move $a1, $t0
-    lw $t0, 184($sp)
-    jalr $t0
-    la $t2, _QueueItem.SetPrev._entry
-    sw $t2, 188($sp)
-    la $t2, _QueueItem.GetNext._entry
-    sw $t2, 192($sp)
-    li $t2, 8
-    sw $t2, 196($sp)
-    lw $t0, 196($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    lw $t8, 0($s6)
+    move $a0, $s6
+    move $a1, $v0
+    jalr $t8
+    la $s6, _QueueItem.SetPrev._entry
+    la $t8, _QueueItem.GetNext._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 200($sp)
-    lw $t0, 192($sp)
-    lw $t1, 200($sp)
-    sw $t0, 0($t1)
-    lw $t0, 108($sp)
-    lw $t1, 200($sp)
-    sw $t0, 4($t1)
-    lw $t0, 200($sp)
-    lw $t2, 0($t0)
-    sw $t2, 204($sp)
-    lw $t0, 200($sp)
-    move $a0, $t0
-    lw $t0, 204($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 208($sp)
-    li $t2, 8
-    sw $t2, 212($sp)
-    lw $t0, 212($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $t8, $v0
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 216($sp)
-    lw $t0, 188($sp)
-    lw $t1, 216($sp)
-    sw $t0, 0($t1)
-    lw $t0, 208($sp)
-    lw $t1, 216($sp)
-    sw $t0, 4($t1)
-    la $t2, _QueueItem.GetPrev._entry
-    sw $t2, 220($sp)
-    li $t2, 8
-    sw $t2, 224($sp)
-    lw $t0, 224($sp)
-    move $a0, $t0
+    move $s0, $v0
+    sw $s6, 0($s0)
+    sw $t8, 4($s0)
+    la $t8, _QueueItem.GetPrev._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 228($sp)
-    lw $t0, 220($sp)
-    lw $t1, 228($sp)
-    sw $t0, 0($t1)
-    lw $t0, 108($sp)
-    lw $t1, 228($sp)
-    sw $t0, 4($t1)
-    lw $t0, 228($sp)
-    lw $t2, 0($t0)
-    sw $t2, 232($sp)
-    lw $t0, 228($sp)
-    move $a0, $t0
-    lw $t0, 232($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 236($sp)
-    lw $t0, 216($sp)
-    lw $t2, 0($t0)
-    sw $t2, 240($sp)
-    lw $t0, 216($sp)
-    move $a0, $t0
-    lw $t0, 236($sp)
-    move $a1, $t0
-    lw $t0, 240($sp)
-    jalr $t0
-    lw $t0, 128($sp)
-    move $v0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 32($sp)
+    sw $v0, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $a1, $v0
+    lw $v0, 0($s0)
+    move $a0, $s0
+    jalr $v0
+    move $v0, $s3
     _Queue.DeQueue_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 244
+    lw $s0, 16($sp)
+    lw $s3, 20($sp)
+    lw $s6, 24($sp)
+    lw $ra, 28($sp)
+    addu $sp, $sp, 36
     jr $ra
 
 .text
 .globl _Queue.DeQueue._entry
 _Queue.DeQueue._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 16($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 16($v0)
+    jalr $v0
     _Queue.DeQueue._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl main
 main:
-    subu $sp, $sp, 200
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 28
+    sw $s4, 16($sp)
+    sw $s7, 20($sp)
+    sw $ra, 24($sp)
     jal _Queue._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    la $t2, _Queue.Init._entry
-    sw $t2, 60($sp)
-    li $t2, 8
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    move $s4, $v0
+    la $s7, _Queue.Init._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 68($sp)
-    lw $t0, 60($sp)
-    lw $t1, 68($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 68($sp)
-    sw $t0, 4($t1)
-    lw $t0, 68($sp)
-    lw $t2, 0($t0)
-    sw $t2, 72($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    jalr $t0
-    li $t2, 0
-    sw $t2, 76($sp)
+    sw $s7, 0($v0)
+    sw $s4, 4($v0)
+    lw $s7, 0($v0)
+    move $a0, $v0
+    jalr $s7
+    li $s7, 0
     j main_L3
     main_L2:
-    la $t2, _Queue.EnQueue._entry
-    sw $t2, 80($sp)
-    li $t2, 8
-    sw $t2, 84($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
+    la $t8, _Queue.EnQueue._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 88($sp)
-    lw $t0, 80($sp)
-    lw $t1, 88($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 88($sp)
-    sw $t0, 4($t1)
-    lw $t0, 88($sp)
-    lw $t2, 0($t0)
-    sw $t2, 92($sp)
-    lw $t0, 88($sp)
-    move $a0, $t0
-    lw $t0, 76($sp)
-    move $a1, $t0
-    lw $t0, 92($sp)
-    jalr $t0
-    lw $t0, 76($sp)
-    addu $t2, $t0, 1
-    sw $t2, 96($sp)
-    lw $t0, 96($sp)
-    move $t2, $t0
-    sw $t2, 76($sp)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s4, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $s7
+    jalr $v0
+    addu $s7, $s7, 1
     main_L3:
-    lw $t0, 76($sp)
-    slt $t2, $t0, 10
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    bnez $t0, main_L2
-    li $t2, 0
-    sw $t2, 76($sp)
+    slt $t8, $s7, 10
+    bnez $t8, main_L2
+    li $s7, 0
     j main_L6
     main_L5:
-    la $t2, _Queue.DeQueue._entry
-    sw $t2, 104($sp)
-    li $t2, 8
-    sw $t2, 108($sp)
-    lw $t0, 108($sp)
-    move $a0, $t0
+    la $t8, _Queue.DeQueue._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 112($sp)
-    lw $t0, 104($sp)
-    lw $t1, 112($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 112($sp)
-    sw $t0, 4($t1)
-    lw $t0, 112($sp)
-    lw $t2, 0($t0)
-    sw $t2, 116($sp)
-    lw $t0, 112($sp)
-    move $a0, $t0
-    lw $t0, 116($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s4, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING4
-    sw $t2, 124($sp)
-    lw $t0, 124($sp)
-    move $a0, $t0
+    la $a0, _STRING4
     li $v0, 4
     syscall
-    lw $t0, 76($sp)
-    addu $t2, $t0, 1
-    sw $t2, 128($sp)
-    lw $t0, 128($sp)
-    move $t2, $t0
-    sw $t2, 76($sp)
+    addu $s7, $s7, 1
     main_L6:
-    lw $t0, 76($sp)
-    slt $t2, $t0, 4
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    bnez $t0, main_L5
-    la $t2, _STRING5
-    sw $t2, 136($sp)
-    lw $t0, 136($sp)
-    move $a0, $t0
+    slt $t8, $s7, 4
+    bnez $t8, main_L5
+    la $a0, _STRING5
     li $v0, 4
     syscall
-    li $t2, 0
-    sw $t2, 76($sp)
+    li $s7, 0
     j main_L9
     main_L8:
-    la $t2, _Queue.EnQueue._entry
-    sw $t2, 140($sp)
-    li $t2, 8
-    sw $t2, 144($sp)
-    lw $t0, 144($sp)
-    move $a0, $t0
+    la $t8, _Queue.EnQueue._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 148($sp)
-    lw $t0, 140($sp)
-    lw $t1, 148($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 148($sp)
-    sw $t0, 4($t1)
-    lw $t0, 148($sp)
-    lw $t2, 0($t0)
-    sw $t2, 152($sp)
-    lw $t0, 148($sp)
-    move $a0, $t0
-    lw $t0, 76($sp)
-    move $a1, $t0
-    lw $t0, 152($sp)
-    jalr $t0
-    lw $t0, 76($sp)
-    addu $t2, $t0, 1
-    sw $t2, 156($sp)
-    lw $t0, 156($sp)
-    move $t2, $t0
-    sw $t2, 76($sp)
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s4, 4($a0)
+    lw $v0, 0($a0)
+    move $a1, $s7
+    jalr $v0
+    addu $s7, $s7, 1
     main_L9:
-    lw $t0, 76($sp)
-    slt $t2, $t0, 10
-    sw $t2, 160($sp)
-    lw $t0, 160($sp)
-    bnez $t0, main_L8
-    li $t2, 0
-    sw $t2, 76($sp)
+    slt $t8, $s7, 10
+    bnez $t8, main_L8
+    li $s7, 0
     j main_L12
     main_L11:
-    la $t2, _Queue.DeQueue._entry
-    sw $t2, 164($sp)
-    li $t2, 8
-    sw $t2, 168($sp)
-    lw $t0, 168($sp)
-    move $a0, $t0
+    la $t8, _Queue.DeQueue._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 172($sp)
-    lw $t0, 164($sp)
-    lw $t1, 172($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 172($sp)
-    sw $t0, 4($t1)
-    lw $t0, 172($sp)
-    lw $t2, 0($t0)
-    sw $t2, 176($sp)
-    lw $t0, 172($sp)
-    move $a0, $t0
-    lw $t0, 176($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 180($sp)
-    lw $t0, 180($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s4, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING4
-    sw $t2, 184($sp)
-    lw $t0, 184($sp)
-    move $a0, $t0
+    la $a0, _STRING4
     li $v0, 4
     syscall
-    lw $t0, 76($sp)
-    addu $t2, $t0, 1
-    sw $t2, 188($sp)
-    lw $t0, 188($sp)
-    move $t2, $t0
-    sw $t2, 76($sp)
+    addu $s7, $s7, 1
     main_L12:
-    lw $t0, 76($sp)
-    slt $t2, $t0, 17
-    sw $t2, 192($sp)
-    lw $t0, 192($sp)
-    bnez $t0, main_L11
-    la $t2, _STRING5
-    sw $t2, 196($sp)
-    lw $t0, 196($sp)
-    move $a0, $t0
+    slt $t8, $s7, 17
+    bnez $t8, main_L11
+    la $a0, _STRING5
     li $v0, 4
     syscall
     main_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 200
+    lw $s4, 16($sp)
+    lw $s7, 20($sp)
+    lw $ra, 24($sp)
+    addu $sp, $sp, 28
     jr $ra
 
 .text
 .globl main._entry
 main._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal main
     main._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 # below are the runtime libary function for decaf

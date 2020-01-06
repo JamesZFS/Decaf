@@ -3,6 +3,7 @@
 use common::{HashSet, IndexSet};
 use std::marker::PhantomData;
 use crate::Reg;
+use std::hash::Hash;
 
 pub trait AllocCtx: Sized {
     // number of registers to allocate
@@ -24,9 +25,11 @@ pub trait AllocCtx: Sized {
     fn finish(&mut self, result: &[Node]);
 }
 
+#[derive(Debug)]
 pub struct Node {
     pub degree: u32,
     pub alias: u32,
+    // when move (u, v) is coalesced and v put in coalesced_nodes, v.alias = u
     pub color: Reg,
     pub adj_list: Vec<u32>,
     pub move_list: Vec<(u32, u32)>,
@@ -79,11 +82,11 @@ pub struct Allocator<A: AllocCtx> {
     // stack containing temporaries removed from the graph
     select_stack: IndexSet<u32>,
     // moves that have been coalesced
-    // coalesced_moves: HashSet<(u32, u32)>,
+    coalesced_moves: HashSet<(u32, u32)>,
     // moves whose source and target interfere
-    // constrained_moves: HashSet<(u32, u32)>,
+    constrained_moves: HashSet<(u32, u32)>,
     // moves that will no longer be considered for coalescing
-    // frozen_moves: HashSet<(u32, u32)>,
+    frozen_moves: HashSet<(u32, u32)>,
     // moves enabled for possible coalescing
     pub work_list_moves: HashSet<(u32, u32)>,
     // moves not yet ready for coalescing
@@ -96,7 +99,7 @@ impl<A: AllocCtx> Allocator<A> {
     pub fn work(ctx: &mut A) {
         // unluckily cannot use #[derive(Default)] because A may not be Default, even though PhantomData<A> is
         // I still don't know why rust has such a requirement
-        let mut a = Allocator { nodes: Vec::new(), initial: Vec::new(), simplify_work_list: HashSet::new(), freeze_work_list: HashSet::new(), spill_work_list: HashSet::new(), spilled_nodes: HashSet::new(), coalesced_nodes: HashSet::new(), select_stack: IndexSet::default(), work_list_moves: HashSet::new(), active_moves: HashSet::new(), adj_set: HashSet::new(), _p: PhantomData };
+        let mut a = Allocator { nodes: Vec::new(), initial: Vec::new(), simplify_work_list: HashSet::new(), freeze_work_list: HashSet::new(), spill_work_list: HashSet::new(), spilled_nodes: HashSet::new(), coalesced_nodes: HashSet::new(), select_stack: IndexSet::default(), coalesced_moves: HashSet::new(), constrained_moves: HashSet::new(), frozen_moves: HashSet::new(), work_list_moves: HashSet::new(), active_moves: HashSet::new(), adj_set: HashSet::new(), _p: PhantomData };
         // actually no information in `a` is preserved for the next loop
         // because in this simple variant of this algo, all coalesces are discarded if spill happens
         // so the only reason for creating `a` outside the loop is to reuse some memory
@@ -105,22 +108,22 @@ impl<A: AllocCtx> Allocator<A> {
             let (initial, nodes) = ctx.initial();
             a.initial = initial;
             a.nodes = nodes;
-            ctx.build(&mut a);
+            ctx.build(&mut a); // build interfere graph
             a.mk_work_list();
             loop {
                 match () { // just to avoid many if-else
-                    _ if !a.simplify_work_list.is_empty() => a.simplify(),
-                    _ if !a.work_list_moves.is_empty() => a.coalesce(),
-                    _ if !a.freeze_work_list.is_empty() => a.freeze(),
-                    _ if !a.spill_work_list.is_empty() => a.select_spill(),
+                    _ if !a.simplify_work_list.is_empty() => a.simplify(), // remove one node
+                    _ if !a.work_list_moves.is_empty() => a.coalesce(), // coalesce one pair
+                    _ if !a.freeze_work_list.is_empty() => a.freeze(), // freeze one pair
+                    _ if !a.spill_work_list.is_empty() => a.select_spill(), // select a node to *potentially* spill
                     _ => break,
                 }
-            }
+            } // next iteration
             a.assign_color();
             if !a.spilled_nodes.is_empty() {
                 a.rewrite_program(ctx);
             } else { break a.nodes; }
-        };
+        }; // any spill done: next iteration
         ctx.finish(&nodes);
     }
 
@@ -147,28 +150,170 @@ impl<A: AllocCtx> Allocator<A> {
     // because it must borrow self as a whole, so you can't modify any other fields, even though they are not involved in this iterator
     // the solution is to inline these functions manually, then rustc knows that it will borrows some fields of self
 
+    fn adjacent(&self, n: u32) -> Vec<u32> {
+        self.nodes[n as usize].adj_list.iter().copied()
+            .filter(|v| !(self.select_stack.contains(v) || self.coalesced_nodes.contains(v))).collect()
+    }
+
+    fn node_moves(&self, n: u32) -> Vec<(u32, u32)> {
+        self.nodes[n as usize].move_list.iter().copied()
+            .filter(|m| self.active_moves.contains(m) || self.work_list_moves.contains(m)).collect()
+    }
+
+    fn move_related(&self, n: u32) -> bool { // node_moves(n) is not empty?
+        self.nodes[n as usize].move_list.iter()
+            .any(|m| self.active_moves.contains(m) || self.work_list_moves.contains(m))
+    }
+
     fn mk_work_list(&mut self) {
-        unimplemented!()
+        for &n in &self.initial {
+            match () {
+                _ if self.nodes[n as usize].degree >= A::K => self.spill_work_list.insert(n),
+                _ if self.move_related(n) => self.freeze_work_list.insert(n),
+                _ => self.simplify_work_list.insert(n)
+            };
+        }
     }
 
     fn simplify(&mut self) {
-        unimplemented!()
+        let n = self.simplify_work_list.iter().next().unwrap_or_else(|| unreachable!()).to_owned();
+        self.simplify_work_list.remove(&n);
+        self.select_stack.insert(n); // push as last
+        for m in self.adjacent(n) {
+            self.decrement_degree(m);
+        }
+    }
+
+    fn decrement_degree(&mut self, m: u32) {
+        let d = self.nodes[m as usize].degree;
+        self.nodes[m as usize].degree = d - 1;
+        if d == A::K {
+            self.enable_moves(self.adjacent(m).with(m));
+            self.spill_work_list.remove(&m);
+            if self.move_related(m) {
+                self.freeze_work_list.insert(m);
+            } else {
+                self.simplify_work_list.insert(m);
+            }
+        }
+    }
+
+    fn enable_moves(&mut self, nodes: Vec<u32>) {
+        for n in nodes {
+            for m in self.node_moves(n) {
+                if self.active_moves.contains(&m) {
+                    self.active_moves.remove(&m);
+                    self.work_list_moves.insert(m);
+                }
+            }
+        }
+    }
+    
+    fn pre_colored(&self, n: u32) -> bool {
+        self.nodes[n as usize].pre_colored()
     }
 
     fn coalesce(&mut self) {
-        unimplemented!()
+        let &m = self.work_list_moves.iter().next().unwrap_or_else(|| unreachable!());
+        self.work_list_moves.remove(&m);
+        let (x, y) = (self.get_alias(m.0), self.get_alias(m.1)); // move x, y
+        let (u, v): (u32, u32);
+        if self.pre_colored(y) {
+            u = y;
+            v = x;
+        } else {
+            u = x;
+            v = y;
+        }
+        if u == v {
+            self.coalesced_moves.insert(m);
+            self.add_work_list(u);
+        } else if self.pre_colored(v) || self.adj_set.contains(&(u, v)) {
+            self.constrained_moves.insert(m);
+            self.add_work_list(u);
+            self.add_work_list(v);
+        } else if (self.pre_colored(u) && self.adjacent(v).into_iter().all(|t| self.safe(t, u)))
+            || (!self.pre_colored(u) && self.conservative(self.adjacent(u).unioned(self.adjacent(v)))) {
+            // do safe coalesce:
+            self.combine(u, v);
+            self.add_work_list(u);
+        } else {
+            self.active_moves.insert(m);
+        };
     }
 
-    fn get_alias(&self, mut _n: u32) -> u32 {
-        unimplemented!()
+    fn add_work_list(&mut self, u: u32) {
+        if self.pre_colored(u) && !self.move_related(u) && self.nodes[u as usize].degree < A::K {
+            self.freeze_work_list.remove(&u);
+            self.simplify_work_list.insert(u);
+        }
+    }
+
+    fn safe(&self, t: u32, r: u32) -> bool {
+        self.nodes[t as usize].degree < A::K
+            || self.pre_colored(t)
+            || self.adj_set.contains(&(t, r))
+    }
+
+    fn conservative(&self, nodes: Vec<u32>) -> bool { // neighbors with *significant degree* should be fewer than K
+        (nodes.into_iter().filter(|&n| self.nodes[n as usize].degree >= A::K)
+            .count() as u32) < A::K
+    }
+
+    fn get_alias(&self, n: u32) -> u32 { // like union-find set
+        if self.coalesced_nodes.contains(&n) {
+            self.get_alias(self.nodes[n as usize].alias)
+        } else { n }
+    }
+
+    fn combine(&mut self, u: u32, v: u32) {
+        if self.freeze_work_list.contains(&v) { // low deg
+            self.freeze_work_list.remove(&v);
+        } else {    // significant deg
+            self.spill_work_list.remove(&v);
+        }
+        self.coalesced_nodes.insert(v);
+        self.nodes[v as usize].alias = u;
+        let mut nv_moves = self.nodes[v as usize].move_list.iter().copied().collect::<Vec<_>>();
+        self.nodes[u as usize].move_list.append(&mut nv_moves); // moves(u) = moves(u) U moves(v)
+        for t in self.adjacent(v) {
+            self.add_edge(t, u);
+            self.decrement_degree(t);
+        }
+        if self.nodes[u as usize].degree >= A::K && self.freeze_work_list.contains(&u) {
+            self.freeze_work_list.remove(&u);
+            self.spill_work_list.insert(u);
+        }
     }
 
     fn freeze(&mut self) {
-        unimplemented!()
+        let u = self.freeze_work_list.iter().next().unwrap_or_else(|| unreachable!()).to_owned();
+        self.freeze_work_list.remove(&u);
+        self.simplify_work_list.insert(u);
+        self.freeze_moves(u); // freeze all moves associated with node u
+    }
+
+    fn freeze_moves(&mut self, u: u32) {
+        for m in self.node_moves(u) {
+            let v = if m.0 == u { m.1 } else if m.1 == u { m.0 } else { unreachable!() };
+            if self.active_moves.contains(&m) {
+                self.active_moves.remove(&m);
+            } else {
+                self.work_list_moves.remove(&m);
+            }
+            self.frozen_moves.insert(m);
+            if !self.move_related(v) && self.nodes[v as usize].degree < A::K {
+                self.freeze_work_list.remove(&v);
+                self.simplify_work_list.insert(v);
+            }
+        }
     }
 
     fn select_spill(&mut self) {
-        unimplemented!()
+        let m = self.spill_work_list.iter().next().unwrap_or_else(|| unreachable!()).to_owned(); // heuristic selection method?
+        self.spill_work_list.remove(&m);
+        self.simplify_work_list.insert(m);
+        self.freeze_moves(m);
     }
 
     fn assign_color(&mut self) {
@@ -199,9 +344,65 @@ impl<A: AllocCtx> Allocator<A> {
 
     fn rewrite_program(&mut self, ctx: &mut A) {
         ctx.rewrite(&self.spilled_nodes);
+        self.simplify_work_list.clear();
+        self.freeze_work_list.clear();
+        self.spill_work_list.clear();
         self.spilled_nodes.clear();
         self.coalesced_nodes.clear();
+        // self.colored_nodes.clear();
+        self.coalesced_moves.clear();
+        self.constrained_moves.clear();
+        self.frozen_moves.clear();
+        self.work_list_moves.clear();
         self.active_moves.clear();
         self.adj_set.clear();
+    }
+}
+
+trait Extendable: Sized {
+    type Item;
+
+    fn with(self, i: Self::Item) -> Self;
+
+    fn unioned(self, other: Self) -> Self;
+}
+
+impl<T> Extendable for Vec<T> {
+    type Item = T;
+
+    fn with(mut self, i: Self::Item) -> Self {
+        self.push(i);
+        self
+    }
+
+    fn unioned(mut self, mut other: Self) -> Self {
+        self.append(&mut other);
+        self
+    }
+}
+
+impl<T> Extendable for HashSet<T> where T: Eq + Hash + Copy {
+    type Item = T;
+
+    fn with(mut self, i: Self::Item) -> Self {
+        self.insert(i);
+        self
+    }
+
+    fn unioned(self, other: Self) -> Self {
+        self.union(&other).copied().collect()
+    }
+}
+
+impl<T> Extendable for IndexSet<T> where T: Eq + Hash + Copy {
+    type Item = T;
+
+    fn with(mut self, i: Self::Item) -> Self {
+        self.insert(i);
+        self
+    }
+
+    fn unioned(self, other: Self) -> Self {
+        self.union(&other).copied().collect()
     }
 }

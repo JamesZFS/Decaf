@@ -26,1321 +26,352 @@ _STRING4:
 .text
 .globl _Stack._new
 _Stack._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 12
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 12
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Stack
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t1, 44($sp)
-    sw $zero, 4($t1)
-    lw $t1, 44($sp)
-    sw $zero, 8($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Stack
+    sw $t8, 0($v0)
+    sw $zero, 4($v0)
+    sw $zero, 8($v0)
     _Stack._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl _Main._new
 _Main._new:
-    subu $sp, $sp, 52
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    li $t2, 4
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $a0, $t0
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 44($sp)
-    la $t2, _Main
-    sw $t2, 48($sp)
-    lw $t0, 48($sp)
-    lw $t1, 44($sp)
-    sw $t0, 0($t1)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    la $t8, _Main
+    sw $t8, 0($v0)
     _Main._new_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 52
     jr $ra
 
 .text
 .globl length
 length:
-    subu $sp, $sp, 40
-    move $t2, $a0
-    sw $t2, 40($sp)
-    move $t2, $a1
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 40($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    lw $t2, -4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    move $v0, $t0
+    lw $a1, 4($a0)
+    lw $a1, -4($a1)
+    move $v0, $a1
     length_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 40
     jr $ra
 
 .text
 .globl _Stack.Init
 _Stack.Init:
-    subu $sp, $sp, 96
-    move $t2, $a0
-    sw $t2, 96($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    li $t2, 404
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
+    subu $sp, $sp, 20
+    move $t5, $a0
+    sw $ra, 16($sp)
+    li $a0, 404
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    addu $t2, $t0, 404
-    sw $t2, 64($sp)
-    lw $t0, 60($sp)
-    addu $t2, $t0, 4
-    sw $t2, 60($sp)
+    move $t8, $v0
+    addu $a0, $t8, 404
+    addu $t8, $t8, 4
     j _Stack.Init_L4
     _Stack.Init_L3:
-    lw $t0, 64($sp)
-    subu $t2, $t0, 4
-    sw $t2, 64($sp)
-    lw $t1, 64($sp)
-    sw $zero, 0($t1)
+    subu $a0, $a0, 4
+    sw $zero, 0($a0)
     _Stack.Init_L4:
-    lw $t0, 64($sp)
-    lw $t1, 60($sp)
-    seq $t2, $t0, $t1
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    beqz $t0, _Stack.Init_L3
+    seq $t2, $a0, $t8
+    beqz $t2, _Stack.Init_L3
     li $t2, 100
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    lw $t1, 60($sp)
-    sw $t0, -4($t1)
-    lw $t0, 60($sp)
-    lw $t1, 96($sp)
-    sw $t0, 8($t1)
-    lw $t1, 96($sp)
-    sw $zero, 4($t1)
-    la $t2, _Stack.Push._entry
-    sw $t2, 76($sp)
-    li $t2, 8
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $a0, $t0
+    sw $t2, -4($t8)
+    sw $t8, 8($t5)
+    sw $zero, 4($t5)
+    la $t8, _Stack.Push._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 84($sp)
-    lw $t0, 76($sp)
-    lw $t1, 84($sp)
-    sw $t0, 0($t1)
-    lw $t0, 96($sp)
-    lw $t1, 84($sp)
-    sw $t0, 4($t1)
-    lw $t0, 84($sp)
-    lw $t2, 0($t0)
-    sw $t2, 88($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
-    li $t2, 3
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    move $a1, $t0
-    lw $t0, 88($sp)
-    jalr $t0
+    sw $t8, 0($v0)
+    sw $t5, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    li $a1, 3
+    jalr $t8
     _Stack.Init_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 96
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Stack.Init._entry
 _Stack.Init._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 8($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 8($v0)
+    jalr $v0
     _Stack.Init._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Stack.Push
 _Stack.Push:
-    subu $sp, $sp, 72
-    move $t2, $a0
-    sw $t2, 72($sp)
-    move $t2, $a1
-    sw $t2, 76($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 72($sp)
-    lw $t2, 8($t0)
-    sw $t2, 40($sp)
-    lw $t0, 72($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 40($sp)
-    lw $t2, -4($t0)
-    sw $t2, 48($sp)
-    lw $t0, 44($sp)
-    sge $t2, $t0, 0
-    sw $t2, 52($sp)
-    lw $t0, 44($sp)
-    lw $t1, 48($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 56($sp)
-    lw $t0, 52($sp)
-    lw $t1, 56($sp)
-    and $t2, $t0, $t1
-    sw $t2, 52($sp)
-    lw $t0, 52($sp)
-    beqz $t0, _Stack.Push_L3
-    lw $t0, 44($sp)
-    mul $t2, $t0, 4
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t1, 40($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 60($sp)
-    lw $t0, 76($sp)
-    lw $t1, 60($sp)
-    sw $t0, 0($t1)
+    lw $t5, 8($a0)
+    lw $t2, 4($a0)
+    lw $t8, -4($t5)
+    sge $a3, $t2, 0
+    slt $t8, $t2, $t8
+    and $a3, $a3, $t8
+    beqz $a3, _Stack.Push_L3
+    mul $t8, $t2, 4
+    addu $t8, $t8, $t5
+    sw $a1, 0($t8)
     j _Stack.Push_L4
     _Stack.Push_L3:
-    la $t2, _STRING3
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    la $a0, _STRING3
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _Stack.Push_L4:
-    lw $t0, 44($sp)
-    addu $t2, $t0, 1
-    sw $t2, 68($sp)
-    lw $t0, 68($sp)
-    lw $t1, 72($sp)
-    sw $t0, 4($t1)
+    addu $t8, $t2, 1
+    sw $t8, 4($a0)
     _Stack.Push_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 72
     jr $ra
 
 .text
 .globl _Stack.Push._entry
 _Stack.Push._entry:
-    subu $sp, $sp, 64
-    move $t2, $a0
-    sw $t2, 64($sp)
-    move $t2, $a1
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 64($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 12($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    move $a1, $t0
-    lw $t0, 60($sp)
-    jalr $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 12($v0)
+    jalr $v0
     _Stack.Push._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 64
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Stack.Pop
 _Stack.Pop:
-    subu $sp, $sp, 76
-    move $t2, $a0
-    sw $t2, 76($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 76($sp)
-    lw $t2, 8($t0)
-    sw $t2, 40($sp)
-    lw $t0, 76($sp)
-    lw $t2, 4($t0)
-    sw $t2, 44($sp)
-    lw $t0, 44($sp)
-    subu $t2, $t0, 1
-    sw $t2, 48($sp)
-    lw $t0, 40($sp)
-    lw $t2, -4($t0)
-    sw $t2, 52($sp)
-    lw $t0, 48($sp)
-    sge $t2, $t0, 0
-    sw $t2, 56($sp)
-    lw $t0, 48($sp)
-    lw $t1, 52($sp)
-    slt $t2, $t0, $t1
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    lw $t1, 60($sp)
-    and $t2, $t0, $t1
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    beqz $t0, _Stack.Pop_L3
-    lw $t0, 48($sp)
-    mul $t2, $t0, 4
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    lw $t1, 40($sp)
-    addu $t2, $t0, $t1
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    lw $t2, 0($t0)
-    sw $t2, 68($sp)
+    lw $t5, 8($a0)
+    lw $t8, 4($a0)
+    subu $a3, $t8, 1
+    lw $t8, -4($t5)
+    sge $t2, $a3, 0
+    slt $t8, $a3, $t8
+    and $t2, $t2, $t8
+    beqz $t2, _Stack.Pop_L3
+    mul $v0, $a3, 4
+    addu $v0, $v0, $t5
+    lw $v0, 0($v0)
     j _Stack.Pop_L4
     _Stack.Pop_L3:
-    la $t2, _STRING3
-    sw $t2, 72($sp)
-    lw $t0, 72($sp)
-    move $a0, $t0
+    la $a0, _STRING3
     li $v0, 4
     syscall
     li $v0, 10
     syscall
     _Stack.Pop_L4:
-    lw $t0, 48($sp)
-    lw $t1, 76($sp)
-    sw $t0, 4($t1)
-    lw $t0, 68($sp)
-    move $v0, $t0
+    sw $a3, 4($a0)
     _Stack.Pop_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 76
     jr $ra
 
 .text
 .globl _Stack.Pop._entry
 _Stack.Pop._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 16($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 16($v0)
+    jalr $v0
     _Stack.Pop._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Stack.NumElems
 _Stack.NumElems:
-    subu $sp, $sp, 44
-    move $t2, $a0
-    sw $t2, 44($sp)
-    move $t2, $s0
-    sw $t2, 0($sp)
-    move $t2, $s1
-    sw $t2, 4($sp)
-    move $t2, $s2
-    sw $t2, 8($sp)
-    move $t2, $s3
-    sw $t2, 12($sp)
-    move $t2, $s4
-    sw $t2, 16($sp)
-    move $t2, $s5
-    sw $t2, 20($sp)
-    move $t2, $s6
-    sw $t2, 24($sp)
-    move $t2, $s7
-    sw $t2, 28($sp)
-    move $t2, $fp
-    sw $t2, 32($sp)
-    move $t2, $ra
-    sw $t2, 36($sp)
-    lw $t0, 44($sp)
-    lw $t2, 4($t0)
-    sw $t2, 40($sp)
-    lw $t0, 40($sp)
-    move $v0, $t0
+    lw $v0, 4($a0)
     _Stack.NumElems_Ret:
-    lw $t0, 0($sp)
-    move $s0, $t0
-    lw $t0, 4($sp)
-    move $s1, $t0
-    lw $t0, 8($sp)
-    move $s2, $t0
-    lw $t0, 12($sp)
-    move $s3, $t0
-    lw $t0, 16($sp)
-    move $s4, $t0
-    lw $t0, 20($sp)
-    move $s5, $t0
-    lw $t0, 24($sp)
-    move $s6, $t0
-    lw $t0, 28($sp)
-    move $s7, $t0
-    lw $t0, 32($sp)
-    move $fp, $t0
-    lw $t0, 36($sp)
-    move $ra, $t0
-    addu $sp, $sp, 44
     jr $ra
 
 .text
 .globl _Stack.NumElems._entry
 _Stack.NumElems._entry:
-    subu $sp, $sp, 68
-    move $t2, $a0
-    sw $t2, 68($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    lw $t0, 68($sp)
-    lw $t2, 4($t0)
-    sw $t2, 56($sp)
-    lw $t0, 56($sp)
-    lw $t2, 0($t0)
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    lw $t2, 20($t0)
-    sw $t2, 60($sp)
-    lw $t0, 56($sp)
-    move $a0, $t0
-    lw $t0, 60($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $v0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    lw $a0, 4($a0)
+    lw $v0, 0($a0)
+    lw $v0, 20($v0)
+    jalr $v0
     _Stack.NumElems._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 68
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl _Stack.main
 _Stack.main:
-    subu $sp, $sp, 252
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 24
+    sw $s7, 16($sp)
+    sw $ra, 20($sp)
     jal _Stack._new
-    move $t2, $v0
-    sw $t2, 56($sp)
-    la $t2, _Stack.Init._entry
-    sw $t2, 60($sp)
-    li $t2, 8
-    sw $t2, 64($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
+    move $s7, $v0
+    la $t8, _Stack.Init._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 68($sp)
-    lw $t0, 60($sp)
-    lw $t1, 68($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 68($sp)
-    sw $t0, 4($t1)
-    lw $t0, 68($sp)
-    lw $t2, 0($t0)
-    sw $t2, 72($sp)
-    lw $t0, 68($sp)
-    move $a0, $t0
-    lw $t0, 72($sp)
-    jalr $t0
-    la $t2, _Stack.Push._entry
-    sw $t2, 76($sp)
-    li $t2, 8
-    sw $t2, 80($sp)
-    lw $t0, 80($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s7, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    la $t8, _Stack.Push._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 84($sp)
-    lw $t0, 76($sp)
-    lw $t1, 84($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 84($sp)
-    sw $t0, 4($t1)
-    lw $t0, 84($sp)
-    lw $t2, 0($t0)
-    sw $t2, 88($sp)
-    lw $t0, 84($sp)
-    move $a0, $t0
-    li $t2, 3
-    sw $t2, 92($sp)
-    lw $t0, 92($sp)
-    move $a1, $t0
-    lw $t0, 88($sp)
-    jalr $t0
-    la $t2, _Stack.Push._entry
-    sw $t2, 96($sp)
-    li $t2, 8
-    sw $t2, 100($sp)
-    lw $t0, 100($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s7, 4($a0)
+    lw $v0, 0($a0)
+    li $a1, 3
+    jalr $v0
+    la $t8, _Stack.Push._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 104($sp)
-    lw $t0, 96($sp)
-    lw $t1, 104($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 104($sp)
-    sw $t0, 4($t1)
-    lw $t0, 104($sp)
-    lw $t2, 0($t0)
-    sw $t2, 108($sp)
-    lw $t0, 104($sp)
-    move $a0, $t0
-    li $t2, 7
-    sw $t2, 112($sp)
-    lw $t0, 112($sp)
-    move $a1, $t0
-    lw $t0, 108($sp)
-    jalr $t0
-    la $t2, _Stack.Push._entry
-    sw $t2, 116($sp)
-    li $t2, 8
-    sw $t2, 120($sp)
-    lw $t0, 120($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s7, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    li $a1, 7
+    jalr $t8
+    la $t8, _Stack.Push._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 124($sp)
-    lw $t0, 116($sp)
-    lw $t1, 124($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 124($sp)
-    sw $t0, 4($t1)
-    lw $t0, 124($sp)
-    lw $t2, 0($t0)
-    sw $t2, 128($sp)
-    lw $t0, 124($sp)
-    move $a0, $t0
-    li $t2, 4
-    sw $t2, 132($sp)
-    lw $t0, 132($sp)
-    move $a1, $t0
-    lw $t0, 128($sp)
-    jalr $t0
-    la $t2, _Stack.NumElems._entry
-    sw $t2, 136($sp)
-    li $t2, 8
-    sw $t2, 140($sp)
-    lw $t0, 140($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s7, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    li $a1, 4
+    jalr $t8
+    la $t8, _Stack.NumElems._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 144($sp)
-    lw $t0, 136($sp)
-    lw $t1, 144($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 144($sp)
-    sw $t0, 4($t1)
-    lw $t0, 144($sp)
-    lw $t2, 0($t0)
-    sw $t2, 148($sp)
-    lw $t0, 144($sp)
-    move $a0, $t0
-    lw $t0, 148($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 152($sp)
-    lw $t0, 152($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s7, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING4
-    sw $t2, 156($sp)
-    lw $t0, 156($sp)
-    move $a0, $t0
+    la $a0, _STRING4
     li $v0, 4
     syscall
-    la $t2, _Stack.Pop._entry
-    sw $t2, 160($sp)
-    li $t2, 8
-    sw $t2, 164($sp)
-    lw $t0, 164($sp)
-    move $a0, $t0
+    la $t8, _Stack.Pop._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 168($sp)
-    lw $t0, 160($sp)
-    lw $t1, 168($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 168($sp)
-    sw $t0, 4($t1)
-    lw $t0, 168($sp)
-    lw $t2, 0($t0)
-    sw $t2, 172($sp)
-    lw $t0, 168($sp)
-    move $a0, $t0
-    lw $t0, 172($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 176($sp)
-    lw $t0, 176($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s7, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING4
-    sw $t2, 180($sp)
-    lw $t0, 180($sp)
-    move $a0, $t0
+    la $a0, _STRING4
     li $v0, 4
     syscall
-    la $t2, _Stack.Pop._entry
-    sw $t2, 184($sp)
-    li $t2, 8
-    sw $t2, 188($sp)
-    lw $t0, 188($sp)
-    move $a0, $t0
+    la $t8, _Stack.Pop._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 192($sp)
-    lw $t0, 184($sp)
-    lw $t1, 192($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 192($sp)
-    sw $t0, 4($t1)
-    lw $t0, 192($sp)
-    lw $t2, 0($t0)
-    sw $t2, 196($sp)
-    lw $t0, 192($sp)
-    move $a0, $t0
-    lw $t0, 196($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 200($sp)
-    lw $t0, 200($sp)
-    move $a0, $t0
+    move $a0, $v0
+    sw $t8, 0($a0)
+    sw $s7, 4($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING4
-    sw $t2, 204($sp)
-    lw $t0, 204($sp)
-    move $a0, $t0
+    la $a0, _STRING4
     li $v0, 4
     syscall
-    la $t2, _Stack.Pop._entry
-    sw $t2, 208($sp)
-    li $t2, 8
-    sw $t2, 212($sp)
-    lw $t0, 212($sp)
-    move $a0, $t0
+    la $t8, _Stack.Pop._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 216($sp)
-    lw $t0, 208($sp)
-    lw $t1, 216($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 216($sp)
-    sw $t0, 4($t1)
-    lw $t0, 216($sp)
-    lw $t2, 0($t0)
-    sw $t2, 220($sp)
-    lw $t0, 216($sp)
-    move $a0, $t0
-    lw $t0, 220($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 224($sp)
-    lw $t0, 224($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s7, 4($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
+    move $a0, $v0
     li $v0, 1
     syscall
-    la $t2, _STRING4
-    sw $t2, 228($sp)
-    lw $t0, 228($sp)
-    move $a0, $t0
+    la $a0, _STRING4
     li $v0, 4
     syscall
-    la $t2, _Stack.NumElems._entry
-    sw $t2, 232($sp)
-    li $t2, 8
-    sw $t2, 236($sp)
-    lw $t0, 236($sp)
-    move $a0, $t0
+    la $t8, _Stack.NumElems._entry
+    li $a0, 8
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 240($sp)
-    lw $t0, 232($sp)
-    lw $t1, 240($sp)
-    sw $t0, 0($t1)
-    lw $t0, 56($sp)
-    lw $t1, 240($sp)
-    sw $t0, 4($t1)
-    lw $t0, 240($sp)
-    lw $t2, 0($t0)
-    sw $t2, 244($sp)
-    lw $t0, 240($sp)
-    move $a0, $t0
-    lw $t0, 244($sp)
-    jalr $t0
-    move $t2, $v0
-    sw $t2, 248($sp)
-    lw $t0, 248($sp)
-    move $a0, $t0
+    sw $t8, 0($v0)
+    sw $s7, 4($v0)
+    lw $s7, 0($v0)
+    move $a0, $v0
+    jalr $s7
+    move $a0, $v0
     li $v0, 1
     syscall
     _Stack.main_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 252
+    lw $s7, 16($sp)
+    lw $ra, 20($sp)
+    addu $sp, $sp, 24
     jr $ra
 
 .text
 .globl _Stack.main._entry
 _Stack.main._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal _Stack.main
     _Stack.main._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl main
 main:
-    subu $sp, $sp, 72
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
-    la $t2, _Stack.main._entry
-    sw $t2, 56($sp)
-    li $t2, 4
-    sw $t2, 60($sp)
-    lw $t0, 60($sp)
-    move $a0, $t0
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    la $t8, _Stack.main._entry
+    li $a0, 4
     li $v0, 9
     syscall
-    move $t2, $v0
-    sw $t2, 64($sp)
-    lw $t0, 56($sp)
-    lw $t1, 64($sp)
-    sw $t0, 0($t1)
-    lw $t0, 64($sp)
-    lw $t2, 0($t0)
-    sw $t2, 68($sp)
-    lw $t0, 64($sp)
-    move $a0, $t0
-    lw $t0, 68($sp)
-    jalr $t0
+    sw $t8, 0($v0)
+    lw $t8, 0($v0)
+    move $a0, $v0
+    jalr $t8
     main_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 72
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
 .globl main._entry
 main._entry:
-    subu $sp, $sp, 56
-    move $t2, $a0
-    sw $t2, 56($sp)
-    move $t2, $s0
-    sw $t2, 16($sp)
-    move $t2, $s1
-    sw $t2, 20($sp)
-    move $t2, $s2
-    sw $t2, 24($sp)
-    move $t2, $s3
-    sw $t2, 28($sp)
-    move $t2, $s4
-    sw $t2, 32($sp)
-    move $t2, $s5
-    sw $t2, 36($sp)
-    move $t2, $s6
-    sw $t2, 40($sp)
-    move $t2, $s7
-    sw $t2, 44($sp)
-    move $t2, $fp
-    sw $t2, 48($sp)
-    move $t2, $ra
-    sw $t2, 52($sp)
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
     jal main
     main._entry_Ret:
-    lw $t0, 16($sp)
-    move $s0, $t0
-    lw $t0, 20($sp)
-    move $s1, $t0
-    lw $t0, 24($sp)
-    move $s2, $t0
-    lw $t0, 28($sp)
-    move $s3, $t0
-    lw $t0, 32($sp)
-    move $s4, $t0
-    lw $t0, 36($sp)
-    move $s5, $t0
-    lw $t0, 40($sp)
-    move $s6, $t0
-    lw $t0, 44($sp)
-    move $s7, $t0
-    lw $t0, 48($sp)
-    move $fp, $t0
-    lw $t0, 52($sp)
-    move $ra, $t0
-    addu $sp, $sp, 56
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 # below are the runtime libary function for decaf
