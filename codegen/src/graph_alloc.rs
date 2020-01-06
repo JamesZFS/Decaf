@@ -25,7 +25,6 @@ pub trait AllocCtx: Sized {
     fn finish(&mut self, result: &[Node]);
 }
 
-#[derive(Debug)]
 pub struct Node {
     pub degree: u32,
     pub alias: u32,
@@ -82,11 +81,11 @@ pub struct Allocator<A: AllocCtx> {
     // stack containing temporaries removed from the graph
     select_stack: IndexSet<u32>,
     // moves that have been coalesced
-    coalesced_moves: HashSet<(u32, u32)>,
+    // coalesced_moves: HashSet<(u32, u32)>,
     // moves whose source and target interfere
-    constrained_moves: HashSet<(u32, u32)>,
+    // constrained_moves: HashSet<(u32, u32)>,
     // moves that will no longer be considered for coalescing
-    frozen_moves: HashSet<(u32, u32)>,
+    // frozen_moves: HashSet<(u32, u32)>,
     // moves enabled for possible coalescing
     pub work_list_moves: HashSet<(u32, u32)>,
     // moves not yet ready for coalescing
@@ -99,7 +98,7 @@ impl<A: AllocCtx> Allocator<A> {
     pub fn work(ctx: &mut A) {
         // unluckily cannot use #[derive(Default)] because A may not be Default, even though PhantomData<A> is
         // I still don't know why rust has such a requirement
-        let mut a = Allocator { nodes: Vec::new(), initial: Vec::new(), simplify_work_list: HashSet::new(), freeze_work_list: HashSet::new(), spill_work_list: HashSet::new(), spilled_nodes: HashSet::new(), coalesced_nodes: HashSet::new(), select_stack: IndexSet::default(), coalesced_moves: HashSet::new(), constrained_moves: HashSet::new(), frozen_moves: HashSet::new(), work_list_moves: HashSet::new(), active_moves: HashSet::new(), adj_set: HashSet::new(), _p: PhantomData };
+        let mut a = Allocator { nodes: Vec::new(), initial: Vec::new(), simplify_work_list: HashSet::new(), freeze_work_list: HashSet::new(), spill_work_list: HashSet::new(), spilled_nodes: HashSet::new(), coalesced_nodes: HashSet::new(), select_stack: IndexSet::default(), work_list_moves: HashSet::new(), active_moves: HashSet::new(), adj_set: HashSet::new(), _p: PhantomData };
         // actually no information in `a` is preserved for the next loop
         // because in this simple variant of this algo, all coalesces are discarded if spill happens
         // so the only reason for creating `a` outside the loop is to reuse some memory
@@ -208,7 +207,7 @@ impl<A: AllocCtx> Allocator<A> {
             }
         }
     }
-    
+
     fn pre_colored(&self, n: u32) -> bool {
         self.nodes[n as usize].pre_colored()
     }
@@ -226,10 +225,10 @@ impl<A: AllocCtx> Allocator<A> {
             v = y;
         }
         if u == v {
-            self.coalesced_moves.insert(m);
+            // self.coalesced_moves.insert(m);
             self.add_work_list(u);
         } else if self.pre_colored(v) || self.adj_set.contains(&(u, v)) {
-            self.constrained_moves.insert(m);
+            // self.constrained_moves.insert(m);
             self.add_work_list(u);
             self.add_work_list(v);
         } else if (self.pre_colored(u) && self.adjacent(v).into_iter().all(|t| self.safe(t, u)))
@@ -301,7 +300,7 @@ impl<A: AllocCtx> Allocator<A> {
             } else {
                 self.work_list_moves.remove(&m);
             }
-            self.frozen_moves.insert(m);
+            // self.frozen_moves.insert(m);
             if !self.move_related(v) && self.nodes[v as usize].degree < A::K {
                 self.freeze_work_list.remove(&v);
                 self.simplify_work_list.insert(v);
@@ -350,9 +349,9 @@ impl<A: AllocCtx> Allocator<A> {
         self.spilled_nodes.clear();
         self.coalesced_nodes.clear();
         // self.colored_nodes.clear();
-        self.coalesced_moves.clear();
-        self.constrained_moves.clear();
-        self.frozen_moves.clear();
+        // self.coalesced_moves.clear();
+        // self.constrained_moves.clear();
+        // self.frozen_moves.clear();
         self.work_list_moves.clear();
         self.active_moves.clear();
         self.adj_set.clear();
