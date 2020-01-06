@@ -126,12 +126,12 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
     let mut fu = FuncGen { param_num: f.param_num, reg_num: f.reg_num, ch_param_num: 0, name: &f.name, program: p, bb: Vec::new(), spill2slot: HashMap::new() };
     fu.populate(f);
     match m { AllocMethod::Graph => {
-      Allocator::work(&mut fu, &f.name);
+      Allocator::work(&mut fu);
 //      for (bb, _) in fu.bb.iter_mut() {
 //        let opt = bb.clone().into_iter().filter(|asm| !asm.useless()).collect();
 //        std::mem::replace(bb, opt);
 //      }
-//      Allocator::work(&mut fu, &f.name);
+//      Allocator::work(&mut fu);
     }, AllocMethod::Brute => fu.brute_alloc() }
     fu.fill_imm_tag();
     fu.bb.into_iter()

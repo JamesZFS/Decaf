@@ -4,7 +4,6 @@ use common::{HashSet, IndexSet};
 use std::marker::PhantomData;
 use crate::Reg;
 use std::hash::Hash;
-// use crate::mips::regs::{NAME, REG_N};
 // extern crate rand;
 
 pub trait AllocCtx: Sized {
@@ -97,8 +96,7 @@ pub struct Allocator<A: AllocCtx> {
 }
 
 impl<A: AllocCtx> Allocator<A> {
-    pub fn work(ctx: &mut A, f_name: &str) {
-//        println!("========= {} =========", f_name);
+    pub fn work(ctx: &mut A) {
         // unluckily cannot use #[derive(Default)] because A may not be Default, even though PhantomData<A> is
         // I still don't know why rust has such a requirement
         let mut a = Allocator { nodes: Vec::new(), initial: Vec::new(), simplify_work_list: HashSet::new(), freeze_work_list: HashSet::new(), spill_work_list: HashSet::new(), spilled_nodes: HashSet::new(), coalesced_nodes: HashSet::new(), select_stack: IndexSet::default(), work_list_moves: HashSet::new(), active_moves: HashSet::new(), adj_set: HashSet::new(), _p: PhantomData };
@@ -123,20 +121,9 @@ impl<A: AllocCtx> Allocator<A> {
             } // next iteration
             a.assign_color();
             if !a.spilled_nodes.is_empty() {
-//                println!("spilled in {}, nodes: {:?}", f_name, a.spilled_nodes);
                 a.rewrite_program(ctx);
             } else { break a.nodes; }
         }; // any spill done: next iteration
-//        println!("colors:");
-//        for (i, n) in nodes.iter().enumerate() {
-//            if (i as u32) < REG_N { continue; }
-//            println!("\tR{}: {}", i, match n.color {
-//                Reg::PreColored(r) | Reg::Allocated(r) => NAME[r as usize],
-//                Reg::Virtual(_) => "xx",
-//            })
-//        }
-//        println!("coalesced: {:?}", a.coalesced_nodes);
-//        println!();
         ctx.finish(&nodes);
     }
 
@@ -340,7 +327,6 @@ impl<A: AllocCtx> Allocator<A> {
                 let a = self.get_alias(w);
                 match self.nodes[a as usize].color {
                     Reg::PreColored(r) | Reg::Allocated(r) => {
-//                        println!("removed: {}", NAME[r as usize]);
                         available.remove(&r);
                     }
                     Reg::Virtual(_) => {}

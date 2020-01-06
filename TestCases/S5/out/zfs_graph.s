@@ -53,10 +53,20 @@ length:
 .text
 .globl main
 main:
+    li $t4, 0
+    li $t8, 1
+    li $a3, 2
+    li $t6, 3
+    li $t5, 4
+    li $t9, 5
+    li $a2, 6
+    li $t2, 7
+    li $t7, 8
+    li $t1, 9
     la $a0, _STRING1
     li $v0, 4
     syscall
-    move $a0, $zero
+    move $a0, $t4
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -65,7 +75,7 @@ main:
     la $a0, _STRING3
     li $v0, 4
     syscall
-    li $a0, 1
+    move $a0, $t8
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -74,7 +84,7 @@ main:
     la $a0, _STRING4
     li $v0, 4
     syscall
-    li $a0, 2
+    move $a0, $a3
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -83,7 +93,7 @@ main:
     la $a0, _STRING5
     li $v0, 4
     syscall
-    li $a0, 3
+    move $a0, $t6
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -92,7 +102,7 @@ main:
     la $a0, _STRING6
     li $v0, 4
     syscall
-    li $a0, 4
+    move $a0, $t5
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -101,7 +111,7 @@ main:
     la $a0, _STRING7
     li $v0, 4
     syscall
-    li $a0, 5
+    move $a0, $t9
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -110,7 +120,7 @@ main:
     la $a0, _STRING8
     li $v0, 4
     syscall
-    li $a0, 6
+    move $a0, $a2
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -119,7 +129,7 @@ main:
     la $a0, _STRING9
     li $v0, 4
     syscall
-    li $a0, 7
+    move $a0, $t2
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -128,7 +138,7 @@ main:
     la $a0, _STRING10
     li $v0, 4
     syscall
-    li $a0, 8
+    move $a0, $t7
     li $v0, 1
     syscall
     la $a0, _STRING2
@@ -137,7 +147,7 @@ main:
     la $a0, _STRING11
     li $v0, 4
     syscall
-    li $a0, 9
+    move $a0, $t1
     li $v0, 1
     syscall
     la $a0, _STRING2
