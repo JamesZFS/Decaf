@@ -7,6 +7,62 @@ _Main:
 .data
 _STRING0:
     .asciiz "Main"
+_STRING1:
+    .asciiz "r0 = "
+_STRING2:
+    .asciiz "\n"
+_STRING3:
+    .asciiz "r1 = "
+_STRING4:
+    .asciiz "r2 = "
+_STRING5:
+    .asciiz "r3 = "
+_STRING6:
+    .asciiz "r4 = "
+_STRING7:
+    .asciiz "r5 = "
+_STRING8:
+    .asciiz "r6 = "
+_STRING9:
+    .asciiz "r7 = "
+_STRING10:
+    .asciiz "r8 = "
+_STRING11:
+    .asciiz "r9 = "
+_STRING12:
+    .asciiz "r10 = "
+_STRING13:
+    .asciiz "r11 = "
+_STRING14:
+    .asciiz "r12 = "
+_STRING15:
+    .asciiz "r13 = "
+_STRING16:
+    .asciiz "r14 = "
+_STRING17:
+    .asciiz "r15 = "
+_STRING18:
+    .asciiz "r16 = "
+_STRING19:
+    .asciiz "r17 = "
+_STRING20:
+    .asciiz "r18 = "
+_STRING21:
+    .asciiz "r19 = "
+_STRING22:
+    .asciiz "r20 = "
+_STRING23:
+    .asciiz "r21 = "
+_STRING24:
+    .asciiz "r22 = "
+_STRING25:
+    .asciiz "r23 = "
+_STRING26:
+    .asciiz "r24 = "
+_STRING27:
+    .asciiz "r25 = "
+_STRING28:
+    .asciiz "r26 = "
 
 .text
 .globl _Main._new
@@ -31,10 +87,262 @@ length:
 .text
 .globl main
 main:
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    la $t8, _Main.foo._entry
+    li $a0, 4
+    li $v0, 9
+    syscall
+    move $a0, $v0
+    sw $t8, 0($a0)
+    lw $v0, 0($a0)
+    jalr $v0
+    la $a0, _STRING1
+    li $v0, 4
+    syscall
+    move $a0, $zero
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING3
+    li $v0, 4
+    syscall
+    li $a0, 1
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING4
+    li $v0, 4
+    syscall
     li $a0, 2
     li $v0, 1
     syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING5
+    li $v0, 4
+    syscall
+    li $a0, 3
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING6
+    li $v0, 4
+    syscall
+    li $a0, 4
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING7
+    li $v0, 4
+    syscall
+    li $a0, 5
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING8
+    li $v0, 4
+    syscall
+    li $a0, 6
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING9
+    li $v0, 4
+    syscall
+    li $a0, 7
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING10
+    li $v0, 4
+    syscall
+    li $a0, 8
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING11
+    li $v0, 4
+    syscall
+    li $a0, 9
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING12
+    li $v0, 4
+    syscall
+    li $a0, 10
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING13
+    li $v0, 4
+    syscall
+    li $a0, 11
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING14
+    li $v0, 4
+    syscall
+    li $a0, 12
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING15
+    li $v0, 4
+    syscall
+    li $a0, 13
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING16
+    li $v0, 4
+    syscall
+    li $a0, 14
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING17
+    li $v0, 4
+    syscall
+    li $a0, 15
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING18
+    li $v0, 4
+    syscall
+    li $a0, 16
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING19
+    li $v0, 4
+    syscall
+    li $a0, 17
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING20
+    li $v0, 4
+    syscall
+    li $a0, 18
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING21
+    li $v0, 4
+    syscall
+    li $a0, 19
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING22
+    li $v0, 4
+    syscall
+    li $a0, 20
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING23
+    li $v0, 4
+    syscall
+    li $a0, 21
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING24
+    li $v0, 4
+    syscall
+    li $a0, 22
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING25
+    li $v0, 4
+    syscall
+    li $a0, 23
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING26
+    li $v0, 4
+    syscall
+    li $a0, 24
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING27
+    li $v0, 4
+    syscall
+    li $a0, 25
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
+    la $a0, _STRING28
+    li $v0, 4
+    syscall
+    li $a0, 26
+    li $v0, 1
+    syscall
+    la $a0, _STRING2
+    li $v0, 4
+    syscall
     main_Ret:
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
     jr $ra
 
 .text
@@ -44,6 +352,23 @@ main._entry:
     sw $ra, 16($sp)
     jal main
     main._entry_Ret:
+    lw $ra, 16($sp)
+    addu $sp, $sp, 20
+    jr $ra
+
+.text
+.globl _Main.foo
+_Main.foo:
+    _Main.foo_Ret:
+    jr $ra
+
+.text
+.globl _Main.foo._entry
+_Main.foo._entry:
+    subu $sp, $sp, 20
+    sw $ra, 16($sp)
+    jal _Main.foo
+    _Main.foo._entry_Ret:
     lw $ra, 16($sp)
     addu $sp, $sp, 20
     jr $ra

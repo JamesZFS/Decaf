@@ -4,6 +4,8 @@ use common::{HashSet, IndexSet};
 use std::marker::PhantomData;
 use crate::Reg;
 use std::hash::Hash;
+// use crate::mips::regs::{NAME, REG_N};
+// extern crate rand;
 
 pub trait AllocCtx: Sized {
     // number of registers to allocate
@@ -95,7 +97,8 @@ pub struct Allocator<A: AllocCtx> {
 }
 
 impl<A: AllocCtx> Allocator<A> {
-    pub fn work(ctx: &mut A) {
+    pub fn work(ctx: &mut A, f_name: &str) {
+//        println!("========= {} =========", f_name);
         // unluckily cannot use #[derive(Default)] because A may not be Default, even though PhantomData<A> is
         // I still don't know why rust has such a requirement
         let mut a = Allocator { nodes: Vec::new(), initial: Vec::new(), simplify_work_list: HashSet::new(), freeze_work_list: HashSet::new(), spill_work_list: HashSet::new(), spilled_nodes: HashSet::new(), coalesced_nodes: HashSet::new(), select_stack: IndexSet::default(), work_list_moves: HashSet::new(), active_moves: HashSet::new(), adj_set: HashSet::new(), _p: PhantomData };
@@ -120,9 +123,20 @@ impl<A: AllocCtx> Allocator<A> {
             } // next iteration
             a.assign_color();
             if !a.spilled_nodes.is_empty() {
+//                println!("spilled in {}, nodes: {:?}", f_name, a.spilled_nodes);
                 a.rewrite_program(ctx);
             } else { break a.nodes; }
         }; // any spill done: next iteration
+//        println!("colors:");
+//        for (i, n) in nodes.iter().enumerate() {
+//            if (i as u32) < REG_N { continue; }
+//            println!("\tR{}: {}", i, match n.color {
+//                Reg::PreColored(r) | Reg::Allocated(r) => NAME[r as usize],
+//                Reg::Virtual(_) => "xx",
+//            })
+//        }
+//        println!("coalesced: {:?}", a.coalesced_nodes);
+//        println!();
         ctx.finish(&nodes);
     }
 
@@ -208,6 +222,7 @@ impl<A: AllocCtx> Allocator<A> {
         }
     }
 
+    #[inline(always)]
     fn pre_colored(&self, n: u32) -> bool {
         self.nodes[n as usize].pre_colored()
     }
@@ -273,7 +288,7 @@ impl<A: AllocCtx> Allocator<A> {
         }
         self.coalesced_nodes.insert(v);
         self.nodes[v as usize].alias = u;
-        let mut nv_moves = self.nodes[v as usize].move_list.iter().copied().collect::<Vec<_>>();
+        let mut nv_moves = self.nodes[v as usize].move_list.iter().copied().collect::<Vec<_>>(); // *difficulty
         self.nodes[u as usize].move_list.append(&mut nv_moves); // moves(u) = moves(u) U moves(v)
         for t in self.adjacent(v) {
             self.add_edge(t, u);
@@ -309,7 +324,8 @@ impl<A: AllocCtx> Allocator<A> {
     }
 
     fn select_spill(&mut self) {
-        let m = self.spill_work_list.iter().next().unwrap_or_else(|| unreachable!()).to_owned(); // heuristic selection method?
+        // let i = rand::random::<usize>() % self.spill_work_list.len();
+        let m = self.spill_work_list.iter().nth(0).unwrap_or_else(|| unreachable!()).to_owned(); // heuristic selection method?
         self.spill_work_list.remove(&m);
         self.simplify_work_list.insert(m);
         self.freeze_moves(m);
@@ -323,14 +339,17 @@ impl<A: AllocCtx> Allocator<A> {
             for &w in &self.nodes[n as usize].adj_list {
                 let a = self.get_alias(w);
                 match self.nodes[a as usize].color {
-                    Reg::PreColored(r) | Reg::Allocated(r) => { available.remove(&r); }
+                    Reg::PreColored(r) | Reg::Allocated(r) => {
+//                        println!("removed: {}", NAME[r as usize]);
+                        available.remove(&r);
+                    }
                     Reg::Virtual(_) => {}
                 };
             }
             // PreColored nodes should never be added to select_stack
             // so this color assignment will not give a PreColored node a wrong color
-            if let Some(r) = available.iter().nth(0) {
-                self.nodes[n as usize].color = Reg::Allocated(*r);
+            if let Some(&r) = available.iter().nth(0) {
+                self.nodes[n as usize].color = Reg::Allocated(r);
             } else {
                 self.spilled_nodes.insert(n);
             }
@@ -343,16 +362,16 @@ impl<A: AllocCtx> Allocator<A> {
 
     fn rewrite_program(&mut self, ctx: &mut A) {
         ctx.rewrite(&self.spilled_nodes);
-        self.simplify_work_list.clear();
-        self.freeze_work_list.clear();
-        self.spill_work_list.clear();
+        assert!(self.simplify_work_list.is_empty());
+        assert!(self.freeze_work_list.is_empty());
+        assert!(self.spill_work_list.is_empty());
+        assert!(self.work_list_moves.is_empty());
         self.spilled_nodes.clear();
         self.coalesced_nodes.clear();
         // self.colored_nodes.clear();
         // self.coalesced_moves.clear();
         // self.constrained_moves.clear();
         // self.frozen_moves.clear();
-        self.work_list_moves.clear();
         self.active_moves.clear();
         self.adj_set.clear();
     }

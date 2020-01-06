@@ -1,8 +1,62 @@
 class Main {
     static void main() {
-    	int a = 1;
-    	var b = a;
-    	var c = b + a;
-    	Print(c);
+    	int r0 = 0;
+        int r1 = 1;
+        int r2 = 2;
+        int r3 = 3;
+        int r4 = 4;
+        int r5 = 5;
+        int r6 = 6;
+        int r7 = 7;
+        int r8 = 8;
+        int r9 = 9;
+        int r10 = 10;
+        int r11 = 11;
+        int r12 = 12;
+        int r13 = 13;
+        int r14 = 14;
+        int r15 = 15;
+        int r16 = 16;
+        int r17 = 17;
+        int r18 = 18;
+        int r19 = 19;
+        int r20 = 20;
+        int r21 = 21;
+        int r22 = 22;
+        int r23 = 23;
+        int r24 = 24;
+        int r25 = 25;
+        int r26 = 26;
+
+        foo();
+
+        Print("r0 = ", r0, "\n");
+        Print("r1 = ", r1, "\n");
+        Print("r2 = ", r2, "\n");
+        Print("r3 = ", r3, "\n");
+        Print("r4 = ", r4, "\n");
+        Print("r5 = ", r5, "\n");
+        Print("r6 = ", r6, "\n");
+        Print("r7 = ", r7, "\n");
+        Print("r8 = ", r8, "\n");
+        Print("r9 = ", r9, "\n");
+        Print("r10 = ", r10, "\n");
+        Print("r11 = ", r11, "\n");
+        Print("r12 = ", r12, "\n");
+        Print("r13 = ", r13, "\n");
+        Print("r14 = ", r14, "\n");
+        Print("r15 = ", r15, "\n");
+        Print("r16 = ", r16, "\n");
+        Print("r17 = ", r17, "\n");
+        Print("r18 = ", r18, "\n");
+        Print("r19 = ", r19, "\n");
+        Print("r20 = ", r20, "\n");
+        Print("r21 = ", r21, "\n");
+        Print("r22 = ", r22, "\n");
+        Print("r23 = ", r23, "\n");
+        Print("r24 = ", r24, "\n");
+        Print("r25 = ", r25, "\n");
+        Print("r26 = ", r26, "\n");
     }
+    static void foo() {}
 }
