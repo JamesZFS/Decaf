@@ -17,7 +17,7 @@ impl FuncGen<'_, '_> {
             if let Reg::Virtual(r1) = r {
               let slot = self.find_spill_slot(*r1);
               **r = Reg::Allocated(READ[idx] as u32);
-              new.push(Lw(**r, Reg::PreColored(SP as u32), slot));
+              new.push(Lw(**r, Reg::PreColored(SP as u32), slot)); // load from mem to reg
             }
           }
         }
@@ -28,8 +28,8 @@ impl FuncGen<'_, '_> {
             Some(Sw(*w, Reg::PreColored(SP as u32), slot))
           } else { None }
         } else { None };
-        new.push(t);
-        if let Some(wb) = wb { new.push(wb); } // write back goes after this instruction
+        new.push(t);  // perform instruction
+        if let Some(wb) = wb { new.push(wb); } // write reg back to mem
       }
       self.bb[idx].0 = new;
     }

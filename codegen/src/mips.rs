@@ -36,6 +36,7 @@ pub enum SysCall { PrintInt = 1, PrintString = 4, ReadInt = 5, Sbrk = 9, Exit = 
 
 pub const WORD_SIZE: i32 = 4;
 
+#[derive(Clone)]
 pub enum AsmTemplate {
   Bin(BinOp, Reg, Reg, Reg),
   BinI(BinOp, Reg, Reg, Imm),

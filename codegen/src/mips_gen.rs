@@ -97,6 +97,7 @@ impl AllocCtx for FuncGen<'_, '_> {
     }
   }
 
+  // iterate all virtual regs in the bb and allocate physical regs for them with result list
   fn finish(&mut self, result: &[Node]) {
     for (b, _) in &mut self.bb {
       for t in b {
@@ -124,7 +125,14 @@ impl<'a: 'b, 'b> FuncGen<'a, 'b> {
     // including those using f's inst and those generated to meet calling convention
     let mut fu = FuncGen { param_num: f.param_num, reg_num: f.reg_num, ch_param_num: 0, name: &f.name, program: p, bb: Vec::new(), spill2slot: HashMap::new() };
     fu.populate(f);
-    match m { AllocMethod::Graph => Allocator::work(&mut fu), AllocMethod::Brute => fu.brute_alloc() }
+    match m { AllocMethod::Graph => {
+      Allocator::work(&mut fu);
+//      for (bb, _) in fu.bb.iter_mut() {
+//        let opt = bb.clone().into_iter().filter(|asm| !asm.useless()).collect();
+//        std::mem::replace(bb, opt);
+//      }
+//      Allocator::work(&mut fu);
+    }, AllocMethod::Brute => fu.brute_alloc() }
     fu.fill_imm_tag();
     fu.bb.into_iter()
       .flat_map(|(b, _)| b.into_iter())
