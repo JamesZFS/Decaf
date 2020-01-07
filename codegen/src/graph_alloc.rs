@@ -173,6 +173,7 @@ impl<A: AllocCtx> Allocator<A> {
                 _ => self.simplify_work_list.insert(n)
             };
         }
+        // self.initial.clear();
     }
 
     fn simplify(&mut self) {
@@ -275,7 +276,7 @@ impl<A: AllocCtx> Allocator<A> {
         }
         self.coalesced_nodes.insert(v);
         self.nodes[v as usize].alias = u;
-        let mut nv_moves = self.nodes[v as usize].move_list.iter().copied().collect::<Vec<_>>(); // *difficulty
+        let mut nv_moves = std::mem::replace(&mut self.nodes[v as usize].move_list, Vec::new());
         self.nodes[u as usize].move_list.append(&mut nv_moves); // moves(u) = moves(u) U moves(v)
         for t in self.adjacent(v) {
             self.add_edge(t, u);
